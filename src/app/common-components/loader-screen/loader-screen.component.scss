@@ -1,0 +1,37 @@
+@import '../../../styles/site-mixin';
+
+.loader-screen-wrapper {
+  z-index: 99999;
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  right: 0;
+  left: 0;
+  background-color: rgba(33, 33, 33, 0.3);
+  .spinner-container {
+    margin: 0 auto;
+    width: 48px;
+    height: 100%;
+    i {
+      color: #ffffff;
+      position: absolute;
+      top: 50%;
+      margin-top: -50px;
+    }
+  }
+}
+
+// landscape
+@media screen and (min-width: 1024px) and (max-width: 1365px) {
+
+}
+
+// iPad Portrait
+@media screen and (min-width: 768px) and (max-width: 1023px) {
+
+}
+
+// mobile screens
+@media screen and (min-width: 375px) and (max-width: 767px) {
+
+}

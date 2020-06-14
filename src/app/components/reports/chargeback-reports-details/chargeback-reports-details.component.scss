@@ -1,0 +1,107 @@
+@import '../../../../styles/site-mixin';
+
+.page-chargeback-reports-details {
+  margin: 0 auto;
+  .title {
+    font-size: 24px;
+    font-weight: bold;
+    font-style: normal;
+    font-stretch: normal;
+    line-height: normal;
+    letter-spacing: 0.7px;
+    color: $text-color-1;
+    text-transform: uppercase;
+    margin-bottom: 15px;
+  }
+
+  .card-header {
+    background-color: $bg-header-panel;
+    .tab {
+      font-size: 16px;
+      font-weight: normal;
+      font-style: normal;
+      font-stretch: normal;
+      line-height: normal;
+      letter-spacing: 0.5px;
+      text-align: center;
+      color: $text-color-2;
+      text-transform: uppercase;
+      display: inline-block;
+      max-width: 126px;
+      margin: 0 20px;
+    }
+  }
+
+  .card {
+    border-top: 0;
+    padding: 10px 15px;
+  }
+
+  .table-responsive {
+    margin: 30px 0;
+    border-bottom: 2px solid #979797;
+  }
+
+  .card-body {
+    //padding:0 1.25rem 1.25rem 1.25rem;
+    padding: 0;
+    ngb-tabset .nav-tabs {
+      background-color: $bg-header-panel;
+    }
+
+    th, td {
+      font-size: 14px;
+      font-style: normal;
+      font-stretch: normal;
+      line-height: normal;
+      letter-spacing: 0.4px;
+      color: #4e4e4e;
+    }
+    th {
+      font-weight: bold;
+    }
+    td {
+      font-weight: normal;
+    }
+  }
+
+  form {
+    .form-group {
+      flex-direction: column;
+      .label {
+        font-size: 13px;
+        font-weight: 500;
+        font-style: normal;
+        font-stretch: normal;
+        line-height: normal;
+        letter-spacing: 0.4px;
+        text-align: left;
+        color: #a9b3be;
+        width: 100%;
+        padding: 10px 0;
+      }
+    }
+  }
+}
+
+@media screen and (max-width: 414px) {
+  .col {
+    padding-right: 8px;
+    padding-left: 8px;
+  }
+}
+
+// landscape
+@media screen and (min-width: 1024px) and (max-width: 1365px) {
+
+}
+
+// iPad Portrait
+@media screen and (min-width: 768px) and (max-width: 1023px) {
+
+}
+
+// mobile screens
+@media screen and (min-width: 375px) and (max-width: 767px) {
+
+}

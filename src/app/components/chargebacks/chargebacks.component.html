@@ -1,0 +1,385 @@
+<!--[@routerTransition]-->
+<div class="page-chargebacks page-responsive">
+    <div class="row">
+        <div class="col col-xs-12">
+            <div class="title">
+                <span>{{'Chargebacks' | translate}}</span>
+                <span *ngIf="merchant?.businessDetails">
+                         {{'for' | translate}} {{merchant?.businessDetails?.businessName}}
+                </span>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col col-xs-12">
+            <div class="card mb-3">
+                <div class="card-header">
+                    <div class="card-header-inner">
+                        <span>{{'Chargebacks' | translate}}</span>
+                        <div>
+                            <button [routerLink]="['/merchants/', merchant.merchantID]"
+                                    *ngIf="merchant?.businessDetails"
+                                    class="btn btn-success back-to-profile">
+                                {{'Back to profile' | translate}}
+                            </button>
+                            <button class="btn-print btn-icon-refresh" (click)="refreshPage()">
+                                <img class="icon-refresh" src="./assets/images/transactions/Refresh_icon.svg" alt="">
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card-body">
+                    <div class="row">
+                        <div class=" col-xs-6 col-md-5">
+                            <div class="row">
+                                <div class=" col-xs-6 col-md-6">
+                                    <div class="form-group">
+                                        <label>{{'From' | translate}}</label>
+                                        <div class="input-group datepicker-input">
+                                            <input class="form-control" placeholder="{{'dd/mm/yyyy' | translate}}"
+                                                   (ngModelChange)="tablePeriodFrom=$event;onDateRangeChange()"
+                                                   [maxDate]="tablePeriodTo || tablePeriodRestrict"
+                                                   name="dp" [(ngModel)]="tablePeriodFrom" ngbDatepicker
+                                                   #d="ngbDatepicker">
+                                            <button class="input-group-addon"
+                                                    (click)="d.toggle();d2.close();$event.stopPropagation();"
+                                                    (document:click)="closeOutsideDatePicker($event, d)" type="button">
+                                                <!--<span class="fa fa-calendar"></span>-->
+                                                <img class="img-calendar"
+                                                     src="./assets/images/transactions/Calendar.svg"
+                                                     alt="">
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class=" col-xs-6 col-md-6">
+                                    <div class="form-group">
+                                        <label>{{'To' | translate}}</label>
+                                        <div class="input-group datepicker-input">
+                                            <input class="form-control" placeholder="{{'dd/mm/yyyy' | translate}}"
+                                                   (ngModelChange)="tablePeriodTo=$event;onDateRangeChange()"
+                                                   [minDate]="tablePeriodFrom" [maxDate]="tablePeriodRestrict"
+                                                   name="dp2" [(ngModel)]="tablePeriodTo" ngbDatepicker
+                                                   #d2="ngbDatepicker">
+                                            <button class="input-group-addon"
+                                                    (click)="d2.toggle();d.close();$event.stopPropagation();"
+                                                    (document:click)="closeOutsideDatePicker($event, d2)" type="button">
+                                                <img class="img-calendar"
+                                                     src="./assets/images/transactions/Calendar.svg"
+                                                     alt="">
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class=" col-xs-6 col-md-5"></div>
+                        <div class=" col-xs-6 col-md-2 filter-drop-t">
+                            <div class="form-group wrapper-dropdown">
+                                <div ngbDropdown class="d-inline-block dropdown" placement="{{placementPosition}}">
+                                    <button class="btn" ngbDropdownToggle>
+                                        <img *ngIf="isColumnsFilterEmpty"
+                                             src="./assets/images/transactions/Filter-white.svg" alt="">
+                                        <img *ngIf="!isColumnsFilterEmpty"
+                                             src="./assets/images/transactions/Filter-red.svg" alt="">
+                                        <div class="btn-text">{{'Columns' | translate}}</div>
+                                    </button>
+                                    <div ngbDropdownMenu>
+                                        <div class="dropdown-item" [ngClass]="{'checked': filter.checkbox}"
+                                             (click)="filter.checkbox = !filter.checkbox; onColumnsChange();"
+                                             *ngFor="let filter of tableChargeBacksListFilter | getValues; index as i;">
+                                            <input type="checkbox"
+                                                   (change)="tableChargeBacksListFilter[filter.key].checkbox = filter.checkbox"
+                                                   [(ngModel)]="filter.checkbox">
+                                            <div style="display:inline-block">
+                                                {{filter.title | translate}}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <button class="btn btn-primary-accept btn-filter-trigger"
+                                [ngClass]="{'toggled': toggleFilterSection}"
+                                (click)="toggleFilterSection=!toggleFilterSection">
+                            <img *ngIf="isDataFilterEmpty"
+                                 src="./assets/images/transactions/Filter-white.svg" alt="">
+                            <img *ngIf="!isDataFilterEmpty"
+                                 src="./assets/images/transactions/Filter-red.svg" alt="">
+                            <div class="btn-text">{{'Table Filters' | translate}}</div>
+                        </button>
+                    </div>
+
+                    <div class="filter-section">
+                        <div class="row filter-body" *ngIf="toggleFilterSection">
+                            <!--<div class="col-xs-4 col-md-4">-->
+                            <!--<fieldset class="form-group">-->
+                            <!--<label>{{'Merchant Name' | translate}}</label>-->
+                            <!--<input class="form-control input-mandatory" autocomplete="redundant"-->
+                            <!--(keypress)="filtersService.keyPressStringRestricts($event)"-->
+                            <!--(keyup.enter)="acceptFilters()"-->
+                            <!--name="merchantname" #merchantname="ngModel"-->
+                            <!--[(ngModel)]="filterGroup.merchantName"-->
+                            <!--placeholder="{{'Search by Merchant Name' | translate}}">-->
+                            <!--</fieldset>-->
+                            <!--</div>-->
+                            <div class="col-xs-4 col-md-4">
+                                <fieldset class="form-group">
+                                    <label>{{'Amount Range Min' | translate}}</label>
+                                    <input class="form-control input-mandatory" autocomplete="redundant"
+                                           (keypress)="filtersService.keyPressNumberRestricts($event)"
+                                           (keyup.enter)="acceptFilters()" type="number" min="0"
+                                           [ngClass]="{'error': filterGroup['amountFrom'] > filterGroup['amountTo']}"
+                                           name="chargebackamountfrom" #chargebackamountfrom="ngModel"
+                                           [(ngModel)]="filterGroup.amountFrom"
+                                           placeholder="{{'Enter Amount Range Min' | translate}}">
+                                </fieldset>
+                            </div>
+                            <div class="col-xs-4 col-md-4">
+                                <fieldset class="form-group">
+                                    <label>{{'Amount Range Max' | translate}}</label>
+                                    <input class="form-control input-mandatory" autocomplete="redundant"
+                                           [ngClass]="{'error': filterGroup['amountFrom'] > filterGroup['amountTo']}"
+                                           (keypress)="filtersService.keyPressNumberRestricts($event)"
+                                           (keyup.enter)="acceptFilters()" type="number" min="0"
+                                           name="chargebackamountto" #chargebackamountto="ngModel"
+                                           [(ngModel)]="filterGroup.amountTo"
+                                           placeholder="{{'Enter Amount Range Max' | translate}}">
+                                </fieldset>
+                            </div>
+                            <div class="col-xs-4 col-md-4"></div>
+                            <div class="error-message" *ngIf="filterGroup['amountFrom'] > filterGroup['amountTo']">
+                                {{'Amount From must be less number than Amount To' | translate}}
+                            </div>
+                            <div class="col-xs-12 col-md-12 set-filters-section" *ngIf="toggleFilterSection">
+                                <button type="button" class="btn btn-set-filters refresh"
+                                        (click)="initFilterGroup()">
+                                    <img class="icon-eracer" src="./assets/images/transactions/eraser.svg" alt="">
+                                </button>
+                                <button type="button" class="btn btn-primary-accept btn-set-filters pull-right"
+                                        (click)="acceptFilters();toggleFilterSection=false;"
+                                        [disabled]="filterGroup['amountFrom'] > filterGroup['amountTo']">
+                                    {{'OK' | translate}}
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <!--id="pnProductNav"-->
+                    <div>
+                        <div class="table-responsive">
+                            <!--<button id="pnAdvancerLeft" class="pn-Advancer pn-Advancer_Left"-->
+                            <!--[ngClass]="{'isDemanded': advancedScrollService.SETTINGS.navBarTravelDirection === 'both' || advancedScrollService.SETTINGS.navBarTravelDirection === 'left'}"-->
+                            <!--type="button">-->
+                            <!--<i class="fa fa-angle-left"></i>-->
+                            <!--</button>-->
+                            <!--<button id="pnAdvancerRight" class="pn-Advancer pn-Advancer_Right"-->
+                            <!--[ngClass]="{'isDemanded': advancedScrollService.SETTINGS.navBarTravelDirection === 'both' || advancedScrollService.SETTINGS.navBarTravelDirection === 'right'}"-->
+                            <!--type="button">-->
+                            <!--<i class="fa fa-angle-right"></i>-->
+                            <!--</button>-->
+                            <!--id="pnProductNavContent"-->
+                            <table class="table">
+                                <thead>
+                                <tr>
+                                    <th (click)="setPositionIconStatus('chargedBackDate')" class="align-middle"
+                                        *ngIf="tableChargeBacksListFilter['chargedBackDate'].checkbox"
+                                        [ngClass]="{'sorted': orderBy.chargedBackDate === 'DESC', 'sorted-desc': orderBy.chargedBackDate === 'ASC'}">
+                                        <div class="text-left" title="{{'Chargeback Date' | translate}}">
+                                            <span>{{'Chargeback Date' | translate}}</span>
+                                            <span class="sort-indicator"></span>
+                                        </div>
+                                    </th>
+                                    <th (click)="setPositionIconStatus('confirmedDate')" class="align-middle"
+                                        *ngIf="tableChargeBacksListFilter['confirmedDate'].checkbox"
+                                        [ngClass]="{'sorted': orderBy.confirmedDate === 'DESC', 'sorted-desc': orderBy.confirmedDate === 'ASC'}">
+                                        <div class="text-left" title="{{'Confirmed Date' | translate}}">
+                                            <span>{{'Confirmed Date' | translate}}</span>
+                                            <span class="sort-indicator"></span>
+                                        </div>
+                                    </th>
+                                    <th (click)="setPositionIconStatus('chargedBackDoneDate')" class="align-middle"
+                                        *ngIf="tableChargeBacksListFilter['chargedBackDoneDate'].checkbox"
+                                        [ngClass]="{'sorted': orderBy.chargedBackDoneDate === 'DESC', 'sorted-desc': orderBy.chargedBackDoneDate === 'ASC'}">
+                                        <div class="text-left" title="{{'Chargeback Done Date' | translate}}">
+                                            <span>{{'Chargeback Done Date' | translate}}</span> <span
+                                                class="sort-indicator"></span>
+                                        </div>
+                                    </th>
+                                    <th (click)="setPositionIconStatus('chargebackID')" class="align-middle"
+                                        *ngIf="tableChargeBacksListFilter['chargebackID'].checkbox"
+                                        [ngClass]="{'sorted': orderBy.chargebackID === 'DESC', 'sorted-desc': orderBy.chargebackID === 'ASC'}">
+                                        <div class="text-left" title="{{'Chargeback ID' | translate}}">
+                                            <span>{{'Chargeback ID' | translate}}</span> <span
+                                                class="sort-indicator"></span>
+                                        </div>
+                                    </th>
+                                    <th (click)="setPositionIconStatus('chargebackType')" class="align-middle"
+                                        *ngIf="tableChargeBacksListFilter['chargebackType'].checkbox"
+                                        [ngClass]="{'sorted': orderBy.chargebackType === 'DESC', 'sorted-desc': orderBy.chargebackType === 'ASC'}">
+                                        <div class="text-left" title="{{'Chargeback Type' | translate}}">
+                                            <span>{{'Chargeback Type' | translate}}</span> <span
+                                                class="sort-indicator"></span>
+                                        </div>
+                                    </th>
+                                    <th (click)="setPositionIconStatus('chargebackAmount')" class="align-middle"
+                                        *ngIf="tableChargeBacksListFilter['chargebackAmount'].checkbox"
+                                        [ngClass]="{'sorted': orderBy.chargebackAmount === 'DESC', 'sorted-desc': orderBy.chargebackAmount === 'ASC'}">
+                                        <div class="text-left" title="{{'Chargeback Amount' | translate}}">
+                                            <span>{{'Chargeback Amount' | translate}}</span> <span
+                                                class="sort-indicator"></span>
+                                        </div>
+                                    </th>
+                                    <th (click)="setPositionIconStatus('merchantID')" class="align-middle"
+                                        *ngIf="tableChargeBacksListFilter['merchantID'].checkbox"
+                                        [ngClass]="{'sorted': orderBy.merchantID === 'DESC', 'sorted-desc': orderBy.merchantID === 'ASC'}">
+                                        <div class="text-left" title="{{'Merchant ID' | translate}}">
+                                            <span>{{'Merchant ID' | translate}}</span> <span
+                                                class="sort-indicator"></span>
+                                        </div>
+                                    </th>
+                                    <th (click)="setPositionIconStatus('merchantName')" class="align-middle"
+                                        *ngIf="tableChargeBacksListFilter['merchantName'].checkbox"
+                                        [ngClass]="{'sorted': orderBy.merchantName === 'DESC', 'sorted-desc': orderBy.merchantName === 'ASC'}">
+                                        <div class="text-left" title="{{'Merchant Name' | translate}}">
+                                            <span>{{'Merchant Name' | translate}}</span> <span
+                                                class="sort-indicator"></span>
+                                        </div>
+                                    </th>
+                                    <th (click)="setPositionIconStatus('currency')" class="align-middle"
+                                        *ngIf="tableChargeBacksListFilter['currency'].checkbox"
+                                        [ngClass]="{'sorted': orderBy.currency === 'DESC', 'sorted-desc': orderBy.currency === 'ASC'}">
+                                        <div class="text-left" title="{{'Currency' | translate}}">
+                                            <span>{{'Currency' | translate}}</span> <span class="sort-indicator"></span>
+                                        </div>
+                                    </th>
+                                    <th (click)="setPositionIconStatus('transactionID')" class="align-middle"
+                                        *ngIf="tableChargeBacksListFilter['transactionID'].checkbox"
+                                        [ngClass]="{'sorted': orderBy.transactionID === 'DESC', 'sorted-desc': orderBy.transactionID === 'ASC'}">
+                                        <div class="text-left" title="{{'Transaction ID' | translate}}">
+                                            <span>{{'Transaction ID' | translate}}</span> <span
+                                                class="sort-indicator"></span>
+                                        </div>
+                                    </th>
+                                    <th (click)="setPositionIconStatus('transactionDate')" class="align-middle"
+                                        *ngIf="tableChargeBacksListFilter['transactionDate'].checkbox"
+                                        [ngClass]="{'sorted': orderBy.transactionDate === 'DESC', 'sorted-desc': orderBy.transactionDate === 'ASC'}">
+                                        <div class="text-left" title="{{'Transaction Date' | translate}}">
+                                            <span>{{'Transaction Date' | translate}}</span> <span
+                                                class="sort-indicator"></span>
+                                        </div>
+                                    </th>
+                                    <th (click)="setPositionIconStatus('transactionType')" class="align-middle"
+                                        *ngIf="tableChargeBacksListFilter['transactionType'].checkbox"
+                                        [ngClass]="{'sorted': orderBy.transactionType === 'DESC', 'sorted-desc': orderBy.transactionType === 'ASC'}">
+                                        <div class="text-left" title="{{'Transaction Type' | translate}}">
+                                            <span>{{'Transaction Type' | translate}}</span> <span
+                                                class="sort-indicator"></span>
+                                        </div>
+                                    </th>
+                                    <th (click)="setPositionIconStatus('transactionTotalAmount')" class="align-middle"
+                                        *ngIf="tableChargeBacksListFilter['transactionTotalAmount'].checkbox"
+                                        [ngClass]="{'sorted': orderBy.transactionTotalAmount === 'DESC', 'sorted-desc': orderBy.transactionTotalAmount === 'ASC'}">
+                                        <div class="text-left" title="{{'Transaction Total Amount' | translate}}">
+                                            <span>{{'Transaction Total Amount' | translate}}</span> <span
+                                                class="sort-indicator"></span>
+                                        </div>
+                                    </th>
+                                    <th (click)="setPositionIconStatus('paymentGateway')" class="align-middle"
+                                        *ngIf="tableChargeBacksListFilter['paymentGateway'].checkbox"
+                                        [ngClass]="{'sorted': orderBy.paymentGateway === 'DESC', 'sorted-desc': orderBy.paymentGateway === 'ASC'}">
+                                        <div class="text-left" title="{{'Payment Gateway' | translate}}">
+                                            <span>{{'Payment Gateway' | translate}}</span> <span
+                                                class="sort-indicator"></span>
+                                        </div>
+                                    </th>
+                                    <th (click)="setPositionIconStatus('status')" class="align-middle"
+                                        *ngIf="tableChargeBacksListFilter['status'].checkbox"
+                                        [ngClass]="{'sorted': orderBy.status === 'DESC', 'sorted-desc': orderBy.status === 'ASC'}">
+                                        <div class="text-left" title="{{'Status' | translate}}">
+                                            <span>{{'Status' | translate}}</span> <span class="sort-indicator"></span>
+                                        </div>
+                                    </th>
+                                    <th (click)="setPositionIconStatus('chargebackDoneBy')" class="align-middle"
+                                        *ngIf="tableChargeBacksListFilter['chargebackDoneBy'].checkbox"
+                                        [ngClass]="{'sorted': orderBy.chargebackDoneBy === 'DESC', 'sorted-desc': orderBy.chargebackDoneBy === 'ASC'}">
+                                        <div class="text-left" title="{{'Done By' | translate}}">
+                                            <span>{{'Done By' | translate}}</span> <span class="sort-indicator"></span>
+                                        </div>
+                                    </th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr (click)="transitionToChargeback(chargeback)"
+                                    *ngFor="let chargeback of chargebacksList; index as i;">
+                                    <td class="text-left"
+                                        *ngIf="tableChargeBacksListFilter['chargedBackDate'].checkbox">
+                                        {{chargeback.chargedBackDate | date: 'dd/MM/yyyy'}}
+                                    </td>
+                                    <td class="text-left" *ngIf="tableChargeBacksListFilter['confirmedDate'].checkbox">
+                                        {{chargeback.confirmedDate | date: 'dd/MM/yyyy'}}
+                                    </td>
+                                    <td class="text-left"
+                                        *ngIf="tableChargeBacksListFilter['chargedBackDoneDate'].checkbox">
+                                        {{chargeback.chargedBackDoneDate | date: 'dd/MM/yyyy'}}
+                                    </td>
+                                    <td class="text-left" *ngIf="tableChargeBacksListFilter['chargebackID'].checkbox">
+                                        {{chargeback.chargebackID}}
+                                    </td>
+                                    <td class="text-left" *ngIf="tableChargeBacksListFilter['chargebackType'].checkbox">
+                                        {{chargeback.chargebackType | getValueFromDictionary: 'chargebackTypes'}}
+                                    </td>
+                                    <td class="text-right"
+                                        *ngIf="tableChargeBacksListFilter['chargebackAmount'].checkbox">
+                                        {{chargeback.chargebackAmount | number: '1.2-2'}}
+                                    </td>
+                                    <td class="text-left" *ngIf="tableChargeBacksListFilter['merchantID'].checkbox">
+                                        {{chargeback.merchantID}}
+                                    </td>
+                                    <td class="text-left" *ngIf="tableChargeBacksListFilter['merchantName'].checkbox">
+                                        {{chargeback.merchantName}}
+                                    </td>
+                                    <td class="text-left" *ngIf="tableChargeBacksListFilter['currency'].checkbox">
+                                        {{chargeback.currency}}
+                                    </td>
+                                    <td class="text-left" *ngIf="tableChargeBacksListFilter['transactionID'].checkbox">
+                                        {{chargeback.transactionID}}
+                                    </td>
+                                    <td class="text-left"
+                                        *ngIf="tableChargeBacksListFilter['transactionDate'].checkbox">
+                                        {{chargeback.transactionDate | date: 'dd/MM/yyyy'}}
+                                    </td>
+                                    <td class="text-left"
+                                        *ngIf="tableChargeBacksListFilter['transactionType'].checkbox">
+                                        {{chargeback.transactionType | getValueFromDictionary: 'transactionTypes'}}
+                                    </td>
+                                    <td class="text-right"
+                                        *ngIf="tableChargeBacksListFilter['transactionTotalAmount'].checkbox">
+                                        {{chargeback.transactionTotalAmount | number: '1.2-2'}}
+                                    </td>
+                                    <td class="text-left" *ngIf="tableChargeBacksListFilter['paymentGateway'].checkbox">
+                                        {{chargeback.paymentGateway}}
+                                    </td>
+                                    <td class="text-left" *ngIf="tableChargeBacksListFilter['status'].checkbox">
+                                        {{chargeback.status | getValueFromDictionary: 'chargebackStatuses'}}
+                                    </td>
+                                    <td class="text-left" *ngIf="tableChargeBacksListFilter['chargebackDoneBy'].checkbox">
+                                        {{chargeback.chargebackDoneBy | getValueFromDictionary: 'chargebackDoneBy'}}
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="page-footter" *ngIf="collectionSize > maxSize">
+                        <div class="text-uppercase text-muted fs-12">{{'Pages' | translate}}</div>
+                        <ngb-pagination [collectionSize]="collectionSize" [(page)]="page" [maxSize]="maxSize"
+                                        [pageSize]="pageSize" (pageChange)="pageChange($event)"
+                                        [rotate]="true" [ellipses]="false"
+                                        [boundaryLinks]="true"></ngb-pagination>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

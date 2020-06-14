@@ -1,0 +1,257 @@
+<!--[@routerTransition]-->
+<div class="page-chargeback-reports-details page-responsive">
+    <div class="row">
+        <div class="col col-xs-12">
+            <div class="title">
+                <span class="link" routerLink="/reports">{{'Reports' | translate}} ></span>
+                <span class="link" routerLink="/reports">{{'Chargeback Reports' | translate}} ></span>
+                <span class="idItem"> {{'ID' | translate}}: {{params.id}}</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="row">
+            <div class=" col-xs-6 col-md-3">
+                <!-- <div class="form-group">
+                    <label>{{'Custom Date' | translate}}</label>
+                    <div class="input-group datepicker-input">
+                        <input class="form-control" placeholder="{{'dd/mm/yyyy' | translate}}"
+                               (ngModelChange)="tablePeriodFrom=$event;onDateRangeChange()"
+                               [maxDate]="tablePeriodTo || tablePeriodRestrict"
+                               name="dp" [(ngModel)]="tablePeriodFrom" ngbDatepicker #d="ngbDatepicker">
+                        <button class="input-group-addon"
+                                (click)="d.toggle();$event.stopPropagation();"
+                                (document:click)="closeOutsideDatePicker($event, d)" type="button">
+                            <--<span class="fa fa-calendar"></span>->
+                            <img class="img-calendar" src="./assets/images/transactions/Calendar.svg" alt="">
+                        </button>
+                    </div>
+                </div> -->
+            </div>
+            <div class=" col-xs-6 col-md-1">
+                <!-- <button (click)="downloadCurrentReportList('xls')"
+                        title="{{'Download Report (xls)' | translate}}"
+                        class="btn-print download-excel-btn">
+                    <img src="./assets/images/transactions-details/xls-icon.svg" alt="">
+                </button> -->
+            </div>
+            <div class=" col-xs-6 col-md-1">
+                <!-- <button (click)="downloadCurrentReportList('bef')"
+                        title="{{'Download Report (bef)' | translate}}"
+                        class="btn-print download-excel-btn">
+                    <i class="fa fa-bank"></i>
+                </button> -->
+            </div>
+            <div class=" col-xs-6 col-md-4"></div>
+            <div class=" col-xs-6 col-md-3 filter-drop-t">
+                <div class="form-group wrapper-dropdown billing-cycle-columns">
+                    <div ngbDropdown class="d-inline-block dropdown">
+                        <button class="btn" ngbDropdownToggle>
+                            <img *ngIf="isColumnsFilterEmpty"
+                                 src="./assets/images/transactions/Filter-white.svg" alt="">
+                            <img *ngIf="!isColumnsFilterEmpty"
+                                 src="./assets/images/transactions/Filter-red.svg" alt="">
+                            <div class="btn-text">{{'Columns' | translate}}</div>
+                        </button>
+                        <div ngbDropdownMenu>
+                            <div class="dropdown-item" [ngClass]="{'checked': filter.checkbox}"
+                                 (click)="filter.checkbox = !filter.checkbox;checkColumnsFilterEmpty();"
+                                 *ngFor="let filter of tableChargeBacksListFilter | getValues; index as i;">
+                                <input type="checkbox"
+                                       (change)="tableChargeBacksListFilter[filter.key].checkbox = filter.checkbox"
+                                       [(ngModel)]="filter.checkbox">
+                                <div style="display:inline-block">
+                                    {{filter.title | translate}}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class=" col-xs-6 col-md-10"></div>
+            <div class=" col-xs-6 col-md-2">
+                <!-- <button (click)="setOperationsPayed(null)" *ngIf="!areOperationsPayed"
+                        class="btn btn-primary-accept all-payed-btn">
+                    {{'Set All Payed' | translate }}
+                </button> -->
+            </div>
+        </div>
+        <!--<hr>-->
+        <!--id="pnProductNav"-->
+        <div>
+            <div class="table-responsive">
+                <!--<button id="pnAdvancerLeft" class="pn-Advancer pn-Advancer_Left"-->
+                        <!--[ngClass]="{'isDemanded': advancedScrollService.SETTINGS.navBarTravelDirection === 'both' || advancedScrollService.SETTINGS.navBarTravelDirection === 'left'}"-->
+                        <!--type="button">-->
+                    <!--<i class="fa fa-angle-left"></i>-->
+                <!--</button>-->
+                <!--<button id="pnAdvancerRight" class="pn-Advancer pn-Advancer_Right"-->
+                        <!--[ngClass]="{'isDemanded': advancedScrollService.SETTINGS.navBarTravelDirection === 'both' || advancedScrollService.SETTINGS.navBarTravelDirection === 'right'}"-->
+                        <!--type="button">-->
+                    <!--<i class="fa fa-angle-right"></i>-->
+                <!--</button>-->
+                <!--id="pnProductNavContent"-->
+                <table class="table">
+                    <thead>
+                    <tr>
+                        <th (click)="setPositionIconStatus('chargebackReportChargebackID')" class="align-middle"
+                            *ngIf="tableChargeBacksListFilter['chargebackReportChargebackID'].checkbox"
+                            [ngClass]="{'sorted': orderBy.chargebackReportChargebackID === 'DESC', 'sorted-desc': orderBy.chargebackReportChargebackID === 'ASC'}">
+                            <div class="text-left" title="{{'Chargeback Report ID' | translate}}">
+                                <span>{{'Chargeback Report ID' | translate}}</span> <span class="sort-indicator"></span>
+                            </div>
+                        </th>
+                        <th (click)="setPositionIconStatus('chargebackReportID')" class="align-middle"
+                            *ngIf="tableChargeBacksListFilter['chargebackReportID'].checkbox"
+                            [ngClass]="{'sorted': orderBy.chargebackReportID === 'DESC', 'sorted-desc': orderBy.chargebackReportID === 'ASC'}">
+                            <div class="text-left" title="{{'Report ID' | translate}}">
+                                <span>{{'Report ID' | translate}}</span> <span class="sort-indicator"></span>
+                            </div>
+                        </th>
+                        <th (click)="setPositionIconStatus('paymentGatewayID')" class="align-middle"
+                            *ngIf="tableChargeBacksListFilter['paymentGatewayID'].checkbox"
+                            [ngClass]="{'sorted': orderBy.paymentGatewayID === 'DESC', 'sorted-desc': orderBy.paymentGatewayID === 'ASC'}">
+                            <div class="text-left" title="{{'Payment Gateway ID' | translate}}">
+                                <span>{{'Payment Gateway ID' | translate}}</span> <span class="sort-indicator"></span>
+                            </div>
+                        </th>
+                        <th (click)="setPositionIconStatus('transactionID')" class="align-middle"
+                            *ngIf="tableChargeBacksListFilter['transactionID'].checkbox"
+                            [ngClass]="{'sorted': orderBy.transactionID === 'DESC', 'sorted-desc': orderBy.transactionID === 'ASC'}">
+                            <div class="text-left" title="{{'Transaction ID' | translate}}">
+                                <span>{{'Transaction ID' | translate}}</span> <span class="sort-indicator"></span>
+                            </div>
+                        </th>
+                        <th (click)="setPositionIconStatus('chargebackID')" class="align-middle"
+                            *ngIf="tableChargeBacksListFilter['chargebackID'].checkbox"
+                            [ngClass]="{'sorted': orderBy.chargebackID === 'DESC', 'sorted-desc': orderBy.chargebackID === 'ASC'}">
+                            <div class="text-left" title="{{'Chargeback ID' | translate}}">
+                                <span>{{'Chargeback ID' | translate}}</span> <span class="sort-indicator"></span>
+                            </div>
+                        </th>
+                        <th (click)="setPositionIconStatus('transactionDate')" class="align-middle"
+                            *ngIf="tableChargeBacksListFilter['transactionDate'].checkbox"
+                            [ngClass]="{'sorted': orderBy.transactionDate === 'DESC', 'sorted-desc': orderBy.transactionDate === 'ASC'}">
+                            <div class="text-left" title="{{'Transaction Date' | translate}}">
+                                <span>{{'Transaction Date' | translate}}</span> <span class="sort-indicator"></span>
+                            </div>
+                        </th>
+                        <th (click)="setPositionIconStatus('confirmedDate')" class="align-middle"
+                            *ngIf="tableChargeBacksListFilter['confirmedDate'].checkbox"
+                            [ngClass]="{'sorted': orderBy.confirmedDate === 'DESC', 'sorted-desc': orderBy.confirmedDate === 'ASC'}">
+                            <div class="text-left" title="{{'Confirmed Date' | translate}}">
+                                <span>{{'Confirmed Date' | translate}}</span> <span class="sort-indicator"></span>
+                            </div>
+                        </th>
+                        <th (click)="setPositionIconStatus('chargedBackDate')" class="align-middle"
+                            *ngIf="tableChargeBacksListFilter['chargedBackDate'].checkbox"
+                            [ngClass]="{'sorted': orderBy.chargedBackDate === 'DESC', 'sorted-desc': orderBy.chargedBackDate === 'ASC'}">
+                            <div class="text-left" title="{{'Chargeback Date' | translate}}">
+                                <span>{{'Chargeback Date' | translate}}</span> <span class="sort-indicator"></span>
+                            </div>
+                        </th>
+                        <th (click)="setPositionIconStatus('chargedBackDoneDate')" class="align-middle"
+                            *ngIf="tableChargeBacksListFilter['chargedBackDoneDate'].checkbox"
+                            [ngClass]="{'sorted': orderBy.chargedBackDoneDate === 'DESC', 'sorted-desc': orderBy.chargedBackDoneDate === 'ASC'}">
+                            <div class="text-left" title="{{'Chargeback Done Date' | translate}}">
+                                <span>{{'Chargeback Done Date' | translate}}</span> <span class="sort-indicator"></span>
+                            </div>
+                        </th>
+                        <th (click)="setPositionIconStatus('transactionTotalAmount')" class="align-middle"
+                            *ngIf="tableChargeBacksListFilter['transactionTotalAmount'].checkbox"
+                            [ngClass]="{'sorted': orderBy.transactionTotalAmount === 'DESC', 'sorted-desc': orderBy.transactionTotalAmount === 'ASC'}">
+                            <div class="text-left" title="{{'Transaction Total Amount' | translate}}">
+                                <span>{{'Transaction Total Amount' | translate}}</span> <span
+                                    class="sort-indicator"></span>
+                            </div>
+                        </th>
+                        <th (click)="setPositionIconStatus('chargebackAmount')" class="align-middle"
+                            *ngIf="tableChargeBacksListFilter['chargebackAmount'].checkbox"
+                            [ngClass]="{'sorted': orderBy.chargebackAmount === 'DESC', 'sorted-desc': orderBy.chargebackAmount === 'ASC'}">
+                            <div class="text-left" title="{{'Chargeback Amount' | translate}}">
+                                <span>{{'Chargeback Amount' | translate}}</span> <span class="sort-indicator"></span>
+                            </div>
+                        </th>
+                        <th></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr *ngFor="let operation of operationsList; index as i;">
+                        <td class="text-left"
+                            *ngIf="tableChargeBacksListFilter['chargebackReportChargebackID'].checkbox">
+                            {{operation.chargebackReportChargebackID}}
+                        </td>
+                        <td class="text-left" *ngIf="tableChargeBacksListFilter['chargebackReportID'].checkbox">
+                            {{operation.chargebackReportID}}
+                        </td>
+                        <td class="text-left"
+                            *ngIf="tableChargeBacksListFilter['paymentGatewayID'].checkbox">
+                            {{operation.paymentGatewayID}}
+                        </td>
+                        <td class="text-left"
+                            *ngIf="tableChargeBacksListFilter['transactionID'].checkbox">
+                            {{operation.transactionID}}
+                        </td>
+                        <td class="text-left"
+                            *ngIf="tableChargeBacksListFilter['chargebackID'].checkbox">
+                            {{operation.chargebackID}}
+                        </td>
+                        <td class="text-left"
+                            *ngIf="tableChargeBacksListFilter['transactionDate'].checkbox">
+                            {{operation.transactionDate | utcToLocalDate | date: 'dd/MM/yyyy'}}
+                        </td>
+                        <td class="text-left"
+                            *ngIf="tableChargeBacksListFilter['confirmedDate'].checkbox">
+                            {{operation.confirmedDate | utcToLocalDate | date: 'dd/MM/yyyy'}}
+                        </td>
+                        <td class="text-left"
+                            *ngIf="tableChargeBacksListFilter['chargedBackDate'].checkbox">
+                            {{operation.chargedBackDate | utcToLocalDate | date: 'dd/MM/yyyy'}}
+                        </td>
+                        <td class="text-left"
+                            *ngIf="tableChargeBacksListFilter['chargedBackDoneDate'].checkbox">
+                            {{operation.chargedBackDoneDate | utcToLocalDate | date: 'dd/MM/yyyy'}}
+                        </td>
+                        <td class="text-right"
+                            *ngIf="tableChargeBacksListFilter['transactionTotalAmount'].checkbox">
+                            {{operation.transactionTotalAmount}}
+                        </td>
+                        <td class="text-right"
+                            *ngIf="tableChargeBacksListFilter['chargebackAmount'].checkbox">
+                            {{operation.chargebackAmount}}
+                        </td>
+
+                        <td class="text-left"
+                            *ngIf="tableChargeBacksListFilter['isPayed'].checkbox">
+                            <div *ngIf="operation.isPayed != null">
+                                {{operation.isPayed}}
+                            </div>
+                            <div *ngIf="operation.isPayed === null" class="pay-cell">
+                                <button (click)="setOperationsPayed(true, operation);$event.stopPropagation()"
+                                        class="btn btn-primary-accept">
+                                    Set Payed
+                                </button>
+                                <button (click)="setOperationsPayed(false, operation);$event.stopPropagation()"
+                                        class="btn btn-primary-danger mar-l-10">
+                                    Set Failed
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div *ngIf="collectionSize > maxSize" class="page-footter">
+            <div class="text-muted fs-12">{{'Pages' | translate}}</div>
+            <ngb-pagination [collectionSize]="collectionSize"
+                            [(page)]="page" [maxSize]="maxSize"
+                            [pageSize]="pageSize" (pageChange)="pageChange($event)"
+                            [rotate]="true" [ellipses]="false"
+                            [boundaryLinks]="true"></ngb-pagination>
+        </div>
+    </div>
+</div>

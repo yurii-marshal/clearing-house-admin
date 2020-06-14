@@ -1,0 +1,31 @@
+<div [@routerTransition] class="dashboard">
+    <div class="row">
+        <div class="col col-xs-12">
+            <div class="title">
+                <span>My dashboard</span>
+            </div>
+        </div>
+    </div>
+    <div>
+        <div class="row">
+            <div class="col col-lg-3 col-xs-6  text-center">
+                <app-card-amounts cardAmountImg="{{generalBalanseImg}}" cardAmountTitle="{{generalBalanceTitle}}"
+                                  [cardAmount]="dashboardInfo.generalBalanse"></app-card-amounts>
+            </div>
+            <div class="col col-lg-3 col-xs-6 text-center">
+                <app-card-amounts cardAmountImg="{{weeklyAmountImg}}" cardAmountTitle="{{weeklyAmountTitle}}"
+                                  [cardAmount]="dashboardInfo.weeklyAmount" cardAmountFooterTitle="{{commissionTitle}}"
+                                  [cardAmountFooter]="dashboardInfo.commission"></app-card-amounts>
+            </div>
+            <div class="col col-lg-6 col-xs-12 text-center">
+                <app-chart-transactions [lineChartLabels]="dashboardInfo.lineChartLabels" [lineChartData]="dashboardInfo.lineChartData"></app-chart-transactions>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col col-lg-12">
+            <app-last-transactions [dataTable]="dashboardInfo.dataTable"></app-last-transactions>
+        </div>
+    </div>
+</div>

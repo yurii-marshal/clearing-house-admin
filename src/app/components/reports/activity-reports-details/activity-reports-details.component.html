@@ -1,0 +1,297 @@
+<!--[@routerTransition] -->
+<div class="page-activity-reports-details page-responsive">
+    <div class="row">
+        <div class="col col-xs-12">
+            <div class="title">
+                <span class="link" routerLink="/reports">{{'Reports' | translate}} ></span>
+                <span>{{'Activity Report Details' | translate}}</span>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col col-xs-12">
+            <div class="card mb-3">
+                <div class="card-header">
+                    <div class="card-header-inner">
+                        <span>{{'Activity Report Details' | translate}}: {{reportProps.merchantName}}</span>
+                        <!--<div class="buttons-section">-->
+                            <!--<button (click)="backToActivityReport()" class="btn btn-primary-accept">-->
+                                <!--{{'Back to' | translate}} {{prevState}}-->
+                            <!--</button>-->
+                        <!--</div>-->
+                    </div>
+                </div>
+                <div class="card-body mb-sm-3">
+                    <div class="card-body-title d-flex justify-content-between align-items-center">
+                        <div class="d-flex">
+                            <img src="./assets/images/transactions-details/credit-card.svg" class="credit-card" alt="">
+                            <div>
+                                <div>
+                                    <span>{{'Merchant ID' | translate}}: {{reportProps.merchantID}}</span>
+                                </div>
+                                <div>
+                                    <span>{{'Merchant Name' | translate}}: {{reportProps.merchantName}}</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <hr>
+                    <div class="mt-5 mb-2">
+                        <div class="row">
+                            <div class="col-sm-6 col-12">
+                                <fieldset class="form-group">
+                                    <label>{{'Correlation ID' | translate}}</label>
+                                    <p class="form-control-plaintext text">{{reportProps.correlationId || '-'}}</p>
+                                </fieldset>
+                            </div>
+                            <div class="col-sm-6 col-12">
+                                <fieldset class="form-group">
+                                    <label>{{'IP Address' | translate}}</label>
+                                    <p class="form-control-plaintext text">{{reportProps.ipAddress || '-'}}</p>
+                                </fieldset>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-6 col-12">
+                                <fieldset class="form-group">
+                                    <label>{{'Transaction ID' | translate}}</label>
+                                    <p class="form-control-plaintext text">{{reportProps.transactionID || '-'}}</p>
+                                </fieldset>
+                            </div>
+                            <div class="col-sm-6 col-12">
+                                <fieldset class="form-group">
+                                    <label>{{'Additional Details' | translate}}</label>
+                                    <p class="form-control-plaintext text data-json-body"
+                                       [innerHTML]="reportProps.additionalDetails || '-'"></p>
+                                </fieldset>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-6 col-12">
+                                <fieldset class="form-group">
+                                    <label>{{'Operation Code' | translate}}</label>
+                                    <p class="form-control-plaintext text">{{reportProps.operationCode || '-'}}</p>
+                                </fieldset>
+                            </div>
+                            <div class="col-sm-6 col-12">
+                                <fieldset class="form-group">
+                                    <label>{{'Operation Date' | translate}}</label>
+                                    <p class="form-control-plaintext text date">
+                                        {{(reportProps.operationDate | date: 'dd/MM/yyyy HH:mm:ss') || '-'}}
+                                    </p>
+                                </fieldset>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-6 col-12">
+                                <fieldset class="form-group">
+                                    <label>{{'Operation Done By' | translate}}</label>
+                                    <p class="form-control-plaintext text">{{reportProps.operationDoneBy || '-'}}</p>
+                                </fieldset>
+                            </div>
+                            <div class="col-sm-6 col-12">
+                                <fieldset class="form-group">
+                                    <label>{{'Operation Description' | translate}}</label>
+                                    <p class="form-control-plaintext text">{{reportProps.operationDescription ||
+                                        '-'}}</p>
+                                </fieldset>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-6 col-12">
+                                <fieldset class="form-group">
+                                    <label>{{'Operation Done By ID' | translate}}</label>
+                                    <p class="form-control-plaintext text">{{reportProps.operationDoneByID || '-'}}</p>
+                                </fieldset>
+                            </div>
+                            <div class="col-sm-6 col-12">
+                                <fieldset class="form-group">
+                                    <label>{{'Transition ID' | translate}}</label>
+                                    <p class="form-control-plaintext text">{{reportProps.transitionID || '-'}}</p>
+                                </fieldset>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-6 col-12">
+                                <fieldset class="form-group">
+                                    <label>{{'Request Body' | translate}}</label>
+                                    <p class="form-control-plaintext text data-json-body"
+                                       [innerHTML]="reportProps.requestBody"></p>
+                                </fieldset>
+                            </div>
+                            <div class="col-sm-6 col-12">
+                                <fieldset class="form-group">
+                                    <label>{{'Response Body' | translate}}</label>
+                                    <p class="form-control-plaintext text data-json-body"
+                                       [innerHTML]="reportProps.responseBody"></p>
+                                </fieldset>
+                            </div>
+                        </div>
+                        <!--<div class="card-body-title">-->
+                        <!--<span>-->
+                            <!--Request Details-->
+                        <!--</span>-->
+                        <!--</div>-->
+                        <!--<hr>-->
+                        <!--<div *ngIf="reportProps.requestBody" style="margin-top: 30px;">-->
+                            <!--<div class="row">-->
+                                <!--<div class="col-sm-6 col-12">-->
+                                    <!--<fieldset class="form-group">-->
+                                        <!--<label>Request Date</label>-->
+                                        <!--<p class="form-control-plaintext text">-->
+                                            <!--{{reportProps.requestDate | date: 'dd/MM/yyyy HH:mm:ss' || '-'}}-->
+                                        <!--</p>-->
+                                    <!--</fieldset>-->
+                                <!--</div>-->
+                                <!--<div class="col-sm-6 col-12">-->
+                                    <!--<fieldset class="form-group">-->
+                                        <!--<label>Request Method</label>-->
+                                        <!--<p class="form-control-plaintext text">{{reportProps.requestMethod || '-'}}</p>-->
+                                    <!--</fieldset>-->
+                                <!--</div>-->
+                            <!--</div>-->
+                            <!--<div class="row">-->
+                                <!--<div class="col-sm-6 col-12">-->
+                                    <!--<fieldset class="form-group">-->
+                                        <!--<label>Request URL</label>-->
+                                        <!--<p class="form-control-plaintext text">{{reportProps.requestUrl || '-'}}</p>-->
+                                    <!--</fieldset>-->
+                                <!--</div>-->
+                                <!--<div class="col-sm-6 col-12">-->
+                                    <!--<fieldset class="form-group">-->
+                                        <!--<label>Action Type Code</label>-->
+                                        <!--<p class="form-control-plaintext text">{{reportProps.requestBody.ActionTypeCode || '-'}}</p>-->
+                                    <!--</fieldset>-->
+                                <!--</div>-->
+                            <!--</div>-->
+                            <!--<div class="row">-->
+                                <!--<div class="col-sm-6 col-12">-->
+                                    <!--<fieldset class="form-group">-->
+                                        <!--<label>Additional Details</label>-->
+                                        <!--<p class="form-control-plaintext text">{{reportProps.requestBody.AdditionalDetails || '-'}}</p>-->
+                                    <!--</fieldset>-->
+                                <!--</div>-->
+                                <!--<div class="col-sm-6 col-12">-->
+                                    <!--<fieldset class="form-group">-->
+                                        <!--<label>Email</label>-->
+                                        <!--<p class="form-control-plaintext text">{{reportProps.requestBody.Email || '-'}}</p>-->
+                                    <!--</fieldset>-->
+                                <!--</div>-->
+                            <!--</div>-->
+                            <!--<div class="row">-->
+                                <!--<div class="col-sm-6 col-12">-->
+                                    <!--<fieldset class="form-group">-->
+                                        <!--<label>Operation Date</label>-->
+                                        <!--<p class="form-control-plaintext text">-->
+                                            <!--{{reportProps.requestBody.OperationDate | date: 'dd/MM/yyyy HH:mm:ss' || '-'}}-->
+                                        <!--</p>-->
+                                    <!--</fieldset>-->
+                                <!--</div>-->
+                                <!--<div class="col-sm-6 col-12">-->
+                                    <!--<fieldset class="form-group">-->
+                                        <!--<label>Operation Description</label>-->
+                                        <!--<p class="form-control-plaintext text">-->
+                                            <!--{{reportProps.requestBody.OperationDescription || '-'}}-->
+                                        <!--</p>-->
+                                    <!--</fieldset>-->
+                                <!--</div>-->
+                            <!--</div>-->
+                            <!--<div class="row">-->
+                                <!--<div class="col-sm-6 col-12">-->
+                                    <!--<fieldset class="form-group">-->
+                                        <!--<label>Operation Done By</label>-->
+                                        <!--<p class="form-control-plaintext text">-->
+                                            <!--{{reportProps.requestBody.OperationDoneBy || '-'}}-->
+                                        <!--</p>-->
+                                    <!--</fieldset>-->
+                                <!--</div>-->
+                                <!--<div class="col-sm-6 col-12">-->
+                                    <!--<fieldset class="form-group">-->
+                                        <!--<label>Operation Done By ID</label>-->
+                                        <!--<p class="form-control-plaintext text">-->
+                                            <!--{{reportProps.requestBody.OperationDoneById || '-'}}-->
+                                        <!--</p>-->
+                                    <!--</fieldset>-->
+                                <!--</div>-->
+                            <!--</div>-->
+                            <!--<div class="row">-->
+                                <!--<div class="col-sm-6 col-12">-->
+                                    <!--<fieldset class="form-group">-->
+                                        <!--<label>User ID</label>-->
+                                        <!--<p class="form-control-plaintext text">-->
+                                            <!--{{reportProps.requestBody.UserId || '-'}}-->
+                                        <!--</p>-->
+                                    <!--</fieldset>-->
+                                <!--</div>-->
+                                <!--<div class="col-sm-6 col-12">-->
+                                    <!--&lt;!&ndash;<fieldset class="form-group">&ndash;&gt;-->
+                                    <!--&lt;!&ndash;<label>Operation Done By ID</label>&ndash;&gt;-->
+                                    <!--&lt;!&ndash;<p class="form-control-plaintext text">&ndash;&gt;-->
+                                    <!--&lt;!&ndash;{{reportProps.requestBody.OperationDoneById || '-'}}&ndash;&gt;-->
+                                    <!--&lt;!&ndash;</p>&ndash;&gt;-->
+                                    <!--&lt;!&ndash;</fieldset>&ndash;&gt;-->
+                                <!--</div>-->
+                            <!--</div>-->
+                        <!--</div>-->
+                        <!--<div class="card-body-title">-->
+                        <!--<span>-->
+                            <!--Response Details-->
+                        <!--</span>-->
+                        <!--</div>-->
+                        <!--<hr>-->
+                        <!--<div *ngIf="reportProps.responseBody" style="margin-top: 30px;">-->
+                            <!--<div class="row">-->
+                                <!--<div class="col-sm-6 col-12">-->
+                                    <!--<fieldset class="form-group">-->
+                                        <!--<label>Response Status</label>-->
+                                        <!--<p class="form-control-plaintext text">{{reportProps.responseStatus || '-'}}</p>-->
+                                    <!--</fieldset>-->
+                                <!--</div>-->
+                                <!--<div class="col-sm-6 col-12">-->
+                                    <!--<fieldset class="form-group">-->
+                                        <!--<label>Correlation ID</label>-->
+                                        <!--<p class="form-control-plaintext text">{{reportProps.responseBody.correlationId || '-'}}</p>-->
+                                    <!--</fieldset>-->
+                                <!--</div>-->
+                            <!--</div>-->
+                            <!--<div class="row">-->
+                                <!--<div class="col-sm-6 col-12">-->
+                                    <!--<fieldset class="form-group">-->
+                                        <!--<label>Entity ID</label>-->
+                                        <!--<p class="form-control-plaintext text">{{reportProps.responseBody.entityID || '-'}}</p>-->
+                                    <!--</fieldset>-->
+                                <!--</div>-->
+                                <!--<div class="col-sm-6 col-12">-->
+                                    <!--<fieldset class="form-group">-->
+                                        <!--<label>Entity Reference</label>-->
+                                        <!--<p class="form-control-plaintext text">-->
+                                            <!--{{reportProps.responseBody.entityReference || '-'}}-->
+                                        <!--</p>-->
+                                    <!--</fieldset>-->
+                                <!--</div>-->
+                            <!--</div>-->
+                            <!--<div class="row">-->
+                                <!--<div class="col-sm-6 col-12">-->
+                                    <!--<fieldset class="form-group">-->
+                                        <!--<label>Message</label>-->
+                                        <!--<p class="form-control-plaintext text">-->
+                                            <!--{{reportProps.responseBody.message || '-'}}-->
+                                        <!--</p>-->
+                                    <!--</fieldset>-->
+                                <!--</div>-->
+                                <!--<div class="col-sm-6 col-12">-->
+                                    <!--<fieldset class="form-group">-->
+                                        <!--<label>Status</label>-->
+                                        <!--<p class="form-control-plaintext text">-->
+                                            <!--{{reportProps.responseBody.status || '-'}}-->
+                                        <!--</p>-->
+                                    <!--</fieldset>-->
+                                <!--</div>-->
+                            <!--</div>-->
+                        <!--</div>-->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

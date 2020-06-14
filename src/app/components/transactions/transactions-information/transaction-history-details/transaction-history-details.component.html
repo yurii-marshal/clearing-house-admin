@@ -1,0 +1,164 @@
+<!--[@routerTransition]-->
+<div class="page-transaction-history-details page-responsive">
+    <div class="row">
+        <div class="col col-xs-12">
+            <div class="title">
+                <span>{{'Transaction History Details' | translate}}</span>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col col-xs-12">
+            <div class="card mb-3">
+                <div class="card-header">
+                    <div class="card-header-inner">
+                        <span>{{'Transaction History Details' | translate}} / {{'ID' | translate}}: {{params.id}}</span>
+                        <div class="buttons-section">
+                            <button (click)="backToTransactionInformation()" class="btn btn-primary-accept">
+                                {{'Back to transaction' | translate}}
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body mb-sm-3">
+                    <div class="card-body-title d-flex justify-content-between align-items-center">
+                        <div class="d-flex">
+                            <img src="./assets/images/transactions-details/credit-card.svg" class="credit-card" alt="">
+                            <div>
+                                <div>
+                                    <span>{{'Merchant ID' | translate}}: {{historyProps.merchantID || '-'}}</span>
+                                </div>
+                                <div>
+                                    <span>{{'Merchant Name' | translate}}: {{historyProps.merchantName || '-'}}</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <hr>
+                    <div class="mt-5 mb-2">
+                        <div class="row">
+                            <div class="col-sm-6 col-12">
+                                <fieldset class="form-group">
+                                    <label>{{'Correlation ID' | translate}}</label>
+                                    <p class="form-control-plaintext text">{{historyProps.correlationId || '-'}}</p>
+                                </fieldset>
+                            </div>
+                            <div class="col-sm-6 col-12">
+                                <fieldset class="form-group">
+                                    <label>{{'IP Address' | translate}}</label>
+                                    <p class="form-control-plaintext text">{{historyProps.ipAddress || '-'}}</p>
+                                </fieldset>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-6 col-12">
+                                <fieldset class="form-group">
+                                    <label>{{'Transaction ID' | translate}}</label>
+                                    <p class="form-control-plaintext text">{{historyProps.transactionID || '-'}}</p>
+                                </fieldset>
+                            </div>
+                            <div class="col-sm-6 col-12">
+                                <fieldset class="form-group">
+                                    <label>{{'Additional Details' | translate}}</label>
+                                   
+                                    <p class="form-control-plaintext text data-json-body"
+                                       [innerHTML]="historyProps.additionalDetails"></p>
+                                </fieldset>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-6 col-12">
+                                <fieldset class="form-group">
+                                    <label>{{'Operation Code' | translate}}</label>
+                                    <p class="form-control-plaintext text">{{historyProps.operationCode || '-'}}</p>
+                                </fieldset>
+                            </div>
+                            <div class="col-sm-6 col-12">
+                                <fieldset class="form-group">
+                                    <label>{{'Operation Date' | translate}}</label>
+                                    <p class="form-control-plaintext text ltr-in-rtl">
+                                        {{historyProps.operationDate | date: 'dd/MM/yyyy HH:mm:ss' || '-'}}
+                                    </p>
+                                </fieldset>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-6 col-12">
+                                <fieldset class="form-group">
+                                    <label>{{'Operation Done By' | translate}}</label>
+                                    <p class="form-control-plaintext text">{{historyProps.operationDoneBy || '-'}}</p>
+                                </fieldset>
+                            </div>
+                            <div class="col-sm-6 col-12">
+                                <fieldset class="form-group">
+                                    <label>{{'Operation Description' | translate}}</label>
+                                    <p class="form-control-plaintext text">{{historyProps.operationDescription || '-'}}</p>
+                                </fieldset>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-6 col-12">
+                                <fieldset class="form-group">
+                                    <label>{{'Operation Done By ID' | translate}}</label>
+                                    <p class="form-control-plaintext text">{{historyProps.operationDoneByID || '-'}}</p>
+                                </fieldset>
+                            </div>
+                            <div class="col-sm-6 col-12">
+                                <fieldset class="form-group">
+                                    <label>{{'Transition ID' | translate}}</label>
+                                    <p class="form-control-plaintext text">{{historyProps.transitionID || '-'}}</p>
+                                </fieldset>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-6 col-12">
+                                <fieldset class="form-group">
+                                    <label>{{'Request Date' | translate}}</label>
+                                    <p class="form-control-plaintext text ltr-in-rtl">
+                                        {{historyProps.requestDate | date: 'dd/MM/yyyy HH:mm:ss' || '-'}}
+                                    </p>
+                                </fieldset>
+                            </div>
+                            <div class="col-sm-6 col-12">
+                                <fieldset class="form-group">
+                                    <label>{{'Request Body' | translate}}</label>
+                                    <p class="form-control-plaintext text data-json-body"
+                                       [innerHTML]="historyProps.requestBody"></p>
+                                </fieldset>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-6 col-12">
+                                <fieldset class="form-group">
+                                    <label>{{'Request Method' | translate}}</label>
+                                    <p class="form-control-plaintext text">{{historyProps.requestMethod || '-'}}</p>
+                                </fieldset>
+                            </div>
+                            <div class="col-sm-6 col-12">
+                                <fieldset class="form-group">
+                                    <label>{{'Request URL' | translate}}</label>
+                                    <p class="form-control-plaintext text">{{historyProps.requestUrl || '-'}}</p>
+                                </fieldset>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-6 col-12">
+                                <fieldset class="form-group">
+                                    <label>{{'Response Status' | translate}}</label>
+                                    <p class="form-control-plaintext text">{{historyProps.responseStatus || '-'}}</p>
+                                </fieldset>
+                            </div>
+                            <div class="col-sm-6 col-12">
+                                <fieldset class="form-group">
+                                    <label>{{'Response Body' | translate}}</label>
+                                    <p class="form-control-plaintext text data-json-body"
+                                       [innerHTML]="historyProps.responseBody"></p>
+                                </fieldset>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

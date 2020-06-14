@@ -1,0 +1,198 @@
+@import '../../../styles/site-mixin';
+
+.page-merchants {
+  margin: 0 auto;
+  .title {
+    font-size: 24px;
+    font-weight: bold;
+    font-style: normal;
+    font-stretch: normal;
+    line-height: normal;
+    letter-spacing: 0.7px;
+    color: $text-color-1;
+    text-transform: uppercase;
+    margin-bottom: 15px;
+  }
+
+  .card-header {
+    background-color: $bg-header-panel;
+    font-size: 16px;
+    font-weight: bold;
+    font-style: normal;
+    font-stretch: normal;
+    line-height: normal;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    color: $white;
+    .card-header-inner {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      .buttons-section {
+        .btn-main {
+          margin-right: 20px;
+          .icon-plus {
+            font-size: 16px;
+          }
+        }
+        .btn-main:after {
+          //content: 'Add New Merchant';
+        }
+        .btn-icon-refresh {
+          border-radius: 4px;
+          width: 40px;
+          height: 40px;
+          background-color: #d0d8e3;
+          border: none;
+        }
+      }
+    }
+  }
+
+  .card-body {
+    position: relative;
+    input.form-control.input-mandatory.less-pl::placeholder {
+      font-size: 13px;
+    }
+    label {
+      font-size: 13px;
+      font-weight: 500;
+      font-style: normal;
+      font-stretch: normal;
+      line-height: normal;
+      letter-spacing: 0.4px;
+      text-align: left;
+      color: $label;
+    }
+
+    th {
+      white-space: inherit;
+    }
+
+    hr {
+      position: absolute;
+      width: 100%;
+      left: 0;
+      border: 0;
+      height: 2px;
+      background-color: #D0D8E3;
+    }
+
+    .table-responsive {
+      margin-bottom: 100px;
+      margin-top: 30px;
+      border-bottom: 2px solid #979797;
+      table {
+        tr {
+          td {
+            .color-label {
+              color: #ffffff;
+              width: 22px;
+              height: 19px;
+              border-radius: 4px;
+              padding: 5px 10px;
+              &.r-0 {
+                background-color: #aaaaaa;
+              }
+              &.r-1 {
+                background-color: #88d97c;
+              }
+              &.r-2 {
+                background-color: #cadf5c;
+              }
+              &.r-3 {
+                background-color: #f4d555;
+              }
+              &.r-4 {
+                background-color: #ffaf7c;
+              }
+              &.r-5 {
+                background-color: #e48282;
+              }
+            }
+          }
+        }
+      }
+    }
+    .page-footter {
+      position: absolute;
+      bottom: 10px;
+    }
+  }
+
+  .btn-filter-trigger {
+    margin-left: 15px;
+  }
+  .filter-section {
+    margin: 0 15px;
+  }
+}
+
+// landscape
+@media screen and (min-width: 1024px) and (max-width: 1365px) {
+
+}
+
+// iPad Portrait
+@media screen and (min-width: 768px) and (max-width: 1023px) {
+
+}
+
+// mobile screens
+@media screen and (min-width: 375px) and (max-width: 767px) {
+  .page-merchants {
+    .title {
+    }
+    .card-header {
+      .card-header-inner {
+        .buttons-section {
+          text-align: right;
+          .btn-main {
+            margin: -2px 16px 0 0;
+            .icon-plus {
+            }
+          }
+          .btn-main:after {
+            // content: '';
+          }
+          .btn-icon-refresh {
+          }
+        }
+      }
+    }
+  }
+
+  .card-body {
+    .filter-drop-t {
+      width: inherit;
+      .columns-filter {
+
+      }
+    }
+    .datepicker-input {
+      /deep/ .dropdown-menu {
+        right: 0 !important;
+        left: inherit !important;
+      }
+    }
+    .filter-drop {
+      //width: inherit;
+    }
+    .btn-filter-trigger {
+      height: 38px;
+      margin-right: 0;
+      margin-left: 0;
+    }
+    .dropdown-menu.show {
+      left: 0 !important;
+    }
+    .wrapper-dropdown {
+      position: inherit;
+      right: 0 !important;
+      &.status-filter {
+        float: left;
+        left: 0 !important;
+      }
+    }
+  }
+}

@@ -1,0 +1,1872 @@
+<!--[@routerTransition]-->
+<div class="page-merchants-details page-responsive">
+    <div class="row">
+        <div class="col col-xs-6 ">
+            <div class="title">
+                <span class="link" routerLink="/merchants">{{'Merchants' | translate}} ></span>
+                <span class="idItem" *ngIf="isNewMerchant">{{'Add New Merchant' | translate}}</span>
+                <span class="idItem" *ngIf="!isNewMerchant">{{merchantData.merchantName}}</span>
+            </div>
+        </div>
+        <div class="col col-xs-6">
+            <div class="refresh-details-container">
+                <button class="btn-print btn-icon-refresh" (click)="initMerchantData()">
+                    <img class="icon-refresh" src="./assets/images/transactions/Refresh_icon.svg" alt="">
+                </button>
+            </div>
+        </div>
+    </div>
+    <mat-tab-group [@.disabled]="exp" *ngIf="!isRTLToggle" [selectedIndex]="matGroupSelectedIndex"
+                   (selectedTabChange)="tabChanged($event)">
+        <mat-tab label="{{'General Details' | translate}}">
+            <div class="card general-details-card">
+                <div class="card-body mb-sm-3">
+                    <form role="form" autocomplete='off' class="general-form card-form"
+                          name="merchantForm" #merchantForm="ngForm" *ngIf="merchantData"
+                          novalidate (ngSubmit)="saveMerchant(merchantForm.valid)">
+                        <div class="card-body-title d-flex">
+                            <div class="title-container d-flex justify-content-between">
+                                <div class="user-general-info d-flex">
+                                    <img src="./assets/images/merchants-details/merchant-icon-big.svg"
+                                         class="credit-card" alt="">
+                                    <div>
+                                        <div>
+                                            <div style="display: inline">{{'Name' | translate}}:</div>
+                                            <div class="general-title"
+                                                 title="{{merchantData.businessDetails.businessName}}">
+                                                {{merchantData.businessDetails.businessName}}
+                                            </div>
+                                        </div>
+                                        <div>
+                                            <div style="display: inline">{{'Business ID' | translate}}:</div>
+                                            <div class="general-title"
+                                                 title="{{merchantData.businessDetails.businessId}}">
+                                                {{merchantData.businessDetails.businessId}}
+                                            </div>
+                                            <div *ngIf="!isNewMerchant">
+                                                <div style="display: inline">{{'ID' | translate}}:</div>
+                                                <div class="general-title">{{merchantData.merchantID}}</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="general-controls d-flex">
+                                    <!--<button class="btn btn-main">Unlock Account</button>-->
+                                    <div class="mb-divider">
+                                        <button class="btn btn-primary-danger control" type="button"
+                                                *ngIf="!isNewMerchant && merchantData.identityEstablished"
+                                                (click)="resetPassword()">
+                                            {{'Reset password' | translate}}
+                                        </button>
+                                        <button class="btn btn-primary-main control" type="button"
+                                                *ngIf="!isNewMerchant"
+                                                (click)="transitionToChargebacks()">
+                                            {{'Show chargebacks' | translate}}
+                                        </button>
+                                        <button class="btn btn-primary-main control" type="button"
+                                                *ngIf="!isNewMerchant"
+                                                (click)="transitionToTransactions()">
+                                            {{'Show transactions' | translate}}
+                                        </button>
+                                        <button class="btn btn-primary-main control" type="button"
+                                                *ngIf="!isNewMerchant && !merchantData.isAccountLocked"
+                                                (click)="lockAccount()">
+                                            {{'Lock Account' | translate}}
+                                        </button>
+                                        <button class="btn btn-primary-main control" type="button"
+                                                *ngIf="!isNewMerchant && merchantData.isAccountLocked"
+                                                (click)="unlockAccount()">
+                                            {{'Unlock Account' | translate}}
+                                        </button>
+                                        <button class="btn btn-primary-accept control" type="submit">
+                                            <img class="btn-icon"
+                                                 src="./assets/images/merchants-details/save-btn-icon.svg"
+                                                 alt="">
+                                            {{'Save' | translate}}
+                                        </button>
+                                    </div>
+
+                                    <!--<div class="export-container" *ngIf="!isNewMerchant">-->
+                                    <!--<label class="label">Export in</label>-->
+                                    <!--<div class="btns-group-right">-->
+                                    <!--<button class="btn-print mobile-icon-refresh control"-->
+                                    <!--(click)="initMerchantData()">-->
+                                    <!--<img class="icon-refresh"-->
+                                    <!--src="./assets/images/transactions/Refresh_icon.svg" alt="">-->
+                                    <!--</button>-->
+                                    <!--<button class="btn-print mr-sm-2" (click)="exportFile('pdf')">-->
+                                    <!--<img src="./assets/images/transactions-details/pdf-icon.svg" alt="">-->
+                                    <!--</button>-->
+                                    <!--<button class="btn-print" (click)="exportFile('xls')">-->
+                                    <!--<img src="./assets/images/transactions-details/xls-icon.svg" alt="">-->
+                                    <!--</button>-->
+                                    <!--</div>-->
+                                    <!--</div>-->
+                                </div>
+                            </div>
+                        </div>
+                        <hr>
+                        <div class="card-form">
+                            <div class="row">
+                                <div class="col-md-6 col-12">
+                                    <fieldset class="form-group">
+                                        <label>{{'Business ID' | translate}} <span
+                                                style="color: #e48282">*</span></label>
+                                        <input class="form-control input-mandatory" autocomplete="redundant"
+                                               required minlength="1" maxlength="10" type="number"
+                                               (keypress)="filtersService.keyPressNumberRestricts($event)"
+                                               #businessid="ngModel" name="businessid" pattern="^\d+$"
+                                               [(ngModel)]="merchantData.businessDetails.businessId"
+                                               placeholder="{{'Business ID' | translate}}">
+                                        <div *ngIf="businessid.invalid && (businessid.dirty || businessid.touched)"
+                                             class="alert-danger">
+                                            <div *ngIf="businessid.errors.required || businessid.errors.minlength || businessid.errors.maxlength || businessid.errors.pattern">
+                                                {{'Must contain from 1 to 10 symbols' | translate}}
+                                            </div>
+                                        </div>
+                                    </fieldset>
+                                </div>
+                                <div class="col-md-6 col-12">
+                                    <fieldset class="form-group">
+                                        <label>{{'Business Name' | translate}} <span
+                                                style="color: #e48282">*</span></label>
+                                        <input class="form-control input-mandatory" autocomplete="redundant"
+                                               required minlength="1" maxlength="50"
+                                               (keypress)="filtersService.keyPressStringRestricts($event)"
+                                               name="businessname" #businessname="ngModel"
+                                               [(ngModel)]="merchantData.businessDetails.businessName"
+                                               placeholder="{{'Business Name' | translate}}">
+                                        <div *ngIf="businessname.invalid && (businessname.dirty || businessname.touched)"
+                                             class="alert-danger">
+                                            <div *ngIf="businessname.errors.required || businessname.errors.minlength || businessname.errors.maxlength">
+                                                {{'Must contain from 1 to 50 symbols' | translate}}
+                                            </div>
+                                        </div>
+                                    </fieldset>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6 col-12">
+                                    <fieldset class="form-group">
+                                        <label>{{'Card Owner First Name' | translate}} <span
+                                                style="color: #e48282">*</span></label>
+                                        <input class="form-control input-mandatory" autocomplete="redundant"
+                                               required minlength="1" maxlength="50"
+                                               (keypress)="filtersService.keyPressStringRestricts($event)"
+                                               name="firstname" #firstname="ngModel"
+                                               [(ngModel)]="merchantData.personalDetails.firstName"
+                                               placeholder="{{'First Name' | translate}}">
+                                        <div *ngIf="firstname.invalid && (firstname.dirty || firstname.touched)"
+                                             class="alert-danger">
+                                            <div *ngIf="firstname.errors.required || firstname.errors.minlength || firstname.errors.maxlength">
+                                                {{'Must contain from 1 to 50 symbols' | translate}}
+                                            </div>
+                                        </div>
+                                    </fieldset>
+                                </div>
+                                <div class="col-md-6 col-12 d-flex align-items-end">
+                                    <div class="form-group w-100">
+                                        <label>{{'Card Owner Last Name' | translate}} <span
+                                                style="color: #e48282">*</span></label>
+                                        <input class="form-control input-mandatory" autocomplete="redundant"
+                                               required minlength="1" maxlength="50"
+                                               (keypress)="filtersService.keyPressStringRestricts($event)"
+                                               name="lastname" #lastname="ngModel"
+                                               [(ngModel)]="merchantData.personalDetails.lastName"
+                                               placeholder="{{'Last Name' | translate}}">
+                                        <div *ngIf="lastname.invalid && (lastname.dirty || lastname.touched)"
+                                             class="alert-danger">
+                                            <div *ngIf="lastname.errors.required || lastname.errors.minlength || lastname.errors.maxlength">
+                                                {{'Must contain from 1 to 50 symbols' | translate}}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class=" col-md-6 col-12">
+                                    <fieldset class="form-group">
+                                        <label>{{'National ID Number' | translate}}</label>
+                                        <input class="form-control input-mandatory" autocomplete="redundant"
+                                               name="nationalidnumber" #nationalidnumber="ngModel"
+                                               minlength="1" maxlength="10"
+                                               (keypress)="filtersService.keyPressNumberRestricts($event)"
+                                               [(ngModel)]="merchantData.personalDetails.nationalIdNumber"
+                                               placeholder="{{'National ID Number' | translate}}">
+                                    </fieldset>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6 col-12">
+                                    <div class="row">
+                                        <div class="col-md-6 col-12">
+                                            <div class="form-group">
+                                                <label>{{'National ID Issue Date' | translate}}</label>
+                                                <div class="input-group datepicker-input">
+                                                    <input class="form-control"
+                                                           placeholder="{{'dd/mm/yyyy' | translate}}"
+                                                           autocomplete="redundant" name="nationalIdIssueDate"
+                                                           [(ngModel)]="nationalIdNumberDate"
+                                                           [minDate]="merchantDatesMinRestrict"
+                                                           [maxDate]="merchantEstablishedDateMaxRestrict"
+                                                           ngbDatepicker #nationalIdIssueDateId="ngbDatepicker">
+                                                    <button class="input-group-addon"
+                                                            (click)="nationalIdIssueDateId.toggle();$event.stopPropagation();"
+                                                            (document:click)="closeOutsideDatePicker($event, nationalIdIssueDateId)"
+                                                            type="button">
+                                                        <img class="img-calendar"
+                                                             src="./assets/images/transactions/Calendar.svg"
+                                                             alt="">
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6 col-12">
+                                            <div class="form-group">
+                                                <label>{{'Owner Birthdate' | translate}} <span
+                                                        style="color: #e48282">*</span></label>
+                                                <!--[(ngModel)]="merchantData.personalDetails.nationalIdNumber" name="nationalIdNumber"-->
+                                                <div class="input-group datepicker-input">
+                                                    <input class="form-control"
+                                                           placeholder="{{'dd/mm/yyyy' | translate}}"
+                                                           autocomplete="redundant" required
+                                                           (keypress)="filtersService.keyPressStringRestricts($event)"
+                                                           name="merchantbirthdate" #merchantbirthdate="ngModel"
+                                                           [(ngModel)]="merchantBirthDate"
+                                                           [minDate]="merchantDatesMinRestrict"
+                                                           [maxDate]="merchantDatesMaxRestrict"
+                                                           ngbDatepicker #merchantBirthDateId="ngbDatepicker">
+                                                    <button class="input-group-addon"
+                                                            (click)="merchantBirthDateId.toggle();$event.stopPropagation();"
+                                                            (document:click)="closeOutsideDatePicker($event, merchantBirthDateId)"
+                                                            type="button">
+                                                        <img class="img-calendar"
+                                                             src="./assets/images/transactions/Calendar.svg"
+                                                             alt="">
+                                                    </button>
+                                                    <div *ngIf="merchantbirthdate.invalid && (merchantbirthdate.dirty || merchantbirthdate.touched)"
+                                                         class="alert-danger datepicker">
+                                                        <div *ngIf="merchantbirthdate.errors.required">
+                                                            {{'Field is required.' | translate}}
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6 col-12">
+                                    <div class="form-group">
+                                        <label>
+                                            {{'Owner Gender' | translate}}
+                                            <span style="color: #e48282">*</span>
+                                        </label>
+
+                                        <!--[(ngModel)]="merchantData.personalDetails.nationalIdNumber" name="nationalIdNumber"-->
+                                        <ng-select [items]="genderList"
+                                                   name="ownerGender"
+                                                   bindLabel="description"
+                                                   bindValue="code"
+                                                   [(ngModel)]="merchantData.personalDetails.gender"
+                                                   placeholder="{{'- Select One -' | translate}}"
+                                                   required
+                                                   
+                                                   autocomplete="redundant"
+                                                   >
+                                        </ng-select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6 col-12">
+                                    <fieldset class="form-group">
+                                        <!--<label>{{'Business Sector' | translate}}</label>-->
+                                        <!--<input class="form-control input-mandatory" autocomplete="redundant"-->
+                                        <!--name="businessarea" #businessarea="ngModel"-->
+                                        <!--[(ngModel)]="merchantData.businessDetails.businessArea"-->
+                                        <!--placeholder="{{'Business Sector' | translate}}">-->
+                                        <label for="typeahead-focus">{{'Business Sector' | translate}}</label>
+                                        <input id="typeahead-focus" name="instance"
+                                               type="text" class="form-control" [editable]=false
+                                               [(ngModel)]="merchantData.businessDetails.businessArea"
+                                               [ngbTypeahead]="search"
+                                               placeholder="{{'Please, choose from drop-down' | translate}}"
+                                               (focus)="focus$.next($event.target.value)"
+                                               (click)="click$.next($event.target.value)"
+                                               #instance="ngbTypeahead" />
+                                    </fieldset>
+                                </div>
+                                <div class="col-md-3 col-12" *ngIf="!isNewMerchant">
+                                    <fieldset class="form-group">
+                                        <label>{{'Activity Start Date' | translate}}</label>
+                                        <input class="form-control" disabled
+                                               name="activitystartdate" #activitystartdate="ngModel"
+                                               [ngModel]="merchantData.activityStartDate | date: 'dd/MM/yyyy'"
+                                               autocomplete="redundant" placeholder="{{'dd/mm/yyyy' | translate}}">
+                                    </fieldset>
+                                </div>
+                            </div>
+                            <!--<div class="row">-->
+                            <!--<div class=" col-md-6 col-12">-->
+                            <!--<fieldset class="form-group">-->
+                            <!--<label>Username <span style="color: #e48282">*</span></label>-->
+                            <!--<input class="form-control"-->
+                            <!--required minlength="3"-->
+                            <!--name="username" #username="ngModel"-->
+                            <!--[(ngModel)]="merchantData.personalDetails.username"-->
+                            <!--autocomplete="redundant" placeholder="Username">-->
+                            <!--<div *ngIf="username.invalid && (username.dirty || username.touched)"-->
+                            <!--class="alert-danger">-->
+                            <!--<div *ngIf="username.errors.required || username.errors.minlength">-->
+                            <!--Must contain no less 3 symbols.-->
+                            <!--</div>-->
+                            <!--</div>-->
+                            <!--</fieldset>-->
+                            <!--</div>-->
+                            <!--<div class="col-md-6 col-12">-->
+                            <!--<div class="row">-->
+                            <!--<div class="col-md-6 col-xl-7">-->
+                            <!--<fieldset class="form-group">-->
+                            <!--<label>Password</label>-->
+                            <!--<input class="form-control" autocomplete="redundant" placeholder=""-->
+                            <!--type="password">-->
+                            <!--</fieldset>-->
+                            <!--</div>-->
+                            <!--<div class="col-md-6 col-xl-5 btn-reset-pass" *ngIf="!isNewMerchant">-->
+                            <!--<button class="btn btn-main" (click)="resetPassword()">-->
+                            <!--Reset Password-->
+                            <!--</button>-->
+                            <!--</div>-->
+                            <!--</div>-->
+                            <!--</div>-->
+                            <!--</div>-->
+                            <div class="row">
+                                <div class="col-md-6 col-12">
+                                    <fieldset class="form-group">
+                                        <label>{{'E-Mail' | translate}} <span style="color: #e48282">*</span></label>
+                                        <input class="form-control input-mandatory" autocomplete="redundant"
+                                               name="useremail" #useremail="ngModel" required
+                                               (keypress)="filtersService.keyPressEmailRestrict($event)"
+                                               pattern="[a-zA-Z0-9\u0590-\u05fe\._%+-]+@[a-zA-Z0-9\u0590-\u05fe\.-]+\.[a-zA-Z\u0590-\u05fe]{2,4}$"
+                                               [(ngModel)]="merchantData.personalDetails.email"
+                                               placeholder="your_email@gmail.com">
+                                        <div *ngIf="useremail.invalid && (useremail.dirty || useremail.touched)"
+                                             class="alert-danger">
+                                            <div *ngIf="useremail.errors.required || useremail.errors.pattern">
+                                                {{'Enter a valid e-mail' | translate}}
+                                            </div>
+                                        </div>
+                                    </fieldset>
+                                </div>
+                                <div class="col-md-6 col-12">
+                                    <fieldset class="form-group">
+                                        <label>{{'Business Phone Number' | translate}}<span
+                                                style="color: #e48282">*</span></label>
+                                        <input class="form-control phone-number-form" required
+                                               name="businessphone" #businessphone="ngModel" maxlength="20"
+                                               (keypress)="filtersService.keyPressPhoneNumberRestricts($event)"
+                                               [(ngModel)]="merchantData.businessDetails.businessPhone"
+                                               autocomplete="redundant" placeholder="+972...">
+                                        <div *ngIf="businessphone.invalid && (businessphone.dirty || businessphone.touched)"
+                                             class="alert-danger">
+                                            <div *ngIf="businessphone.errors.required || businessphone.errors.minlength || businessphone.errors.maxlength">
+                                                {{'Must contain from 1 to 20 symbols' | translate}}
+                                            </div>
+                                        </div>
+                                    </fieldset>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6 col-12 row-with-label">
+                                    <!--<div class="validation-label">-->
+                                    <!--Validated-->
+                                    <!--</div>-->
+                                    <fieldset class="form-group">
+                                        <label>
+                                            {{'Owner Cell Phone Number' | translate}}
+                                            <span style="color: #e48282">*</span>
+                                        </label>
+                                        <input class="form-control phone-number-form"
+                                               required minlength="1" maxlength="50"
+                                               (keypress)="filtersService.keyPressPhoneNumberRestricts($event)"
+                                               name="cellphone" #cellphone="ngModel"
+                                               [(ngModel)]="merchantData.personalDetails.cellPhone"
+                                               autocomplete="redundant" placeholder="+972...">
+                                        <div *ngIf="cellphone.invalid && (cellphone.dirty || cellphone.touched)"
+                                             class="alert-danger">
+                                            <div *ngIf="cellphone.errors.required || cellphone.errors.minlength || cellphone.errors.maxlength">
+                                                {{'Must contain from 1 to 50 symbols' | translate}}
+                                            </div>
+                                        </div>
+                                    </fieldset>
+                                </div>
+                                <div class="col-md-6 col-12 d-flex align-items-center">
+                                    <div class="form-group">
+                                        <label>{{'Business Establishment Date' | translate}}</label>
+                                        <div class="input-group datepicker-input">
+                                            <input class="form-control" autocomplete="redundant"
+                                                   placeholder="{{'dd/mm/yyyy' | translate}}"
+                                                   name="businessEstablishedDate"
+                                                   [minDate]="merchantDatesMinRestrict"
+                                                   [maxDate]="merchantEstablishedDateMaxRestrict"
+                                                   [(ngModel)]="businessEstablishedDate"
+                                                   ngbDatepicker #businessEstablishedDateId="ngbDatepicker">
+                                            <button class="input-group-addon"
+                                                    (click)="businessEstablishedDateId.toggle();$event.stopPropagation();"
+                                                    (document:click)="closeOutsideDatePicker($event, businessEstablishedDateId)"
+                                                    type="button">
+                                                <img class="img-calendar"
+                                                     src="./assets/images/transactions/Calendar.svg"
+                                                     alt="">
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6 col-12">
+                                    <div class="form-group">
+                                        <label>{{'Business Type' | translate}}</label>
+                                        <ng-select [items]="businessTypes" autocomplete="redundant"
+                                                   bindLabel="description"
+                                                   bindValue="code"
+                                                   name="businessType"
+                                                   [(ngModel)]="merchantData.businessDetails.businessType"
+                                                   placeholder="{{'Choose one' | translate}}">
+                                        </ng-select>
+                                    </div>
+                                </div>
+                                <div class="col-md-6 col-12 row-with-label select-risk" *ngIf="!isNewMerchant">
+                                    <!--<div class="risk-label">5</div>-->
+                                    <div class="form-group">
+                                        <label>{{'Risk Level' | translate}}</label>
+                                        <ng-select [items]="riskLevelItems" autocomplete="redundant"
+                                                   name="riskLevel"
+                                                   bindLabel="description"
+                                                   bindValue="code"
+                                                   [(ngModel)]="merchantData.riskRate"
+                                                   placeholder="{{'High Risk' | translate}}">
+                                        </ng-select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6 col-12">
+                                    <fieldset class="form-group">
+                                        <label>{{'Web site' | translate}}</label>
+                                        <input class="form-control" autocomplete="redundant"
+                                               name="website" #website="ngModel"
+                                               [(ngModel)]="merchantData.businessDetails.webSite"
+                                               placeholder="www.website.com">
+                                    </fieldset>
+                                </div>
+                                <div class="col-md-3 col-12">
+
+                                </div>
+                            </div>
+                            <!--<div class="row" *ngIf="!isNewMerchant">-->
+                            <!--<div class="col-md-8 col-12">-->
+                            <!--<fieldset class="form-group">-->
+                            <!--<label>Token</label>-->
+                            <!--<input class="form-control"-->
+                            <!--name="merchantreference" #merchantreference="ngModel"-->
+                            <!--[(ngModel)]="merchantData.merchantReference"-->
+                            <!--autocomplete="redundant" placeholder="Token">-->
+                            <!--</fieldset>-->
+                            <!--</div>-->
+                            <!--<div class="col-md-3 btn-generate align-items-center d-flex">-->
+                            <!--<button class="btn btn-main" type="button">-->
+                            <!--<img class="btn-icon icon-refresh"-->
+                            <!--src="./assets/images/transactions/Refresh_icon_white.svg"-->
+                            <!--alt="">-->
+                            <!--Regenerate-->
+                            <!--</button>-->
+                            <!--</div>-->
+                            <!--</div>-->
+                            <div class="row">
+                                <div class="col-md-6 col-12 row-with-label">
+                                    <!--<div class="validation-label"-->
+                                    <!--[ngClass]="{'danger': !merchantData.paymentGatewayID, 'success': merchantData.paymentGatewayID}">-->
+                                    <!--{{merchantData.paymentGatewayID ? 'Success': 'Invalid value'}}-->
+                                    <!--</div>-->
+                                    <fieldset class="form-group">
+                                        <label>
+                                            {{'Marketed By' | translate}}
+                                        </label>
+                                        <ng-select [items]="marketedByItems" autocomplete="redundant"
+                                                   name="marketedBy"
+                                                   [(ngModel)]="merchantData.paymentGatewayID"
+                                                   bindLabel="description"
+                                                   bindValue="code"
+                                                   placeholder="{{'Marketed By' | translate}}">
+                                        </ng-select>
+                                    </fieldset>
+                                </div>
+                                <div class="col-md-6 col-12">
+                                    <fieldset class="form-group">
+                                        <label>
+                                            {{'Credit Card Company' | translate}}
+                                            <span style="color: #e48282">*</span>
+                                        </label>
+                                        <ng-select [items]="cardVendorItems" autocomplete='organization'
+                                                   name="creditcardvendor" #creditcardvendor="ngModel"
+                                                   bindLabel="description" bindValue="code" [required]="true"
+                                                   [(ngModel)]="merchantData.clearingCompanyID"
+                                                   
+                                                   placeholder="{{'Credit Card Company' | translate}}">
+                                        </ng-select>
+                                    </fieldset>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class=" col-md-6 col-12">
+                                    <fieldset class="form-group">
+                                        <label>{{'Address' | translate}}</label>
+                                        <input class="form-control"
+                                               name="address" #address="ngModel" maxlength="250"
+                                               (keypress)="filtersService.keyPressStringRestricts($event)"
+                                               [(ngModel)]="merchantData.address.street"
+                                               autocomplete="redundant" placeholder="{{'Address' | translate}}">
+                                    </fieldset>
+                                </div>
+                                <div class="col-md-3 col-12">
+                                    <fieldset class="form-group">
+                                        <label>{{'City' | translate}}</label>
+                                        <input class="form-control"
+                                               name="city" #city="ngModel" maxlength="100"
+                                               (keypress)="filtersService.keyPressStringRestricts($event)"
+                                               [(ngModel)]="merchantData.address.city"
+                                               autocomplete="redundant" placeholder="{{'City' | translate}}">
+                                    </fieldset>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6 col-12">
+                                    <fieldset class="form-group">
+                                        <label>{{'Zip Code' | translate}}</label>
+                                        <input class="form-control"
+                                               name="zipcode" #zipcode="ngModel" maxlength="20"
+                                               (keypress)="filtersService.keyPressStringRestricts($event)"
+                                               [(ngModel)]="merchantData.address.zip"
+                                               autocomplete="redundant" placeholder="{{'Zip Code' | translate}}">
+                                    </fieldset>
+                                </div>
+                            </div>
+                            <div class="row bottom-controls">
+                                <button class="btn btn-main" *ngIf="!isNewMerchant && !merchantData.identityEstablished"
+                                        type="button"
+                                        (click)="resendInvitation()">
+                                    {{'Resend Invitation' | translate}}
+                                </button>
+                                <button class="btn btn-main" type="button" *ngIf="!isNewMerchant">
+                                    <img class="btn-icon icon-refresh" (click)="loginAsMerchant()"
+                                         src="./assets/images//merchants-details/Login-As-Merchant-icon.svg" alt="">
+                                    {{'Login as Merchant' | translate}}
+                                </button>
+                                <button class="btn btn-primary-accept" type="submit">
+                                    <img class="btn-icon icon-refresh"
+                                         src="./assets/images/merchants-details/save-btn-icon.svg" alt="">
+                                    {{'Save' | translate}}
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </mat-tab>
+        <mat-tab label="KYC" *ngIf="!isNewMerchant">
+            <div class="card KYC-card">
+                <div class="card-body KYC-card-body mb-sm-3">
+                    <div class="card-body-title d-flex">
+                        <div class="title-container d-flex justify-content-between">
+                            <div class="user-general-info d-flex">
+                                <img src="./assets/images/merchants-details/merchant-icon-big.svg"
+                                     class="credit-card" alt="">
+                                <div>
+                                    <div>
+                                        <div style="display: inline">{{'Name' | translate}}:</div>
+                                        <div class="general-title">{{merchantData.merchantName}}</div>
+                                    </div>
+                                    <div>
+                                        <div style="display: inline">{{'Business ID' | translate}}:</div>
+                                        <div class="general-title">
+                                            {{merchantData.businessDetails.businessId}}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="general-controls d-flex" *ngIf="merchantData">
+                                <div class="approval-labels-container">
+                                    <div class="approval-label">
+                                        {{'KYC Approval Status' | translate}}
+                                    </div>
+                                    <div class="approval-status">
+                                        <div *ngIf="merchantData.kycApprovalStatus === 'initial'">
+                                            {{'In-Pending' | translate}}
+                                        </div>
+                                        <div *ngIf="merchantData.kycApprovalStatus === 'inProgress'">
+                                            {{'In-Process' | translate}}
+                                        </div>
+                                        <div *ngIf="merchantData.kycApprovalStatus === 'approved'">
+                                            {{'Approved' | translate}}
+                                        </div>
+                                        <div *ngIf="merchantData.kycApprovalStatus === 'rejected'">
+                                            {{'Rejected' | translate}}
+                                        </div>
+                                    </div>
+                                </div>
+                                <button *ngIf="merchantData.kycApprovalStatus === 'inProgress' ||
+                                               merchantData.kycApprovalStatus === 'initial'"
+                                        (click)="openApproveKYCDialog(ApproveKYCDocumentModalContent)"
+                                        class="btn btn-main btn-primary-accept">
+                                    {{'Approve KYC' | translate}}
+                                </button>
+                                <button *ngIf="merchantData.kycApprovalStatus === 'approved'"
+                                        (click)="recallUserKYCStatus()"
+                                        class="btn btn-main btn-primary-danger">
+                                    {{'Recall KYC' | translate}}
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!--Ng-Bootstrap Modal Window: Approve KYC Document-->
+
+                    <ng-template #ApproveKYCDocumentModalContent let-c="close" let-d="dismiss">
+                        <div class="modal-header">
+                            <h4 class="modal-title">{{'Edit KYC Description' | translate}}</h4>
+                            <button type="button" class="close" aria-label="Close"
+                                    (click)="d('Cross click')">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="row">
+                                <div class=" col-xs-12 col-md-12">
+                                    <div class="form-group">
+                                        <label>{{'KYC Notes' | translate}}</label>
+                                        <textarea class="form-control input-mandatory"
+                                                  name="kycnotes" #kycnotes="ngModel"
+                                                  [(ngModel)]="KYCNotes"
+                                                  rows="5" placeholder="{{'Description...' | translate}}">
+                                        </textarea>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-main"
+                                    (click)="c(KYCNotes || '')">
+                                {{'Approve KYC' | translate}}
+                            </button>
+                            <button type="button" class="btn btn-primary-close" (click)="c({})">
+                                {{'Close' | translate}}
+                            </button>
+                        </div>
+                    </ng-template>
+
+                    <!--Ng-Bootstrap Modal Window: Approve KYC Document-->
+
+                    <hr>
+                    <div class="documents-basement">
+                        <div class="header-section d-flex justify-content-between">
+                            <div class="header">
+                                {{'Document management' | translate}}
+                            </div>
+                            <div class="upload-container d-flex justify-content-end">
+                                <div class="u-label" *ngIf="!isUploadingInProgress">
+                                    *{{'PDF or JPG files' | translate}}
+                                </div>
+                                <input type="file"
+                                       (change)="uploadNewKYCDocument($event, EditCurrentKYCDocumentModalContent)"
+                                       style="display: none" #fileKYC
+                                       placeholder="Upload Document" accept="*.jpg;.pdf"/>
+                                <button class="btn btn-main" *ngIf="!isUploadingInProgress" (click)="fileKYC.click()">
+                                    {{'Upload Document' | translate}}
+                                </button>
+                                <div class="spinner-upload" *ngIf="isUploadingInProgress">
+                                    {{'Uploading...' | translate}}
+                                    <i class="fa fa-gear fa-spin"></i>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!--Ng-Bootstrap Modal Window: Choose New Document Type-->
+
+                        <!--<ng-template #ChangeKYCDocTypeModalContent let-c="close" let-d="dismiss">-->
+                        <!--<div class="modal-header">-->
+                        <!--<h4 class="modal-title">{{'Choose Document Type' | translate}}</h4>-->
+                        <!--<button type="button" class="close" aria-label="Close"-->
+                        <!--(click)="d('Cross click')">-->
+                        <!--<span aria-hidden="true">&times;</span>-->
+                        <!--</button>-->
+                        <!--</div>-->
+                        <!--<div class="modal-body">-->
+                        <!--<div class="row">-->
+                        <!--<div class=" col-xs-10 col-md-10">-->
+                        <!--<div class="form-group">-->
+                        <!--<label>{{'Document Type' | translate}}</label>-->
+                        <!--<ng-select [items]="documentTypesList"-->
+                        <!--[clearable]="false"-->
+                        <!--[(ngModel)]="documentDescription.type"-->
+                        <!--bindLabel="documentTypeName"-->
+                        <!--bindValue="documentTypeID"-->
+                        <!--placeholder="{{'- Select Type -' | translate}}"-->
+                        <!--(window:resize)="reloadConfigSelect($event)">-->
+                        <!--</ng-select>-->
+                        <!--</div>-->
+                        <!--</div>-->
+                        <!--</div>-->
+                        <!--<div class="row">-->
+                        <!--<div class=" col-xs-2 col-md-2">-->
+                        <!--<button type="button" class="btn btn-main"-->
+                        <!--[disabled]="!documentDescription.type"-->
+                        <!--(click)="c(documentDescription)">-->
+                        <!--{{'Save' | translate}}-->
+                        <!--</button>-->
+                        <!--</div>-->
+                        <!--</div>-->
+                        <!--</div>-->
+                        <!--</ng-template>-->
+
+                        <!--Ng-Bootstrap Modal Window: Choose New Document Type-->
+
+                        <div class="document-row"
+                             *ngFor="let document of KYCTable; let last = last; index as i;">
+                            <div class="row">
+                                <div class="d-icon col-md-1">
+                                    <img src="./assets/images/merchants-details/kyc/jpg.svg"
+                                         *ngIf="document.fileExtension === '.jpg'"
+                                         class="btn-icon justify-vertical-middle" alt="">
+                                    <img src="./assets/images/merchants-details/kyc/pdf.svg"
+                                         *ngIf="document.fileExtension === '.pdf'"
+                                         class="btn-icon justify-vertical-middle" alt="">
+                                    <img src="./assets/images/merchants-details/kyc/pdf.svg"
+                                         *ngIf="document.fileExtension === '.txt'"
+                                         class="btn-icon justify-vertical-middle" alt="">
+                                </div>
+                                <div class="d-date col-12 col-md-2">
+                                    <div class="justify-vertical-middle height-cell-100">
+                                        <div class="label">{{'Date' | translate}}</div>
+                                        <div class="value">
+                                            {{document.uploadedDate | utcToLocalDate | date: 'dd/MM/yyyy'}}
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="d-name col-6 col-md-2">
+                                    <div class="justify-vertical-middle height-cell-100">
+                                        <div class="label">{{'Name' | translate}}</div>
+                                        <div class="value" title="{{document.documentName}}">
+                                            {{document.documentName}}
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="d-type col-6 col-md-3">
+                                    <div class="label">{{'Type' | translate}}</div>
+                                    <div class="value">{{document.documentType}}</div>
+                                    <div class="description" title="{{document.documentDescription}}">
+                                        {{document.documentDescription}}
+                                    </div>
+                                </div>
+                                <div class="d-status col-4 col-md-2">
+                                    <div class="justify-vertical-middle height-cell-100">
+                                        <div class="label">{{'Status' | translate}}</div>
+                                        <div *ngIf="document.status === 'initial'" class="d-flex status-btns">
+                                            <button (click)="rejectCurrentKYCDocument(document, i)"
+                                                    class="btn btn-primary-danger">
+                                                {{'Reject' | translate}}
+                                            </button>
+                                            <button (click)="approveCurrentKYCDocument(document, i)"
+                                                    class="btn btn-primary-accept">
+                                                {{'Approve' | translate}}
+                                            </button>
+                                        </div>
+                                        <div *ngIf="document.status === 'approved'" class="status-label green">
+                                            {{'Approved' | translate}}
+                                        </div>
+                                        <div *ngIf="document.status === 'rejected'" class="status-label red">
+                                            {{'Rejected' | translate}}
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="d-controls col-2 col-md-2 d-flex justify-content-around">
+                                    <div class="edit">
+                                        <img src="./assets/images/merchants-details/kyc/edit.svg"
+                                             (click)="openEditKYCDocumentModal(EditCurrentKYCDocumentModalContent, document, i)"
+                                             class="justify-vertical-middle" alt="">
+                                    </div>
+                                    <div class="download">
+                                        <img src="./assets/images/merchants-details/kyc/save.svg"
+                                             (click)="downloadCurrentKYCDocument(document, i)"
+                                             class="justify-vertical-middle" alt="">
+                                    </div>
+                                    <div class="remove">
+                                        <img src="./assets/images/merchants-details/kyc/delete.svg"
+                                             (click)="deleteCurrentKYCDocument(document, i)"
+                                             class="justify-vertical-middle" alt="">
+                                    </div>
+                                </div>
+                            </div>
+                            <hr *ngIf="!last">
+                        </div>
+
+                        <!--Ng-Bootstrap Modal Window: Edit Current KYC Document-->
+
+                        <ng-template #EditCurrentKYCDocumentModalContent let-c="close" let-d="dismiss">
+                            <div class="modal-header">
+                                <h4 class="modal-title">{{'Edit Document' | translate}}</h4>
+                                <button type="button" class="close" aria-label="Close" (click)="d('Cross click')">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="row">
+                                    <div class=" col-xs-12 col-md-8">
+                                        <div class="form-group">
+                                            <label>{{'Document Type' | translate}}</label>
+                                            <ng-select [items]="documentTypesList"
+                                                       [clearable]="false"
+                                                       [(ngModel)]="documentDescription.type"
+                                                       bindLabel="documentTypeName"
+                                                       bindValue="documentTypeID"
+                                                       placeholder="{{'- Select Type -' | translate}}"
+                                                       (window:resize)="reloadConfigSelect($event)">
+                                            </ng-select>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class=" col-xs-12 col-md-12">
+                                        <div class="form-group">
+                                            <label>{{'Document Description' | translate}}</label>
+                                            <textarea class="form-control input-mandatory"
+                                                      name="documentdescription" #documentdescription="ngModel"
+                                                      [(ngModel)]="documentDescription.description"
+                                                      rows="5" placeholder="{{'Description...' | translate}}">
+                                                </textarea>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-main"
+                                        [disabled]="!documentDescription.type"
+                                        (click)="c(documentDescription)">
+                                    {{'Save' | translate}}
+                                </button>
+                                <button type="button" class="btn btn-primary-close" (click)="c()">
+                                    {{'Close' | translate}}
+                                </button>
+                            </div>
+                        </ng-template>
+
+                        <!--Ng-Bootstrap Modal Window: Edit Current KYC Document-->
+
+                    </div>
+                </div>
+                <div class="notes-section" *ngIf="merchantData">
+                    <div class="col-md-7 col-12">
+                        <fieldset class="form-group">
+                            <label class="notes-label">{{'KYC Notes' | translate}}</label>
+                            <textarea class="form-control input-mandatory notes-input"
+                                      name="notes" #notes="ngModel" readonly
+                                      [(ngModel)]="merchantData.kycNotes"
+                                      rows="7" placeholder="{{'KYC Notes' | translate}}">
+                            </textarea>
+                            <!--<button (click)="updateKYCNote()" class="btn pull-right notes-update btn-primary-accept">-->
+                            <!--Update note-->
+                            <!--</button>-->
+                        </fieldset>
+                    </div>
+                </div>
+            </div>
+        </mat-tab>
+        <mat-tab label="{{'Financial Information' | translate}}">
+            <div class="card financial-information-card">
+                <div class="card-body mb-sm-3">
+                    <div class="card-body-title d-flex">
+                        <div class="title-container d-flex justify-content-between">
+                            <div class="user-general-info d-flex">
+                                <img src="./assets/images/merchants-details/merchant-icon-big.svg"
+                                     class="credit-card" alt="">
+                                <div>
+                                    <div>
+                                        <div style="display: inline">{{'Name' | translate}}:</div>
+                                        <div class="general-title">
+                                            {{merchantData.businessDetails.businessName}}
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <div style="display: inline">{{'Business ID' | translate}}:</div>
+                                        <div class="general-title">
+                                            {{merchantData.businessDetails.businessId}}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="general-controls d-flex">
+                                <button class="btn btn-primary-main control"
+                                        *ngIf="!isNewMerchant && isAdminRoleBilling"
+                                        (click)="transitionToReports(3)">
+                                    {{'Show chargeback reports' | translate}}
+                                </button>
+                                <button class="btn btn-primary-main control"
+                                        *ngIf="!isNewMerchant && isAdminRoleBilling"
+                                        (click)="transitionToReports(2)">
+                                    {{'Show billing reports' | translate}}
+                                </button>
+                                <button class="btn btn-primary-accept control"
+                                        (click)="saveMerchant(true)">
+                                    <img class="btn-icon" src="./assets/images/merchants-details/save-btn-icon.svg"
+                                         alt="">
+                                    {{'Save' | translate}}
+                                </button>
+                                <!--<div class="export-container" *ngIf="!isNewMerchant">-->
+                                <!--<label class="label">Export in</label>-->
+                                <!--<div class="btns-group-right">-->
+                                <!--<button class="btn-print mr-sm-2">-->
+                                <!--<img src="./assets/images/transactions-details/pdf-icon.svg" alt="">-->
+                                <!--</button>-->
+                                <!--<button class="btn-print">-->
+                                <!--<img src="./assets/images/transactions-details/xls-icon.svg" alt="">-->
+                                <!--</button>-->
+                                <!--</div>-->
+                                <!--</div>-->
+                            </div>
+                        </div>
+                    </div>
+                    <hr>
+                    <form class="financial-form card-form"
+                          name="financialForm" #financialForm="ngForm"
+                          novalidate (ngSubmit)="saveMerchant(true)"
+                          role="form" autocomplete='organization'>
+                        <div class="row">
+                            <div class="col-md-6 col-12">
+                                <fieldset class="form-group double-margin">
+                                    <label>{{'Terminal Information' | translate}}</label>
+                                    <input class="form-control input-mandatory" autocomplete="redundant"
+                                           name="terminalreference" #terminalreference="ngModel"
+                                           (keypress)="filtersService.keyPressStringRestricts($event)" maxlength="50"
+                                           [(ngModel)]="merchantData.paymentGatewayDetails.terminalReference"
+                                           placeholder="{{'Beneficiary Number' | translate}}">
+                                </fieldset>
+                            </div>
+                            <div class="col-md-6 col-12"></div>
+                        </div>
+                        <div class="row">
+                            <div class="fieldset-label pdd">{{'Bank Account' | translate}}</div>
+                            <div class="col-md-6 col-12">
+                                <fieldset class="form-group">
+                                    <label>{{'Bank Number' | translate}}</label>
+                                    <input class="form-control input-mandatory" autocomplete="redundant"
+                                           name="banknumber" #banknumber="ngModel"
+                                           (keypress)="filtersService.keyPressNumberRestricts($event)" maxlength="10"
+                                           [(ngModel)]="merchantData.bankAccount.bankNumber"
+                                           placeholder="{{'Bank Number' | translate}}">
+                                </fieldset>
+                            </div>
+                            <div class="col-md-6 col-12">
+                                <fieldset class="form-group">
+                                    <label>{{'Branch Number' | translate}}</label>
+                                    <input class="form-control input-mandatory" autocomplete="redundant"
+                                           name="branchnumber" #branchnumber="ngModel"
+                                           (keypress)="filtersService.keyPressNumberRestricts($event)" maxlength="10"
+                                           [(ngModel)]="merchantData.bankAccount.branchNumber"
+                                           placeholder="{{'Branch Number' | translate}}">
+                                </fieldset>
+                            </div>
+                            <div class="col-md-6 col-12">
+                                <fieldset class="form-group">
+                                    <label>{{'Account Number' | translate}}</label>
+                                    <input class="form-control input-mandatory" autocomplete="redundant"
+                                           name="bankaccountnumber" #bankaccountnumber="ngModel"
+                                           (keypress)="filtersService.keyPressNumberRestricts($event)" maxlength="10"
+                                           [(ngModel)]="merchantData.bankAccount.bankAccountNumber"
+                                           placeholder="{{'Account Number' | translate}}">
+                                </fieldset>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="fieldset-label pdd">{{'Credit Card Account' | translate}}</div>
+                            <div class="col-md-6 col-12">
+                                <fieldset class="form-group">
+                                    <label>{{'Card Number' | translate}}</label>
+                                    <input class="form-control input-mandatory card-number-form" autocomplete='cc-number'
+                                           name="cardnumber" #cardnumber="ngModel" readonly
+                                           (keypress)="filtersService.keyPressStringRestricts($event)" maxlength="20"
+                                           [(ngModel)]="merchantData.creditCardAccount.cardNumber"
+                                           placeholder="{{'Card Number' | translate}}">
+                                </fieldset>
+                            </div>
+                            <div class="col-md-6 col-12">
+                                <!--<div class="col-md-4 col-12">-->
+                                <button (click)="openAddCreditCardDialog(CreditCardModalContent)" *ngIf="!isNewMerchant"
+                                        type="button" class="btn btn-main apply-limits-btn">
+                                    {{'Add Credit Card' | translate}}
+                                </button>
+                                <!--</div>-->
+                            </div>
+
+                            <!--Ng-Bootstrap Modal Window: Add Credit Card-->
+
+                            <ng-template #CreditCardModalContent let-c="close" let-d="dismiss">
+                                <form name="creditCardModalForm" #creditCardModalForm="ngForm"
+                                      autocomplete="off" novalidate role="form">
+                                    <div class="modal-header">
+                                        <h4 class="modal-title">{{'Add Credit Card' | translate}}</h4>
+                                        <button type="button" class="close" aria-label="Close"
+                                                (click)="d('Cross click')">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <div class="row">
+                                            <div class=" col-xs-12 col-md-6">
+                                                <fieldset class="form-group">
+                                                    <label>{{'Card Number' | translate}}</label>
+                                                    <input class="form-control input-mandatory" autocomplete="redundant"
+                                                           name="cardnumber" #cardnumber="ngModel"
+                                                           (keypress)="filtersService.keyPressNumberRestricts($event)"
+                                                           minlength="1" maxlength="16" required
+                                                           [(ngModel)]="creditCard.cardNumber" appPreventCopyPaste
+                                                           placeholder="{{'Card Number' | translate}}">
+                                                    <div *ngIf="cardnumber.invalid && (cardnumber.dirty || cardnumber.touched)"
+                                                         class="alert-danger">
+                                                        <div *ngIf="cardnumber.errors.required || cardnumber.errors.minlength || cardnumber.errors.maxlength">
+                                                            {{'Must contain 16 numbers' | translate}}
+                                                        </div>
+                                                    </div>
+                                                </fieldset>
+                                            </div>
+                                            <div class=" col-xs-12 col-md-6">
+                                                <fieldset class="form-group">
+                                                    <label>{{'Card Owner Name' | translate}}</label>
+                                                    <input class="form-control input-mandatory" autocomplete="redundant"
+                                                           name="cardownername" #cardownername="ngModel"
+                                                           (keypress)="filtersService.keyPressStringRestricts($event)"
+                                                           maxlength="50" required appPreventCopyPaste
+                                                           [(ngModel)]="creditCard.cardOwnerName"
+                                                           placeholder="{{'Card Owner Name' | translate}}">
+                                                    <div *ngIf="cardownername.invalid && (cardownername.dirty || cardownername.touched)"
+                                                         class="alert-danger">
+                                                        <div *ngIf="cardownername.errors.required || cardownername.errors.minlength || cardownername.errors.maxlength">
+                                                            {{'Must contain from 1 to 50 symbols' | translate}}
+                                                        </div>
+                                                    </div>
+                                                </fieldset>
+                                            </div>
+                                            <div class=" col-xs-12 col-md-6">
+                                                <fieldset class="form-group">
+                                                    <label>{{'Month' | translate}}</label>
+                                                    <input class="form-control input-mandatory" autocomplete="redundant"
+                                                           name="cardnumbermonth" #cardnumbermonth="ngModel"
+                                                           (keypress)="filtersService.keyPressNumberRestricts($event)"
+                                                           maxlength="2" required
+                                                           [ngClass]="{'ng-invalid': creditCard.cardExpiration.month > 12}"
+                                                           [(ngModel)]="creditCard.cardExpiration.month"
+                                                           appPreventCopyPaste
+                                                           placeholder="{{'Month' | translate}}">
+                                                    <div *ngIf="(cardnumbermonth.invalid && (cardnumbermonth.dirty || cardnumbermonth.touched)) || creditCard.cardExpiration.month > 12"
+                                                         class="alert-danger">
+                                                        <div *ngIf="(cardnumbermonth.errors && (cardnumbermonth.errors.required || cardnumbermonth.errors.minlength || cardnumbermonth.errors.maxlength)) || creditCard.cardExpiration.month > 12">
+                                                            {{'Must be from 1 to 12' | translate}}
+                                                        </div>
+                                                    </div>
+                                                </fieldset>
+                                            </div>
+                                            <div class=" col-xs-12 col-md-6">
+                                                <fieldset class="form-group">
+                                                    <label>{{'Year' | translate}}</label>
+                                                    <input class="form-control input-mandatory" autocomplete="redundant"
+                                                           name="cardnumberyear" #cardnumberyear="ngModel"
+                                                           (keypress)="filtersService.keyPressNumberRestricts($event)"
+                                                           minlength="4" maxlength="4" required appPreventCopyPaste
+                                                           [(ngModel)]="creditCard.cardExpiration.year"
+                                                           placeholder="{{'Year' | translate}}">
+                                                    <div *ngIf="(cardnumberyear.invalid && (cardnumberyear.dirty || cardnumberyear.touched)) || creditCard.cardExpiration.year < thisYear"
+                                                         class="alert-danger">
+                                                        <div *ngIf="(cardnumberyear.errors && (cardnumberyear.errors.required || cardnumberyear.errors.minlength || cardnumberyear.errors.maxlength)) || creditCard.cardExpiration.year < thisYear">
+                                                            {{'Must be from the current year' | translate}}
+                                                        </div>
+                                                    </div>
+                                                </fieldset>
+                                            </div>
+                                            <div class=" col-xs-12 col-md-6">
+                                                <fieldset class="form-group">
+                                                    <label>{{'National ID Number' | translate}}</label>
+                                                    <input class="form-control input-mandatory" autocomplete="redundant"
+                                                           name="cardownernationalid" #cardownernationalid="ngModel"
+                                                           (keypress)="filtersService.keyPressNumberRestricts($event)"
+                                                           minlength="1" maxlength="10" required appPreventCopyPaste
+                                                           [(ngModel)]="creditCard.cardOwnerNationalId"
+                                                           placeholder="{{'National ID Number' | translate}}">
+                                                    <div *ngIf="cardownernationalid.invalid && (cardownernationalid.dirty || cardownernationalid.touched)"
+                                                         class="alert-danger">
+                                                        <div *ngIf="cardownernationalid.errors.required || cardownernationalid.errors.minlength || cardownernationalid.errors.maxlength">
+                                                            {{'Must contain 10 numbers' | translate}}
+                                                        </div>
+                                                    </div>
+                                                </fieldset>
+                                            </div>
+                                            <div class=" col-xs-12 col-md-6">
+                                                <fieldset class="form-group">
+                                                    <label>{{'CVV' | translate}}</label>
+                                                    <input class="form-control input-mandatory" autocomplete="redundant"
+                                                           name="cardcvv" #cardcvv="ngModel"
+                                                           (keypress)="filtersService.keyPressNumberRestricts($event)"
+                                                           minlength="3" maxlength="3" required
+                                                           [(ngModel)]="creditCard.cvv" appPreventCopyPaste
+                                                           placeholder="{{'CVV' | translate}}">
+                                                    <div *ngIf="cardcvv.invalid && (cardcvv.dirty || cardcvv.touched)"
+                                                         class="alert-danger">
+                                                        <div *ngIf="cardcvv.errors.required || cardcvv.errors.minlength || cardcvv.errors.maxlength">
+                                                            {{'Must contain 3 numbers' | translate}}
+                                                        </div>
+                                                    </div>
+                                                </fieldset>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-main"
+                                                [disabled]="!creditCardModalForm.valid || creditCard.cardExpiration.month > 12 || creditCard.cardExpiration.year < thisYear"
+                                                (click)="c(creditCard, creditCardModalForm.valid)">
+                                            {{'Add' | translate}}
+                                        </button>
+                                        <button type="button" class="btn btn-primary-close" (click)="c(null)">
+                                            {{'Close' | translate}}
+                                        </button>
+                                    </div>
+                                </form>
+                            </ng-template>
+
+                            <!--Ng-Bootstrap Modal Window: Add Credit Card-->
+
+                            <div class="col-md-6 col-12">
+                                <fieldset class="form-group">
+                                    <label>{{'Owner Name' | translate}}</label>
+                                    <input class="form-control input-mandatory" autocomplete='cc-name'
+                                           name="cardownername" #cardownername="ngModel" readonly
+                                           (keypress)="filtersService.keyPressStringRestricts($event)" maxlength="50"
+                                           [(ngModel)]="merchantData.creditCardAccount.cardOwnerName"
+                                           placeholder="{{'Owner Name' | translate}}">
+                                </fieldset>
+                            </div>
+                            <div class="col-md-6 col-12" *ngIf="!isNewMerchant">
+                                <div class="row" *ngIf="merchantData.creditCardAccount.cardExpiration">
+                                    <div class="col-md-4 col-12">
+                                        <fieldset class="form-group">
+                                            <label>{{'Expiration Date' | translate}}</label>
+                                            <div class="input-group">
+                                                <input class="form-control" placeholder="{{'month' | translate}}"
+                                                       autocomplete="redundant" readonly
+                                                       name="cardexpirationmoth"
+                                                       [(ngModel)]="merchantData.creditCardAccount.cardExpiration.month">
+                                            </div>
+                                        </fieldset>
+                                    </div>
+                                    <div class="col-md-4 col-12">
+                                        <fieldset class="form-group">
+                                            <label style="height: 13px;"></label>
+                                            <div class="input-group">
+                                                <input class="form-control" placeholder="{{'year' | translate}}"
+                                                       autocomplete="redundant" readonly
+                                                       name="cardexpirationyear"
+                                                       [(ngModel)]="merchantData.creditCardAccount.cardExpiration.year">
+                                            </div>
+                                        </fieldset>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6 col-12">
+                                <fieldset class="form-group">
+                                    <label>{{'Owner National ID' | translate}}</label>
+                                    <input class="form-control input-mandatory" autocomplete="redundant"
+                                           name="cardownernationalid" #cardownernationalid="ngModel"
+                                           maxlength="20" readonly
+                                           (keypress)="filtersService.keyPressStringRestricts($event)"
+                                           [(ngModel)]="merchantData.creditCardAccount.cardOwnerNationalId"
+                                           placeholder="{{'Owner National ID' | translate}}">
+                                </fieldset>
+                            </div>
+                            <!--<div class="col-md-6 col-12">-->
+                            <!--<fieldset class="form-group">-->
+                            <!--<label>{{'CVV' | translate}}</label>-->
+                            <!--<input class="form-control input-mandatory" autocomplete="redundant"-->
+                            <!--name="cvv" #cvv="ngModel"-->
+                            <!--[(ngModel)]="merchantData.paymentGatewayDetails.cvv"-->
+                            <!--placeholder="{{'CVV' | translate}}">-->
+                            <!--</fieldset>-->
+                            <!--</div>-->
+                        </div>
+                        <div class="row">
+                            <div class="col-xs-12 col-md-6">
+                                <div class="form-group">
+                                    <label>{{'Additional Clearing House' | translate}}</label>
+                                    <ng-select [items]="additionalCHList"
+                                               name="additionalClearingHouse"
+                                               [(ngModel)]="merchantData.paymentGatewayDetails.additionalClearingHouse"
+                                               bindLabel="description"
+                                               bindValue="code"
+                                               placeholder="{{'- Select One -' | translate}}"
+                                               (window:resize)="reloadConfigSelect($event)">
+                                    </ng-select>
+                                </div>
+                            </div>
+                            <div class="col-md-6 col-12">
+                                <fieldset class="form-group">
+                                    <label>
+                                        {{'Additional Clearing House Approved By Credit Company' | translate}}
+                                    </label>
+                                    <div class="check-group d-flex">
+                                        <div class="btn-group btn-group-toggle mb-3" ngbRadioGroup
+                                             name="additionalClearingHouseApprovedByCreditCompany"
+                                             [(ngModel)]="merchantData.paymentGatewayDetails.additionalClearingHouseApprovedByCreditCompany">
+                                            <label ngbButtonLabel class="btn-primary">
+                                                <input ngbButton type="radio" [value]="true">
+                                                {{'Yes' | translate}}
+                                            </label>
+                                            <label ngbButtonLabel class="btn-primary">
+                                                <input ngbButton type="radio" [value]="false">
+                                                {{'No' | translate}}
+                                            </label>
+                                        </div>
+                                        <!--<div class="check-box-container align-content-center">-->
+                                        <!--<img class="check-icon"-->
+                                        <!--src="./assets/images/transactions/check_not_active.svg" alt="">-->
+                                        <!--<div class="label">Yes</div>-->
+                                        <!--</div>-->
+                                        <!--<div class="check-box-container align-content-center">-->
+                                        <!--<img class="check-icon"-->
+                                        <!--src="./assets/images/transactions/check_not_active.svg" alt="">-->
+                                        <!--<div class="label">No</div>-->
+                                        <!--</div>-->
+                                    </div>
+                                </fieldset>
+                            </div>
+                        </div>
+
+                        <!--Ng-Bootstrap Modal Window: Change Rate-->
+
+                        <ng-template #ChangeRateModalContent let-c="close" let-d="dismiss" >
+                                <form name="ratesModalForm" #ratesModalForm="ngForm"
+                                autocomplete="off" novalidate role="form">
+                            <div class="modal-header" >
+                                <h4 class="modal-title">{{'Change Rate' | translate}}</h4>
+                                <button type="button" class="close" aria-label="Close"
+                                        (click)="d('Cross click')">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="row">
+                                    <div class=" col-xs-4 col-md-4">
+                                        <div class="form-group">
+                                            <label>{{'Basic Rate' | translate}}, %</label>
+                                            <input class="form-control input-mandatory" autocomplete="redundant"
+                                                    type="number" pattern="^[0-9]+(\.[0-9]{1,2})?$" step="0.1" min="0.01" required
+                                                   (keypress)="filtersService.keyPressNumberRestricts($event)"
+                                                   name="basicrate" #basicrate="ngModel"
+                                                   [(ngModel)]="changeRateData.basicRate"
+                                                   placeholder="{{'Basic Rate' | translate}}">
+                                        </div>
+                                    </div>
+                                    <div class=" col-xs-4 col-md-4">
+                                        <div class="form-group">
+                                            <label>{{'Installment Rate' | translate}}, %</label>
+                                            <input class="form-control input-mandatory" autocomplete="redundant"
+                                                    type="number" pattern="^[0-9]+(\.[0-9]{1,2})?$" step="0.1" min="0.01" required
+                                                   (keypress)="filtersService.keyPressNumberRestricts($event)"
+                                                   name="installmentrate" #installmentrate="ngModel"
+                                                   [(ngModel)]="changeRateData.installmentRate"
+                                                   placeholder="{{'Installment Rate' | translate}}">
+                                        </div>
+                                    </div>
+                                    <div class=" col-xs-4 col-md-4">
+                                        <div class="form-group">
+                                            <label>{{'Tourist Rate' | translate}}, %</label>
+                                            <input class="form-control input-mandatory" autocomplete="redundant"
+                                                    type="number" pattern="^[0-9]+(\.[0-9]{1,2})?$" step="0.1" min="0.01" required
+                                                   (keypress)="filtersService.keyPressNumberRestricts($event)"
+                                                   name="touristrate" #touristrate="ngModel"
+                                                   [(ngModel)]="changeRateData.touristRate"
+                                                   placeholder="{{'Tourist Rate' | translate}}">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class=" col-xs-4 col-md-4">
+                                        <fieldset class="form-group width-40">
+                                            <label>{{'Start Date' | translate}}</label>
+                                            <div class="input-group datepicker-input">
+                                                <input class="form-control"
+                                                       placeholder="{{'dd/mm/yyyy' | translate}}"
+                                                       autocomplete="redundant"
+                                                       name="dsd" [(ngModel)]="changeRateData.startDate"
+                                                       ngbDatepicker #dsd="ngbDatepicker">
+                                                <button class="input-group-addon"
+                                                        (click)="dsd.toggle();$event.stopPropagation();"
+                                                        (document:click)="closeOutsideDatePicker($event, dsd)"
+                                                        type="button">
+                                                    <img class="img-calendar"
+                                                         src="./assets/images/transactions/Calendar.svg"
+                                                         alt="">
+                                                </button>
+                                            </div>
+                                        </fieldset>
+                                    </div>
+
+                                    <div class=" col-xs-4 col-md-4">
+                                        <div class="form-group">
+                                            <label>{{'Card Bin' | translate}}, %</label>
+                                            
+
+                                            <ng-select [items]="cardBins" autocomplete="redundant" required
+                                                   bindLabel="description"
+                                                   bindValue="code"
+                                                   name="cardbin"
+                                                   [(ngModel)]="changeRateData.cardBin"
+                                                   placeholder="{{'Choose one' | translate}}">
+                                        </ng-select>
+                                        </div>
+                                    </div>
+
+                                    <div class=" col-xs-4 col-md-4">
+                                        <fieldset class="form-group">
+                                            <label>
+                                                {{'Recalculate rates' | translate}}
+                                            </label>
+                                            <div class="check-group d-flex">
+                                                <div class="btn-group btn-group-toggle mb-3" ngbRadioGroup
+                                                     name="recalculateRates" #recalculateRates="ngModel"
+                                                     [(ngModel)]="changeRateData.recalculateRates">
+                                                    <label ngbButtonLabel class="btn-primary">
+                                                        <input ngbButton type="radio" [value]="true">
+                                                        {{'Yes' | translate}}
+                                                    </label>
+                                                    <label ngbButtonLabel class="btn-primary">
+                                                        <input ngbButton type="radio" [value]="false">
+                                                        {{'No' | translate}}
+                                                    </label>
+                                                </div>
+                                            </div>
+                                        </fieldset>
+                                    </div>
+
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-main"
+                                        [disabled]="!ratesModalForm.valid"
+                                        (click)="c(changeRateData)">
+                                    {{'Change' | translate}}
+                                </button>
+                                <button type="button" class="btn btn-primary-close" (click)="c({})">
+                                    {{'Close' | translate}}
+                                </button>
+                            </div>
+                            </form>
+                        </ng-template>
+
+                        <!--Ng-Bootstrap Modal Window: Change Rate-->
+
+                        <div class="row">
+                            <div class="col-md-7 col-12 rate-table">
+                                <div class="rate-header d-flex justify-content-between">
+                                    <div class="label">
+                                        {{'Rate Information' | translate}}
+                                    </div>
+                                    <div class="controls">
+                                        <input type="checkbox" [(ngModel)]="showArchiveRates" [ngModelOptions]="{standalone: true}" /> {{ 'Show Archive Rates' | translate }}
+                                        <button class="btn btn-main" type="button"
+                                                (click)="openChangeRateDialog(ChangeRateModalContent)">
+                                            {{'Change Rate' | translate}}
+                                        </button>
+                                    </div>
+                                </div>
+                                <table class="table">
+                                    <thead>
+                                    <tr>
+                                        <th (click)="setPositionIconStatus2('cardBin')" class="align-middle"
+                                            [ngClass]="{'sorted': orderBy.cardBin === 'DESC', 'sorted-desc': orderBy.cardBin === 'ASC'}">
+                                            <div class="d-flex align-items-center text-center">
+                                                <span>{{'Card' | translate}}</span> 
+                                            </div>
+                                        </th>
+                                        <th (click)="setPositionIconStatus2('rateDate')" class="align-middle"
+                                            [ngClass]="{'sorted': orderBy.rateDate === 'DESC', 'sorted-desc': orderBy.rateDate === 'ASC'}">
+                                            <div class="d-flex align-items-center text-center">
+                                                <span>{{'Start Date' | translate}}</span> 
+                                            </div>
+                                        </th>
+                                        <th (click)="setPositionIconStatus2('basicRate')" class="align-middle"
+                                            [ngClass]="{'sorted': orderBy.basicRate === 'DESC', 'sorted-desc': orderBy.basicRate === 'ASC'}">
+                                            <div class="d-flex align-items-center text-center">
+                                                <span>{{'Basic Rate' | translate}}</span>
+                                            </div>
+                                        </th>
+                                        <th (click)="setPositionIconStatus2('installmentRate')" class="align-middle"
+                                            [ngClass]="{'sorted': orderBy.installmentRate === 'DESC', 'sorted-desc': orderBy.installmentRate === 'ASC'}">
+                                            <div class="d-flex align-items-center text-center">
+                                                <span>{{'Installment Rate' | translate}}</span>
+                                            </div>
+                                        </th>
+                                        <th (click)="setPositionIconStatus2('touristRate')" class="align-middle"
+                                            [ngClass]="{'sorted': orderBy.touristRate === 'DESC', 'sorted-desc': orderBy.touristRate === 'ASC'}">
+                                            <div class="d-flex align-items-center text-center">
+                                                <span>{{'Tourist Rate' | translate}}</span>
+                                            </div>
+                                        </th>
+                                        <th (click)="setPositionIconStatus2('recalculateRates')" class="align-middle"
+                                            [ngClass]="{'sorted': orderBy.recalculateRates === 'DESC', 'sorted-desc': orderBy.recalculateRates === 'ASC'}">
+                                            <div class="d-flex align-items-center text-center">
+                                                <span>{{'Recalculate' | translate}}</span> 
+                                            </div>
+                                        </th>
+                                        <th (click)="setPositionIconStatus2('operationDate')" class="align-middle"
+                                            [ngClass]="{'sorted': orderBy.operationDate === 'DESC', 'sorted-desc': orderBy.operationDate === 'ASC'}">
+                                            <div class="d-flex align-items-center text-center">
+                                                <span>{{'Operation Date' | translate}}</span> 
+                                            </div>
+                                        </th>
+                                        
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <tr *ngFor="let rate of merchantData.commissionRates; index as i;" [class.efective-rate]="rate.effective === true" [class.archive-rate]="rate.effective === false" [class.hidden-rate]="showArchiveRates === false && rate.effective === false" >
+                                        <td class="text-right">{{rate.cardBin}}</td>
+                                        <td class="d-flex text-left">{{rate.rateDate | date: 'dd/MM/yyyy'}}</td>
+                                        <td class="text-right">{{rate.basicRate | percent: '1.2-2'}}</td>
+                                        <td class="text-right">{{rate.installmentRate | percent: '1.2-2'}}</td>
+                                        <td class="text-right">{{rate.touristRate | percent: '1.2-2'}}</td>
+                                        <td class="text-right">{{rate.recalculateRates}}</td>
+                                        <td class="text-left ltr-in-rtl">{{rate.operationDate | date: 'dd/MM/yyyy HH:mm'}}</td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <!--Ng-Bootstrap Modal Window: Security Limits-->
+
+                        <ng-template #SecurityLimitsModalContent let-c="close" let-d="dismiss">
+                            <div class="modal-header">
+                                <h4 class="modal-title">{{'Set' | translate}} {{securityHeader}}</h4>
+                                <button type="button" class="close" aria-label="Close"
+                                        (click)="d('Cross click')">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="row">
+                                    <div class=" col-xs-10 col-md-10">
+                                        <div class="form-group">
+                                            <label>{{securityHeader}}</label>
+                                            <input class="form-control input-mandatory" autocomplete="redundant"
+                                                   minlength="1" maxlength="20" type="number"
+                                                   (keypress)="filtersService.keyPressNumberRestricts($event)"
+                                                   name="securityentity" #securityentity="ngModel"
+                                                   [(ngModel)]="securityEntity"
+                                                   placeholder="{{securityHeader}}">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-main"
+                                        (click)="c(securityEntity);">
+                                    {{'Apply' | translate}}
+                                </button>
+                                <button type="button" class="btn btn-primary-close" (click)="c({})">
+                                    {{'Close' | translate}}
+                                </button>
+                            </div>
+                        </ng-template>
+
+                        <!--Ng-Bootstrap Modal Window: Security Limits-->
+
+                        <div class="row security-limits">
+                            <div class="fieldset-label pdd">{{'Amount Limits' | translate}}</div>
+                            <hr>
+                            <div class="col-md-6 col-12">
+                                <fieldset class="form-group pd-top-5">
+                                    <label>{{'Daily transactions amount limit' | translate}}</label>
+                                    <input class="form-control input-mandatory" autocomplete="redundant"
+                                           name="transactionsmaxdailyamount" #transactionsmaxdailyamount="ngModel"
+                                           [(ngModel)]="merchantData.transactionsMaxDailyAmount"
+                                           (keypress)="filtersService.keyPressNumberRestricts($event)"
+                                           placeholder="{{'Daily transactions amount limit' | translate}}">
+                                </fieldset>
+                            </div>
+                            <div class="col-md-6 col-12">
+                                <fieldset class="form-group pd-top-5">
+                                    <label>{{'Single transaction amount limit' | translate}}</label>
+                                    <input class="form-control input-mandatory" autocomplete="redundant"
+                                           name="singletransactionmaxAmount" #ccsecuritylimit="ngModel"
+                                           [(ngModel)]="merchantData.singleTransactionMaxAmount"
+                                           (keypress)="filtersService.keyPressNumberRestricts($event)"
+                                           placeholder="{{'Single transaction amount limit' | translate}}">
+                                </fieldset>
+                            </div>
+                            <div class="col-md-6 col-12">
+                                <fieldset class="form-group pd-top-5">
+                                    <label>{{'Number of transaction per credit card' | translate}}</label>
+                                    <input class="form-control input-mandatory" autocomplete="redundant"
+                                           name="maxtransactionspercreditcard" #maxtransactionspercreditcard="ngModel"
+                                           [(ngModel)]="merchantData.maxTransactionsPerCreditCard"
+                                           (keypress)="filtersService.keyPressNumberRestricts($event)"
+                                           placeholder="{{'Number of transaction per credit card' | translate}}">
+                                </fieldset>
+                            </div>
+                        </div>
+
+                        <div class="row security-limits">
+                            <div class="fieldset-label pdd">{{'Security Limits' | translate}}</div>
+                            <hr>
+                            <div class="col-md-6 col-12">
+                                <fieldset class="form-group pd-top-5">
+                                    <label>{{'Collateral' | translate}}</label>
+                                    <input class="form-control input-mandatory" autocomplete="redundant"
+                                           name="ccsecuritylimit" #ccsecuritylimit="ngModel"
+                                           (keypress)="filtersService.keyPressNumberRestricts($event)"
+                                           [(ngModel)]="merchantData.currentCollateralSecurityLimit"
+                                           placeholder="{{'Collateral' | translate}}">
+                                </fieldset>
+                            </div>
+                            <div class="col-md-6 col-12">
+                                <fieldset class="form-group no-margin">
+                                    <div class="form-group pd-top-5">
+                                        <label>{{'Billing Cycle Confirmation' | translate}}</label>
+                                        <ng-select [items]="billingCycleItems"
+                                                   autocomplete="redundant"
+                                                   bindLabel="description"
+                                                   bindValue="code"
+                                                   name="billingCycle"
+                                                   [(ngModel)]="merchantData.billingCycleClearingCompanyConfirmation"
+                                                   placeholder="{{'- Select One -' | translate}}">
+                                        </ng-select>
+                                    </div>
+                                </fieldset>
+                            </div>
+                            <div class="col-md-6 col-12"></div>
+                        </div>
+                        <div class="row cycle-container" [ngClass]="{'with-save-btn': isNewMerchant}">
+                            <div class="col-md-6 col-12">
+                                <div class="fieldset-label">{{'Security Cycle, Days' | translate}}</div>
+                                <fieldset class="form-group no-margin">
+                                    <label>{{'Security Cycle' | translate}}</label>
+                                    <input class="form-control input-mandatory" autocomplete="redundant"
+                                           name="securitycycle" #securitycycle="ngModel"
+                                           [(ngModel)]="merchantData.securityCycle"
+                                           placeholder="{{'Security Cycle' | translate}}">
+                                </fieldset>
+                            </div>
+                            <div class="col-md-6 col-12">
+                                <div class="fieldset-label">{{'Transfer Cycle' | translate}}</div>
+                                <fieldset class="form-group no-margin">
+                                    <div class="form-group">
+                                        <label>{{'Transfer Cycle' | translate}}</label>
+                                        <!--[(ngModel)]="merchantData."-->
+                                        <!--name="ownerGender"-->
+                                        <ng-select [items]="transferCycleItems"
+                                                   autocomplete="redundant"
+                                                   bindLabel="description"
+                                                   bindValue="code"
+                                                   name="transferCycle"
+                                                   [(ngModel)]="selectedTransferCycle"
+                                                   placeholder="{{'- Select One -' | translate}}">
+                                        </ng-select>
+                                    </div>
+                                </fieldset>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 col-12"></div>
+                            <div class="col-md-6 col-12">
+                                <div class="weekly-container" *ngIf="selectedTransferCycle === 'week'">
+                                    <h5>{{'Please, choose days of a weekly cycle' | translate}}</h5>
+                                    <div class="btn-group btn-group-toggle"
+                                         *ngFor="let day of transferCycleWeekly; index as i;">
+                                        <label class="btn-primary" ngbButtonLabel>
+                                            <input type="checkbox" name="tcWeekly-{{day.description}}"
+                                                   autocomplete="redundant"
+                                                   ngbButton [(ngModel)]="day.code">
+                                            {{day.description}}
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="monthly-container" *ngIf="selectedTransferCycle === 'month'">
+                                    <h5>{{'Please, choose days of a monthly cycle' | translate}}</h5>
+                                    <div class="btn-group btn-group-toggle"
+                                         *ngFor="let day of transferCycleMonthly; index as i;">
+                                        <label class="btn-primary" ngbButtonLabel>
+                                            <input type="checkbox" name="tcMonthly-{{day.description}}"
+                                                   autocomplete="redundant"
+                                                   ngbButton [(ngModel)]="day.code">
+                                            {{day.description}}
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6 col-12">
+                                <fieldset class="form-group">
+                                    <label>{{'Credit Card Security J5 Block' | translate}}</label>
+                                    <input class="form-control input-mandatory" autocomplete="redundant"
+                                           name="cccsblock" #cccsblock="ngModel" readonly
+                                           [(ngModel)]="merchantData.currentCreditCardJ5Blocks"
+                                           placeholder="{{'Credit Card Security J5 Block' | translate}}">
+                                </fieldset>
+                            </div>
+                            <div class="col-md-6 col-12">
+                                <button (click)="securityHeader='Credit Card Security J5 Block';openApplyJ5BlockDialog(SecurityLimitsModalContent)"
+                                        type="button" class="btn btn-main apply-limits-btn" *ngIf="!isNewMerchant">
+                                    {{'Apply J5 Block' | translate}}
+                                </button>
+                                <span class="j5-failed-label" *ngIf="merchantData.isJ5RenewalFailed">
+                                    {{'J5 renewal failed' | translate}}
+                                </span>
+                            </div>
+                            <div class="col-md-6 col-12">
+                                <fieldset class="form-group pd-top-5">
+                                    <label>{{'Invoice item' | translate}}</label>
+                                    <input class="form-control input-mandatory" autocomplete="redundant"
+                                           name="invoiceitem" #invoiceitem="ngModel" maxlength="50"
+                                           (keypress)="filtersService.keyPressStringRestricts($event)"
+                                           [(ngModel)]="merchantData.invoiceItem"
+                                           placeholder="{{'Invoice item' | translate}}">
+                                </fieldset>
+                            </div>
+
+                            <div class="col-md-6 col-12">
+                                <fieldset class="form-group pd-top-5">
+                                    <label>
+                                        {{'Hold Transactions' | translate}}
+                                    </label>
+                                    <div class="check-group d-flex">
+                                        <div class="btn-group btn-group-toggle mb-3" ngbRadioGroup
+                                                name="holdTransactions"
+                                                [(ngModel)]="merchantData.holdTransaction">
+                                            <label ngbButtonLabel class="btn-primary">
+                                                <input ngbButton type="radio" [value]="true">
+                                                {{'Yes' | translate}}
+                                            </label>
+                                            <label ngbButtonLabel class="btn-primary">
+                                                <input ngbButton type="radio" [value]="false">
+                                                {{'No' | translate}}
+                                            </label>
+                                        </div>
+    
+                                    </div>
+                                </fieldset>
+                            </div>
+
+                        </div>
+                        <div class="row bottom-controls financial">
+                            <button class="btn btn-primary-accept" type="submit">
+                                <img class="btn-icon icon-refresh"
+                                     src="./assets/images/merchants-details/save-btn-icon.svg" alt="">
+                                {{'Save' | translate}}
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </mat-tab>
+        <mat-tab label="{{'Business Activity' | translate}}" *ngIf="!isNewMerchant">
+            <div class="card business-activity-card">
+                <div class="card-body mb-sm-3">
+                    <div class="card-body-title d-flex">
+                        <div class="title-container d-flex justify-content-between">
+                            <div class="user-general-info d-flex">
+                                <img src="./assets/images/merchants-details/merchant-icon-big.svg"
+                                     class="credit-card" alt="">
+                                <div>
+                                    <div>
+                                        <div style="display: inline">{{'Name' | translate}}:</div>
+                                        <div class="general-title">
+                                            {{merchantData.merchantName}}
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <div style="display: inline">{{'Business ID' | translate}}:</div>
+                                        <div class="general-title">
+                                            {{merchantData.businessDetails.businessId}}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="general-controls d-flex">
+                                <!--<div class="export-container print">-->
+                                <!--<label class="label">Print</label>-->
+                                <!--<div class="btns-group-right">-->
+                                <!--<button class="btn-print mr-sm-2">-->
+                                <!--<img src="./assets/images/transactions-details/pdf-icon.svg" alt="">-->
+                                <!--</button>-->
+                                <!--</div>-->
+                                <!--</div>-->
+                                <div class="export-container">
+                                    <label class="label">{{'Export in' | translate}}</label>
+                                    <div class="btns-group-right">
+                                        <!--<button class="btn-print mr-sm-2">-->
+                                        <!--<img src="./assets/images/transactions-details/pdf-icon.svg" alt="">-->
+                                        <!--</button>-->
+                                        <button class="btn-print" (click)="downloadBusinessActivityReport()">
+                                            <img src="./assets/images/transactions-details/xls-icon.svg" alt="">
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <hr>
+                    <div class="card-body">
+                        <div class="row business-range-container">
+                            <div class=" col-xs-12 col-md-3">
+                                <div class="form-group">
+                                    <label>{{'Custom Period' | translate}}</label>
+                                    <ng-select [items]="merchantPeriodFilter"
+                                               [(ngModel)]="selectedBusinessActivityPeriod"
+                                               (change)="onPeriodFilterChange()"
+                                               bindLabel="description"
+                                               bindValue="code"
+                                               placeholder="{{'- Choose Period -' | translate}}"
+                                               (window:resize)="reloadConfigSelect($event)">
+                                    </ng-select>
+                                </div>
+                            </div>
+                            <div class=" col-xs-12 col-md-3">
+                                <div class="form-group">
+                                    <label>{{'From' | translate}}</label>
+                                    <div class="input-group datepicker-input">
+                                        <input class="form-control" placeholder="{{'dd/mm/yyyy' | translate}}"
+                                               autocomplete="redundant" [maxDate]="businessRangeTo"
+                                               name="businessRangeFrom"
+                                               [(ngModel)]="businessRangeFrom"
+                                               ngbDatepicker #businessRangeFromId="ngbDatepicker">
+                                        <button class="input-group-addon"
+                                                (click)="businessRangeFromId.toggle();$event.stopPropagation();"
+                                                (document:click)="closeOutsideDatePicker($event, businessRangeFromId)"
+                                                type="button">
+                                            <!--<span class="fa fa-calendar"></span>-->
+                                            <img class="img-calendar"
+                                                 src="./assets/images/transactions/Calendar.svg"
+                                                 alt="">
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-xs-12 col-md-3">
+                                <div class="form-group">
+                                    <label>{{'To' | translate}}</label>
+                                    <div class="input-group datepicker-input">
+                                        <input class="form-control" autocomplete="redundant"
+                                               placeholder="{{'dd/mm/yyyy' | translate}}" [minDate]="businessRangeFrom"
+                                               name="businessRangeTo"
+                                               [(ngModel)]="businessRangeTo"
+                                               ngbDatepicker #businessRangeToId="ngbDatepicker">
+                                        <button class="input-group-addon"
+                                                (click)="businessRangeToId.toggle();$event.stopPropagation();"
+                                                (document:click)="closeOutsideDatePicker($event, businessRangeToId)"
+                                                type="button">
+                                            <img class="img-calendar"
+                                                 src="./assets/images/transactions/Calendar.svg" alt="">
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class=" col-xs-12 col-md-3">
+                                <div class="form-group wrapper-dropdown">
+                                    <div ngbDropdown class="d-inline-block dropdown" placement="{{placementPosition}}">
+                                        <button class="btn" ngbDropdownToggle>
+                                            <img *ngIf="isColumnsFilterEmpty"
+                                                 src="./assets/images/transactions/Filter-white.svg" alt="">
+                                            <img *ngIf="!isColumnsFilterEmpty"
+                                                 src="./assets/images/transactions/Filter-red.svg" alt="">
+                                            <div class="btn-text">{{'All Filters' | translate}}</div>
+                                        </button>
+                                        <div ngbDropdownMenu>
+                                            <div class="dropdown-item"
+                                                 [ngClass]="{'checked': filter.checkbox}"
+                                                 (click)="filter.checkbox = !filter.checkbox; checkColumnsFilterEmpty();"
+                                                 *ngFor="let filter of businessTableFilters | getValues; index as i;">
+                                                <input type="checkbox"
+                                                       [(ngModel)]="filter.checkbox"
+                                                       (change)="businessTableFilters[filter.key].checkbox = filter.checkbox">
+                                                <div style="display:inline-block">
+                                                    {{filter.title | translate}}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <hr>
+                        <div class="table-responsive business-table">
+                            <table class="table">
+                                <thead>
+                                <tr>
+                                    <th (click)="setPositionIconStatus('operationDate')" class="align-middle"
+                                        *ngIf="businessTableFilters['operationDate'].checkbox"
+                                        [ngClass]="{'sorted': orderBy.operationDate === 'DESC', 'sorted-desc': orderBy.operationDate === 'ASC'}">
+                                        <div class="text-left">
+                                            <span>{{'Date' | translate}}</span> <span class="sort-indicator"></span>
+                                        </div>
+                                    </th>
+                                    <th (click)="setPositionIconStatus('operationCode')" class="align-middle"
+                                        *ngIf="businessTableFilters['operationCode'].checkbox"
+                                        [ngClass]="{'sorted': orderBy.operationCode === 'DESC', 'sorted-desc': orderBy.operationCode === 'ASC'}">
+                                        <div class="text-left">
+                                            <span>{{'Operation Code' | translate}}</span><span
+                                                class="sort-indicator"></span>
+                                        </div>
+                                    </th>
+                                    <th (click)="setPositionIconStatus('operationDoneBy')" class="align-middle"
+                                        *ngIf="businessTableFilters['operationDoneBy'].checkbox"
+                                        [ngClass]="{'sorted': orderBy.operationDoneBy === 'DESC', 'sorted-desc': orderBy.operationDoneBy === 'ASC'}">
+                                        <div class="text-left">
+                                            <span>{{'Done By' | translate}}</span><span class="sort-indicator"></span>
+                                        </div>
+                                    </th>
+                                    <th (click)="setPositionIconStatus('operationDescription')" class="align-middle"
+                                        *ngIf="businessTableFilters['operationDescription'].checkbox"
+                                        [ngClass]="{'sorted': orderBy.operationDescription === 'DESC', 'sorted-desc': orderBy.operationDescription === 'ASC'}">
+                                        <div class="text-left">
+                                            <span>{{'Description' | translate}}</span><span
+                                                class="sort-indicator"></span>
+                                        </div>
+                                    </th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr (click)="transitionToActiveDetails(report)"
+                                    *ngFor="let report of businessTable; index as i;">
+                                    <td class="text-left" *ngIf="businessTableFilters['operationDate'].checkbox">
+                                        {{report.operationDate | utcToLocalDate | date: 'dd/MM/yyyy HH:mm:ss'}}
+                                    </td>
+                                    <td class="text-left" *ngIf="businessTableFilters['operationCode'].checkbox">
+                                        {{report.operationCode}}
+                                    </td>
+                                    <td class="text-left" *ngIf="businessTableFilters['operationDoneBy'].checkbox">
+                                        {{report.operationDoneBy}}
+                                    </td>
+                                    <td class="text-left" *ngIf="businessTableFilters['operationDescription'].checkbox">
+                                        {{report.operationDescription}}
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="page-footter" *ngIf="collectionSize > pageSize">
+                            <div class="text-muted fs-12">{{'Pages' | translate}}</div>
+                            <ngb-pagination [collectionSize]="collectionSize" [(page)]="page" [maxSize]="maxSize"
+                                            [pageSize]="pageSize" (pageChange)="pageChange($event)"
+                                            [rotate]="true" [ellipses]="false"
+                                            [boundaryLinks]="true"></ngb-pagination>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </mat-tab>
+    </mat-tab-group>
+</div>

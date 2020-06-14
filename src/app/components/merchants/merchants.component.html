@@ -1,0 +1,399 @@
+<!--[@routerTransition]-->
+<div class="page-merchants page-responsive">
+    <div class="row">
+        <div class="col col-xs-12">
+            <div class="title">
+                <span>{{'Merchants' | translate}}</span>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col col-xs-12">
+            <div class="card mb-3">
+                <div class="card-header">
+                    <div class="card-header-inner">
+                        <span>{{'Merchants' | translate}}</span>
+                        <div class="buttons-section">
+                            <button (click)="addNewMerchant()" class="btn btn-main">
+                                <span class="icon-plus">+</span>
+                                <img class="icon-refresh" src="./assets/images/User_preferences_icon_white.svg" alt="">
+                                <!--Add New Merchant-->
+                                <div *ngIf="!isMobileMediaScreen" style="display: inline-block;">
+                                    {{'Add New Merchant' | translate}}
+                                </div>
+                            </button>
+                            <button class="btn-print btn-icon-refresh" (click)="refreshPage()">
+                                <img class="icon-refresh" src="./assets/images/transactions/Refresh_icon.svg" alt="">
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-xs-6 col-md-3">
+                            <fieldset class="form-group">
+                                <label>{{'Merchant Name' | translate}}</label>
+                                <input class="form-control input-mandatory less-pl" autocomplete="redundant"
+                                       (keypress)="filtersService.keyPressStringRestricts($event)"
+                                       (keyup.enter)="acceptOutterFilters()"
+                                       name="merchantname" #merchantname="ngModel"
+                                       [(ngModel)]="outterFilterGroup.merchantName"
+                                       placeholder="{{'Search by Merchant Name' | translate}}">
+                            </fieldset>
+                        </div>
+                        <div class="col-xs-6 col-md-3">
+                            <fieldset class="form-group">
+                                <label>{{'Business ID' | translate}}</label>
+                                <input class="form-control input-mandatory less-pl" autocomplete="redundant"
+                                       (keypress)="filtersService.keyPressStringRestricts($event)"
+                                       (keyup.enter)="acceptOutterFilters()"
+                                       name="businessid" #businessid="ngModel"
+                                       [(ngModel)]="outterFilterGroup.businessID"
+                                       placeholder="{{'Search by Business ID' | translate}}">
+                            </fieldset>
+                        </div>
+                        <div class="col-xs-6 col-md-3">
+                            <fieldset class="form-group">
+                                <label>{{'Phone Number' | translate}}</label>
+                                <input class="form-control input-mandatory less-pl" autocomplete="redundant"
+                                       (keypress)="filtersService.keyPressPhoneNumberRestricts($event)"
+                                       (keyup.enter)="acceptOutterFilters()"
+                                       name="phone" #phone="ngModel"
+                                       [(ngModel)]="outterFilterGroup.phone"
+                                       placeholder="{{'Search by Phone Number' | translate}}">
+                            </fieldset>
+                        </div>
+                        <div class=" col-xs-6 col-md-3 filter-drop-t">
+                            <div class="form-group wrapper-dropdown columns-filter">
+                                <div ngbDropdown class="d-inline-block dropdown" placement="{{placementPosition}}">
+                                    <button class="btn" ngbDropdownToggle>
+                                        <img *ngIf="isColumnsFilterEmpty"
+                                             src="./assets/images/transactions/Filter-white.svg" alt="">
+                                        <img *ngIf="!isColumnsFilterEmpty"
+                                             src="./assets/images/transactions/Filter-red.svg" alt="">
+                                        <div class="btn-text">{{'Columns' | translate}}</div>
+                                    </button>
+                                    <div ngbDropdownMenu>
+                                        <div class="dropdown-item" [ngClass]="{'checked': filter.checkbox}"
+                                             (click)="filter.checkbox = !filter.checkbox; onColumnsChange();"
+                                             *ngFor="let filter of tableMerchantsListFilter | getValues; index as i;">
+                                            <input type="checkbox"
+                                                   (change)="tableMerchantsListFilter[filter.key].checkbox = filter.checkbox"
+                                                   [(ngModel)]="filter.checkbox">
+                                            <div style="display:inline-block">
+                                                {{filter.title | translate}}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <button class="btn btn-primary-accept btn-filter-trigger"
+                                [ngClass]="{'toggled': toggleFilterSection}"
+                                (click)="toggleFilterSection=!toggleFilterSection">
+                            <img *ngIf="isDataFilterEmpty"
+                                 src="./assets/images/transactions/Filter-white.svg" alt="">
+                            <img *ngIf="!isDataFilterEmpty"
+                                 src="./assets/images/transactions/Filter-red.svg" alt="">
+                            <div class="btn-text">{{'Table Filters' | translate}}</div>
+                        </button>
+                        <div class="filter-section">
+                            <div class="row filter-body" *ngIf="toggleFilterSection">
+                                <div class=" col-xs-6 col-md-4">
+                                    <div class="form-group">
+                                        <label>{{'Custom Period' | translate}}</label>
+                                        <ng-select [items]="merchantPeriodFilter"
+                                                   [(ngModel)]="selectedMerchantsPeriod"
+                                                   (change)="onPeriodFilterChange()"
+                                                   bindLabel="description"
+                                                   bindValue="code"
+                                                   placeholder="{{'- Choose Period -' | translate}}"
+                                                   (window:resize)="reloadConfigSelect($event)">
+                                        </ng-select>
+                                    </div>
+                                </div>
+                                <div class=" col-xs-6 col-md-6">
+                                    <div class="row">
+                                        <div class=" col-xs-6 col-md-5">
+                                            <div class="form-group">
+                                                <label>{{'From' | translate}}</label>
+                                                <div class="input-group datepicker-input">
+                                                    <input class="form-control" placeholder="{{'dd/mm/yyyy' | translate}}"
+                                                           (ngModelChange)="tablePeriodFrom=$event;onDateRangeChange()"
+                                                           [maxDate]="tablePeriodTo || tablePeriodRestrict"
+                                                           name="dp" [(ngModel)]="tablePeriodFrom" ngbDatepicker
+                                                           #d="ngbDatepicker">
+                                                    <button class="input-group-addon"
+                                                            (click)="d.toggle();d2.close();$event.stopPropagation();"
+                                                            (document:click)="closeOutsideDatePicker($event, d)" type="button">
+                                                        <!--<span class="fa fa-calendar"></span>-->
+                                                        <img class="img-calendar"
+                                                             src="./assets/images/transactions/Calendar.svg"
+                                                             alt="">
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class=" col-xs-6 col-md-5">
+                                            <div class="form-group">
+                                                <label>{{'To' | translate}}</label>
+                                                <div class="input-group datepicker-input">
+                                                    <input class="form-control" placeholder="{{'dd/mm/yyyy' | translate}}"
+                                                           (ngModelChange)="tablePeriodTo=$event;onDateRangeChange()"
+                                                           [minDate]="tablePeriodFrom"
+                                                           [maxDate]="tablePeriodRestrict"
+                                                           name="dp2" [(ngModel)]="tablePeriodTo" ngbDatepicker
+                                                           #d2="ngbDatepicker">
+                                                    <button class="input-group-addon"
+                                                            (click)="d2.toggle();d.close();$event.stopPropagation();"
+                                                            (document:click)="closeOutsideDatePicker($event, d2)" type="button">
+                                                        <img class="img-calendar"
+                                                             src="./assets/images/transactions/Calendar.svg"
+                                                             alt="">
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class=" col-xs-6 col-md-2">
+                                    <div class="form-group wrapper-dropdown status-filter">
+                                        <div ngbDropdown class="d-inline-block dropdown" placement="{{placementPosition}}">
+                                            <button class="btn" ngbDropdownToggle>
+                                                <div class="btn-text">{{'Status Filter' | translate}}</div>
+                                            </button>
+                                            <div ngbDropdownMenu>
+                                                <div class="dropdown-item" [ngClass]="{'checked': status.checkbox}"
+                                                     (click)="status.checkbox = !status.checkbox;pageChange();checkDataFilterEmpty()"
+                                                     *ngFor="let status of merchantStatusFilter | getValues; index as i;">
+                                                    <input type="checkbox" [(ngModel)]="status.checkbox"
+                                                           (change)="merchantStatusFilter[status.key].checkbox = status.checkbox;">
+                                                    <div style="display:inline-block">
+                                                        {{status.title}}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-xs-6 col-md-4">
+                                    <fieldset class="form-group">
+                                        <label>{{'Risk Rate' | translate}}</label>
+                                        <ng-select [items]="merchantRiskFilter"
+                                                   [(ngModel)]="filterGroup.riskRate"
+                                                   (change)="acceptFilters()"
+                                                   bindLabel="description"
+                                                   bindValue="code"
+                                                   placeholder="{{'- Choose Risk Rate -' | translate}}"
+                                                   (window:resize)="reloadConfigSelect($event)">
+                                        </ng-select>
+                                    </fieldset>
+                                </div>
+                                <div class="col-xs-6 col-md-4">
+                                    <fieldset class="form-group">
+                                        <label>{{'Business Sector' | translate}}</label>
+                                        <input class="form-control input-mandatory" autocomplete="redundant"
+                                               (keypress)="filtersService.keyPressStringRestricts($event)"
+                                               (keyup.enter)="acceptFilters()"
+                                               name="businessarea" #businessarea="ngModel"
+                                               [(ngModel)]="filterGroup.businessArea"
+                                               placeholder="{{'Search by Business Sector' | translate}}">
+                                    </fieldset>
+                                </div>
+                                <div class="col-xs-6 col-md-4">
+                                    <fieldset class="form-group">
+                                        <label>{{'Merchant Reference' | translate}}</label>
+                                        <input class="form-control input-mandatory" autocomplete="redundant"
+                                               (keypress)="filtersService.keyPressStringRestricts($event)"
+                                               (keyup.enter)="acceptFilters()"
+                                               name="merchantreference" #merchantreference="ngModel"
+                                               [(ngModel)]="filterGroup.merchantReference"
+                                               placeholder="{{'Search by Merchant Reference' | translate}}">
+                                    </fieldset>
+                                </div>
+                                <div class="col-xs-6 col-md-4">
+                                    <fieldset class="form-group">
+                                        <label>{{'Clearing Company' | translate}}</label>
+                                        <ng-select [items]="clearingCompanyFilter"
+                                                   [(ngModel)]="filterGroup.clearingCompany"
+                                                   (change)="acceptFilters()"
+                                                   bindLabel="description"
+                                                   bindValue="code"
+                                                   placeholder="{{'- Search by Clearing Company -' | translate}}"
+                                                   (window:resize)="reloadConfigSelect($event)">
+                                        </ng-select>
+                                    </fieldset>
+                                </div>
+                                <div class="col-xs-6 col-md-4">
+                                    <fieldset class="form-group">
+                                        <label>{{'Merchant Email' | translate}}</label>
+                                        <input class="form-control input-mandatory" autocomplete="redundant"
+                                               (keypress)="filtersService.keyPressEmailRestrict($event)"
+                                               (keyup.enter)="acceptFilters()"
+                                               name="merchantemail" #merchantemail="ngModel"
+                                               [(ngModel)]="filterGroup.email"
+                                               placeholder="{{'Search by Merchant Email' | translate}}">
+                                    </fieldset>
+                                </div>
+                                <div class="col-xs-12 col-md-12 set-filters-section" *ngIf="toggleFilterSection">
+                                    <button type="button" class="btn btn-set-filters refresh"
+                                            (click)="initFilterGroup()">
+                                        <img class="icon-eracer" src="./assets/images/transactions/eraser.svg" alt="">
+                                    </button>
+                                    <button type="button" class="btn btn-primary-accept btn-set-filters pull-right"
+                                            (click)="acceptFilters();toggleFilterSection=false;">
+                                        {{'OK' | translate}}
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!--<hr>-->
+                    <!--id="pnProductNav"-->
+                    <div>
+                        <div class="table-responsive">
+                            <!--<button id="pnAdvancerLeft" class="pn-Advancer pn-Advancer_Left"-->
+                                    <!--[ngClass]="{'isDemanded': advancedScrollService.SETTINGS.navBarTravelDirection === 'both' || advancedScrollService.SETTINGS.navBarTravelDirection === 'left'}"-->
+                                    <!--type="button">-->
+                                <!--<i class="fa fa-angle-left"></i>-->
+                            <!--</button>-->
+                            <!--<button id="pnAdvancerRight" class="pn-Advancer pn-Advancer_Right"-->
+                                    <!--[ngClass]="{'isDemanded': advancedScrollService.SETTINGS.navBarTravelDirection === 'both' || advancedScrollService.SETTINGS.navBarTravelDirection === 'right'}"-->
+                                    <!--type="button">-->
+                                <!--<i class="fa fa-angle-right"></i>-->
+                            <!--</button>-->
+                            <!--id="pnProductNavContent"-->
+                            <table class="table">
+                                <thead>
+                                <tr>
+                                    <th (click)="setPositionIconStatus('activityStartDate')" class="align-middle"
+                                        *ngIf="tableMerchantsListFilter['activityStartDate'].checkbox"
+                                        [ngClass]="{'sorted': orderBy.activityStartDate === 'DESC', 'sorted-desc': orderBy.activityStartDate === 'ASC'}">
+                                        <div class="text-left" title="{{'Creating Date' | translate}}">
+                                            <span>{{'Creating Date' | translate}}</span>
+                                            <span class="sort-indicator"></span>
+                                        </div>
+                                    </th>
+                                    <th (click)="setPositionIconStatus('businessId')" class="align-middle"
+                                        *ngIf="tableMerchantsListFilter['businessId'].checkbox"
+                                        [ngClass]="{'sorted': orderBy.businessId === 'DESC', 'sorted-desc': orderBy.businessId === 'ASC'}">
+                                        <div class="text-left" title="{{'Business ID' | translate}}">
+                                            <span>{{'Business ID' | translate}}</span>
+                                            <span class="sort-indicator"></span>
+                                        </div>
+                                    </th>
+                                    <th (click)="setPositionIconStatus('merchantName')" class="align-middle"
+                                        *ngIf="tableMerchantsListFilter['merchantName'].checkbox"
+                                        [ngClass]="{'sorted': orderBy.merchantName === 'DESC', 'sorted-desc': orderBy.merchantName === 'ASC'}">
+                                        <div class="text-left" title="{{'Merchant' | translate}}">
+                                            <span>{{'Merchant' | translate}}</span><span class="sort-indicator"></span>
+                                        </div>
+                                    </th>
+                                    <th (click)="setPositionIconStatus('merchantID')" class="align-middle"
+                                        *ngIf="tableMerchantsListFilter['merchantID'].checkbox"
+                                        [ngClass]="{'sorted': orderBy.merchantID === 'DESC', 'sorted-desc': orderBy.merchantID === 'ASC'}">
+                                        <div class="text-left" title="{{'Merchant ID' | translate}}">
+                                            <span>{{'Merchant ID' | translate}}</span>
+                                            <span class="sort-indicator"></span>
+                                        </div>
+                                    </th>
+                                    <th (click)="setPositionIconStatus('email')" class="align-middle"
+                                        *ngIf="tableMerchantsListFilter['email'].checkbox"
+                                        [ngClass]="{'sorted': orderBy.email === 'DESC', 'sorted-desc': orderBy.email === 'ASC'}">
+                                        <div class="text-left" title="{{'E-Mail' | translate}}">
+                                            <span>{{'E-Mail' | translate}}</span><span class="sort-indicator"></span>
+                                        </div>
+                                    </th>
+                                    <th (click)="setPositionIconStatus('riskRate')" class="align-middle"
+                                        *ngIf="tableMerchantsListFilter['riskRate'].checkbox"
+                                        [ngClass]="{'sorted': orderBy.riskRate === 'DESC', 'sorted-desc': orderBy.riskRate === 'ASC'}">
+                                        <div class="text-left" title="{{'Risk Rate' | translate}}">
+                                            <span>{{'Risk Rate' | translate}}</span><span class="sort-indicator"></span>
+                                        </div>
+                                    </th>
+                                    <th (click)="setPositionIconStatus('kycApprovalStatus')" class="align-middle"
+                                        *ngIf="tableMerchantsListFilter['kycApprovalStatus'].checkbox"
+                                        [ngClass]="{'sorted': orderBy.kycApprovalStatus === 'DESC', 'sorted-desc': orderBy.kycApprovalStatus === 'ASC'}">
+                                        <div class="text-left" title="{{'KYC Approval Status' | translate}}">
+                                            <span>{{'KYC Approval Status' | translate}}</span><span
+                                                class="sort-indicator"></span>
+                                        </div>
+                                    </th>
+                                    <th (click)="setPositionIconStatus('businessArea')" class="align-middle"
+                                        *ngIf="tableMerchantsListFilter['businessArea'].checkbox"
+                                        [ngClass]="{'sorted': orderBy.businessArea === 'DESC', 'sorted-desc': orderBy.businessArea === 'ASC'}">
+                                        <div class="text-left" title="{{'Business Sector' | translate}}">
+                                            <span>{{'Business Sector' | translate}}</span><span
+                                                class="sort-indicator"></span>
+                                        </div>
+                                    </th>
+                                    <th (click)="setPositionIconStatus('phone')" class="align-middle"
+                                        *ngIf="tableMerchantsListFilter['phone'].checkbox"
+                                        [ngClass]="{'sorted': orderBy.phone === 'DESC', 'sorted-desc': orderBy.phone === 'ASC'}">
+                                        <div class="text-left" title="{{'Phone Number' | translate}}">
+                                            <span>{{'Phone Number' | translate}}</span>
+                                            <span class="sort-indicator"></span>
+                                        </div>
+                                    </th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr (click)="transitionToProfile(merchant)"
+                                    *ngFor="let merchant of merchantsList; index as i;">
+                                    <td class="text-left"
+                                        *ngIf="tableMerchantsListFilter['activityStartDate'].checkbox">
+                                        {{merchant.activityStartDate | date: 'dd/MM/yyyy'}}
+                                    </td>
+                                    <td class="text-left" *ngIf="tableMerchantsListFilter['businessId'].checkbox">
+                                        {{merchant.businessId}}
+                                    </td>
+                                    <td class="text-left" style="max-width: 200px;"
+                                        *ngIf="tableMerchantsListFilter['merchantName'].checkbox">
+                                        {{merchant.merchantName}}
+                                    </td>
+                                    <td class="text-left" *ngIf="tableMerchantsListFilter['merchantID'].checkbox">
+                                        {{merchant.merchantID}}
+                                    </td>
+                                    <td class="text-left" *ngIf="tableMerchantsListFilter['email'].checkbox">
+                                        {{merchant.email}}
+                                    </td>
+                                    <td class="text-left" *ngIf="tableMerchantsListFilter['riskRate'].checkbox">
+                                    <span class="color-label" [ngClass]="{
+                                        'r-0': merchant.riskRate === 0,
+                                        'r-1': merchant.riskRate === 1,
+                                        'r-2': merchant.riskRate === 2,
+                                        'r-3': merchant.riskRate === 3,
+                                        'r-4': merchant.riskRate === 4,
+                                        'r-5': merchant.riskRate === 5}">
+                                        {{merchant.riskRate}}
+                                    </span>
+                                    </td>
+                                    <td class="text-left"
+                                        *ngIf="tableMerchantsListFilter['kycApprovalStatus'].checkbox">
+                                        {{merchant.kycApprovalStatus | getValueFromDictionary: 'kycStatuses'}}
+                                    </td>
+                                    <td class="text-left" *ngIf="tableMerchantsListFilter['businessArea'].checkbox">
+                                        {{merchant.businessArea}}
+                                    </td>
+                                    <td class="text-left" *ngIf="tableMerchantsListFilter['phone'].checkbox">
+                                        {{merchant.phone}}
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div *ngIf="collectionSize > maxSize" class="page-footter">
+                        <div class="text-muted fs-12">{{'Pages' | translate}}</div>
+                        <ngb-pagination [collectionSize]="collectionSize"
+                                        [(page)]="page" [maxSize]="maxSize"
+                                        [pageSize]="pageSize" (pageChange)="pageChange($event)"
+                                        [rotate]="true" [ellipses]="false"
+                                        [boundaryLinks]="true"></ngb-pagination>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

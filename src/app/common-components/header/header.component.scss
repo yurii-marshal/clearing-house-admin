@@ -1,0 +1,85 @@
+$topnav-background-color: #fff;
+
+:host {
+  .navbar {
+    background-color: $topnav-background-color;
+    .navbar-brand {
+      color: #fff;
+    }
+    .nav-item {
+      display: flex;
+      &.mail-container {
+        height: 40px;
+      }
+      .language {
+        padding: 10px 8px 0;
+        cursor: pointer;
+        height: 40px;
+        &.current {
+          font-weight: bold;
+        }
+      }
+      .divider {
+        padding-top: 10px;
+      }
+    }
+    .nav-item > a {
+      color: #20374f;
+      &:hover {
+        color: #20374f;
+      }
+    }
+    .logo {
+      // max-width: 46px;
+      max-height: 46px;
+    }
+    &.rtl-mode {
+      .navbar-collapse {
+        .navbar-nav {
+          margin-left: 0!important;
+        }
+      }
+    }
+  }
+  .messages {
+    width: 300px;
+    .media {
+      border-bottom: 1px solid #ddd;
+      padding: 5px 10px;
+      &:last-child {
+        border-bottom: none;
+      }
+    }
+    .media-body {
+      h5 {
+        font-size: 13px;
+        font-weight: 600;
+      }
+      .small {
+        margin: 0;
+      }
+      .last {
+        font-size: 12px;
+        margin: 0;
+      }
+    }
+  }
+  .text-muted {
+    color: #20374f !important;
+  }
+}
+
+// landscape
+@media screen and (min-width: 1024px) and (max-width: 1365px) {
+
+}
+
+// iPad Portrait
+@media screen and (min-width: 768px) and (max-width: 1023px) {
+
+}
+
+// mobile screens
+@media screen and (min-width: 375px) and (max-width: 767px) {
+
+}

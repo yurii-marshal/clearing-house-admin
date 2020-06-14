@@ -1,0 +1,228 @@
+<div>
+    <div class="row">
+        <div class=" col-xs-6 col-md-5">
+            <div class="row">
+                <div class=" col-xs-6 col-md-6">
+                    <div class="form-group">
+                        <label>{{'From' | translate}}</label>
+                        <div class="input-group datepicker-input">
+                            <input class="form-control" placeholder="{{'dd/mm/yyyy' | translate}}"
+                                   (ngModelChange)="tablePeriodFrom=$event;onDateRangeChange()"
+                                   [maxDate]="tablePeriodTo || tablePeriodRestrict" [placement]="'bottom-right'"
+                                   name="dp" [(ngModel)]="tablePeriodFrom" ngbDatepicker #d="ngbDatepicker">
+                            <button class="input-group-addon"
+                                    (click)="d.toggle();d2.close();$event.stopPropagation();"
+                                    (document:click)="closeOutsideDatePicker($event, d)" type="button">
+                                <!--<span class="fa fa-calendar"></span>-->
+                                <img class="img-calendar" src="./assets/images/transactions/Calendar.svg"
+                                     alt="">
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div class=" col-xs-6 col-md-6">
+                    <div class="form-group">
+                        <label>{{'To' | translate}}</label>
+                        <div class="input-group datepicker-input">
+                            <input class="form-control" placeholder="{{'dd/mm/yyyy' | translate}}"
+                                   (ngModelChange)="tablePeriodTo=$event;onDateRangeChange()"
+                                   [minDate]="tablePeriodFrom"
+                                   [maxDate]="tablePeriodRestrict"
+                                   name="dp2" [(ngModel)]="tablePeriodTo" ngbDatepicker #d2="ngbDatepicker">
+                            <button class="input-group-addon"
+                                    (click)="d2.toggle();d.close();$event.stopPropagation();"
+                                    (document:click)="closeOutsideDatePicker($event, d2)" type="button">
+                                <img class="img-calendar" src="./assets/images/transactions/Calendar.svg"
+                                     alt="">
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class=" col-xs-6 col-md-3"></div>
+        <div class=" col-xs-3 col-md-2">
+            <button (click)="downloadCurrentReportList()"
+                    title="{{'Download Report (xls)' | translate}}"
+                    class="btn-print download-excel-btn transactions activity">
+                <img src="./assets/images/transactions-details/xls-icon.svg" alt="">
+            </button>
+        </div>
+        <div class=" col-xs-3 col-md-2 filter-drop">
+            <div class="form-group wrapper-dropdown">
+                <div ngbDropdown class="d-inline-blockdropdown" placement="{{placementPosition}}">
+                    <button class="btn" ngbDropdownToggle>
+                        <img *ngIf="isColumnsFilterEmpty"
+                             src="./assets/images/transactions/Filter-white.svg" alt="">
+                        <img *ngIf="!isColumnsFilterEmpty"
+                             src="./assets/images/transactions/Filter-red.svg" alt="">
+                        <div class="btn-text">{{'Columns' | translate}}</div>
+                    </button>
+                    <div ngbDropdownMenu>
+                        <div class="dropdown-item" [ngClass]="{'checked': filter.checkbox}"
+                             (click)="filter.checkbox = !filter.checkbox; onColumnsChangeActivity();"
+                             *ngFor="let filter of tableActivityReportsListFilter | getValues; index as i;">
+                            <input type="checkbox"
+                                   (change)="tableActivityReportsListFilter[filter.key].checkbox = filter.checkbox"
+                                   [(ngModel)]="filter.checkbox">
+                            <div style="display:inline-block">
+                                {{filter.title | translate}}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <button class="btn btn-primary-accept btn-filter-trigger"
+                [ngClass]="{'toggled': toggleFilterSectionActivity}"
+                (click)="toggleFilterSectionActivity=!toggleFilterSectionActivity">
+            <img *ngIf="isDataFilterEmpty"
+                 src="./assets/images/transactions/Filter-white.svg" alt="">
+            <img *ngIf="!isDataFilterEmpty"
+                 src="./assets/images/transactions/Filter-red.svg" alt="">
+            <div class="btn-text">{{'Table Filters' | translate}}</div>
+        </button>
+    </div>
+
+    <div class="filter-section">
+        <div class="row filter-body" *ngIf="toggleFilterSectionActivity">
+            <div class=" col-xs-6 col-md-4">
+                <div class="form-group">
+                    <label>{{'Action Type' | translate}}</label>
+                    <ng-select [items]="reportsActionTypeFilter" multiple="true"
+                               [(ngModel)]="filterGroupActivity.actionTypes"
+                               (change)="acceptActivityFilters()"
+                               bindLabel="description"
+                               bindValue="code" class="action-type"
+                               placeholder="{{'- Choose Action Type -' | translate}}"
+                               (window:resize)="reloadConfigSelect($event)">
+                    </ng-select>
+                </div>
+            </div>
+            <div class="col-xs-6 col-md-4">
+                <fieldset class="form-group">
+                    <label>{{'Done By' | translate}}</label>
+                    <input class="form-control input-mandatory" autocomplete="redundant"
+                           (keypress)="filtersService.keyPressStringRestricts($event)"
+                           (keyup.enter)="acceptActivityFilters()"
+                           name="doneby" #doneby="ngModel"
+                           [(ngModel)]="filterGroupActivity.doneBy"
+                           placeholder="{{'Search by Done By' | translate}}">
+                </fieldset>
+            </div>
+            <div class="col-xs-6 col-md-4">
+                <fieldset class="form-group">
+                    <label>{{'Correlation ID' | translate}}</label>
+                    <input class="form-control input-mandatory" autocomplete="redundant"
+                           (keypress)="filtersService.keyPressStringRestricts($event)"
+                           (keyup.enter)="acceptActivityFilters()"
+                           name="correlationid" #correlationid="ngModel"
+                           [(ngModel)]="filterGroupActivity.correlationId"
+                           placeholder="{{'Search by Correlation ID' | translate}}">
+                </fieldset>
+            </div>
+            <div class="col-xs-12 col-md-12 set-filters-section" *ngIf="toggleFilterSectionActivity">
+                <button type="button" class="btn btn-set-filters refresh"
+                        (click)="initActivityFilterGroup()">
+                    <img class="icon-eracer" src="./assets/images/transactions/eraser.svg" alt="">
+                </button>
+                <button type="button" class="btn btn-primary-accept btn-set-filters pull-right"
+                        (click)="acceptActivityFilters();toggleFilterSectionActivity=false;">
+                    {{'OK' | translate}}
+                </button>
+            </div>
+        </div>
+    </div>
+    <!--<hr>-->
+    <div class="table-responsive">
+        <!--<button class="pn-Advancer pn-Advancer_Left pnAdvancerLeft-1"-->
+        <!--[ngClass]="{'isDemanded': advancedScrollService.SETTINGS.navBarTravelDirection === 'both' || advancedScrollService.SETTINGS.navBarTravelDirection === 'left'}"-->
+        <!--type="button">-->
+        <!--<i class="fa fa-angle-left"></i>-->
+        <!--</button>-->
+        <!--<button class="pn-Advancer pn-Advancer_Right pnAdvancerRight-1"-->
+        <!--[ngClass]="{'isDemanded': advancedScrollService.SETTINGS.navBarTravelDirection === 'both' || advancedScrollService.SETTINGS.navBarTravelDirection === 'right'}"-->
+        <!--type="button">-->
+        <!--<i class="fa fa-angle-right"></i>-->
+        <!--</button>-->
+        <table class="table pnProductNavContent-1">
+            <thead>
+            <tr>
+                <th (click)="setPositionIconStatus('operationDate')" class="align-middle"
+                    *ngIf="tableActivityReportsListFilter['operationDate']?.checkbox"
+                    [ngClass]="{'sorted': orderBy.operationDate === 'DESC', 'sorted-desc': orderBy.operationDate === 'ASC'}">
+                    <div class="text-left" title="{{'Operation Date' | translate}}">
+                        <span>{{'Operation Date' | translate}}</span> <span
+                            class="sort-indicator"></span>
+                    </div>
+                </th>
+                <th (click)="setPositionIconStatus('operationDoneBy')" class="align-middle"
+                    *ngIf="tableActivityReportsListFilter['operationDoneBy']?.checkbox"
+                    [ngClass]="{'sorted': orderBy.operationDoneBy === 'DESC', 'sorted-desc': orderBy.operationDoneBy === 'ASC'}">
+                    <div class="text-left" title="{{'User' | translate}}">
+                        <span>{{'User' | translate}}</span> <span class="sort-indicator"></span>
+                    </div>
+                </th>
+                <th (click)="setPositionIconStatus('merchantName')" class="align-middle"
+                    *ngIf="tableActivityReportsListFilter['merchantName']?.checkbox"
+                    [ngClass]="{'sorted': orderBy.merchantName === 'DESC', 'sorted-desc': orderBy.merchantName === 'ASC'}">
+                    <div class="text-left" title="{{'Merchant Name' | translate}}">
+                        <span>{{'Merchant Name' | translate}}</span> <span
+                            class="sort-indicator"></span>
+                    </div>
+                </th>
+                <th (click)="setPositionIconStatus('operationDescription')" class="align-middle"
+                    *ngIf="tableActivityReportsListFilter['operationDescription']?.checkbox"
+                    [ngClass]="{'sorted': orderBy.operationDescription === 'DESC', 'sorted-desc': orderBy.operationDescription === 'ASC'}">
+                    <div class="text-left" title="{{'Operation Description' | translate}}">
+                        <span>{{'Operation Description' | translate}}</span> <span
+                            class="sort-indicator"></span>
+                    </div>
+                </th>
+                <th (click)="setPositionIconStatus('correlationId')" class="align-middle"
+                    *ngIf="tableActivityReportsListFilter['correlationId']?.checkbox"
+                    [ngClass]="{'sorted': orderBy.correlationId === 'DESC', 'sorted-desc': orderBy.correlationId === 'ASC'}">
+                    <div class="text-left" title="{{'Correlation ID' | translate}}">
+                        <span>{{'Correlation ID' | translate}}</span> <span
+                            class="sort-indicator"></span>
+                    </div>
+                </th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr (click)="transitionToActiveDetails(report)"
+                *ngFor="let report of activityReportsList; index as i;">
+                <td class="text-left" *ngIf="tableActivityReportsListFilter['operationDate'].checkbox">
+                    {{report.operationDate | utcToLocalDate | date: 'dd/MM/yyyy HH:mm:ss'}}
+                </td>
+                <td class="text-left"
+                    *ngIf="tableActivityReportsListFilter['operationDoneBy'].checkbox">
+                    {{report.operationDoneBy}}
+                </td>
+                <td class="text-left" *ngIf="tableActivityReportsListFilter['merchantName'].checkbox">
+                    {{report.merchantName}}
+                </td>
+                <td class="text-left"
+                    *ngIf="tableActivityReportsListFilter['operationDescription'].checkbox">
+                    {{report.operationDescription}}
+                </td>
+                <!--<td class="text-left" *ngIf="tableActivityReportsListFilter['additionalDetails'].checkbox">-->
+                <!--{{report.additionalDetails}}-->
+                <!--</td>-->
+                <td class="text-left" *ngIf="tableActivityReportsListFilter['correlationId'].checkbox">
+                    {{report.correlationId}}
+                </td>
+
+            </tr>
+            </tbody>
+        </table>
+    </div>
+    <div *ngIf="collectionSize > maxSize" class="page-footter">
+        <div class="text-muted fs-12">{{'Pages' | translate}}</div>
+        <ngb-pagination [collectionSize]="collectionSize"
+                        [(page)]="page" [maxSize]="maxSize"
+                        [pageSize]="pageSize" (pageChange)="pageChange($event)"
+                        [rotate]="true" [ellipses]="false"
+                        [boundaryLinks]="true"></ngb-pagination>
+    </div>
+</div>

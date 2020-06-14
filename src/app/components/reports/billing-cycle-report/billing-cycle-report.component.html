@@ -1,0 +1,319 @@
+<div>
+    <div class="row">
+        <div class=" col-xs-6 col-md-3">
+            <div class="form-group">
+                <label>{{'Custom Date' | translate}}</label>
+                <div class="input-group datepicker-input">
+                    <input class="form-control" placeholder="{{'dd/mm/yyyy' | translate}}"
+                           (ngModelChange)="tablePeriodFrom=$event;onDateRangeChange()"
+                           placement="{{datepickerPosition}}"
+                           name="dp" [(ngModel)]="tablePeriodFrom" ngbDatepicker #d="ngbDatepicker">
+                    <button class="input-group-addon"
+                            (click)="d.toggle();$event.stopPropagation();"
+                            (document:click)="closeOutsideDatePicker($event, d)" type="button">
+                        <!--<span class="fa fa-calendar"></span>-->
+                        <img class="img-calendar" src="./assets/images/transactions/Calendar.svg" alt="">
+                    </button>
+                </div>
+            </div>
+        </div>
+        <div class=" col-xs-6 col-md-1 download-excel">
+            <button (click)="downloadCurrentReportList('xls')"
+                    title="{{'Download Report (xls)' | translate}}"
+                    class="btn-print download-excel-btn">
+                <img src="./assets/images/transactions-details/xls-icon.svg" alt="">
+            </button>
+        </div>
+        <div class=" col-xs-6 col-md-1 download-excel">
+            <button (click)="downloadCurrentReportList('bef')"
+                    title="{{'Download Report (bef)' | translate}}"
+                    class="btn-print download-excel-btn">
+                <i class="fa fa-bank"></i>
+            </button>
+        </div>
+        <div class=" col-xs-6 col-md-4 clear-space">
+            <!--<div class="header-section d-flex justify-content-start">-->
+            <!--<div class="upload-container d-flex justify-content-start">-->
+            <!--<input type="file"-->
+            <!--(change)="uploadVisaFile($event)"-->
+            <!--style="display: none" #fileVisa-->
+            <!--placeholder="Upload File" accept="*.txt"/>-->
+            <!--<button class="btn btn-main" *ngIf="!isUploadingInProgress" (click)="fileVisa.click()">-->
+            <!--{{'Upload Visa File' | translate}}-->
+            <!--</button>-->
+            <!--<div class="spinner-upload" *ngIf="isUploadingInProgress">-->
+            <!--{{'Uploading...' | translate}}-->
+            <!--<i class="fa fa-gear fa-spin"></i>-->
+            <!--</div>-->
+            <!--</div>-->
+            <!--</div>-->
+        </div>
+        <div class=" col-3 col-xs-6 col-md-3 filter-drop-t">
+            <div class="form-group wrapper-dropdown">
+                <div ngbDropdown class="d-inline-block dropdown" placement="{{placementPosition}}">
+                    <button class="btn" ngbDropdownToggle>
+                        <img *ngIf="isColumnsFilterEmpty"
+                             src="./assets/images/transactions/Filter-white.svg" alt="">
+                        <img *ngIf="!isColumnsFilterEmpty"
+                             src="./assets/images/transactions/Filter-red.svg" alt="">
+                        <div class="btn-text">{{'Columns' | translate}}</div>
+                    </button>
+                    <div ngbDropdownMenu>
+                        <div class="dropdown-item" [ngClass]="{'checked': filter.checkbox}"
+                             (click)="filter.checkbox = !filter.checkbox; checkColumnsFilterEmpty()"
+                             *ngFor="let filter of tableBusinessReportsListFilter | getValues; index as i;">
+                            <input type="checkbox"
+                                   (change)="tableBusinessReportsListFilter[filter.key].checkbox = filter.checkbox"
+                                   [(ngModel)]="filter.checkbox">
+                            <div style="display:inline-block">
+                                {{filter.title | translate}}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class=" col-xs-6 col-md-10"></div>
+        <div class=" col-xs-6 col-md-2">
+            <!-- <button (click)="setBillingsPayed(null)" *ngIf="!areBillingReportsPayed"
+                    class="btn btn-primary-accept all-payed-btn">
+                {{'Set All Payed' | translate }}
+            </button> -->
+        </div>
+    </div>
+    <!--<hr>-->
+    <div class="pnProductNav-2">
+        <div class="table-responsive">
+            <!--<button class="pn-Advancer pn-Advancer_Left pnAdvancerLeft-2"-->
+            <!--[ngClass]="{'isDemanded': advancedScrollService.SETTINGS.navBarTravelDirection === 'both' || advancedScrollService.SETTINGS.navBarTravelDirection === 'left'}"-->
+            <!--type="button">-->
+            <!--<i class="fa fa-angle-left"></i>-->
+            <!--</button>-->
+            <!--<button class="pn-Advancer pn-Advancer_Right pnAdvancerRight-2"-->
+            <!--[ngClass]="{'isDemanded': advancedScrollService.SETTINGS.navBarTravelDirection === 'both' || advancedScrollService.SETTINGS.navBarTravelDirection === 'right'}"-->
+            <!--type="button">-->
+            <!--<i class="fa fa-angle-right"></i>-->
+            <!--</button>-->
+            <table class="table pnProductNavContent-2">
+                <thead>
+                <tr>
+                    <th (click)="setPositionIconStatus('reportDate')" class="align-middle"
+                        *ngIf="tableBusinessReportsListFilter['reportDate']?.checkbox"
+                        [ngClass]="{'sorted': orderBy.reportDate === 'DESC', 'sorted-desc': orderBy.reportDate === 'ASC'}">
+                        <div class="text-left" title="{{'Date' | translate}}">
+                            <span>{{'Date' | translate}}</span> <span class="sort-indicator"></span>
+                        </div>
+                    </th>
+
+                    <th (click)="setPositionIconStatus('merchantName')" class="align-middle"
+                        *ngIf="tableBusinessReportsListFilter['merchantName']?.checkbox"
+                        [ngClass]="{'sorted': orderBy.merchantName === 'DESC', 'sorted-desc': orderBy.merchantName === 'ASC'}">
+                        <div class="text-left" title="{{'Merchant Name' | translate}}">
+                            <span>{{'Merchant Name' | translate}}</span> <span
+                                class="sort-indicator"></span>
+                        </div>
+                    </th>
+
+                    <th (click)="setPositionIconStatus('billableTransactionsTotal')" class="align-middle"
+                        *ngIf="tableBusinessReportsListFilter['billableTransactionsTotal']?.checkbox"
+                        [ngClass]="{'sorted': orderBy.billableTransactionsTotal === 'DESC', 'sorted-desc': orderBy.billableTransactionsTotal === 'ASC'}">
+                        <div class="text-left" title="{{'Billable Transactions Total' | translate}}">
+                            <span>{{'Billable Transactions Total' | translate}}</span> <span
+                                class="sort-indicator"></span>
+                        </div>
+                    </th>
+                    <th (click)="setPositionIconStatus('comissionTotal')" class="align-middle"
+                        *ngIf="tableBusinessReportsListFilter['comissionTotal']?.checkbox"
+                        [ngClass]="{'sorted': orderBy.comissionTotal === 'DESC', 'sorted-desc': orderBy.comissionTotal === 'ASC'}">
+                        <div class="text-left" title="{{'Comission Total' | translate}}">
+                            <span>{{'Comission Total' | translate}}</span> <span
+                                class="sort-indicator"></span>
+                        </div>
+                    </th>
+
+                    <th (click)="setPositionIconStatus('merchantTotal')" class="align-middle"
+                        *ngIf="tableBusinessReportsListFilter['merchantTotal']?.checkbox"
+                        [ngClass]="{'sorted': orderBy.merchantTotal === 'DESC', 'sorted-desc': orderBy.merchantTotal === 'ASC'}">
+                        <div class="text-left" title="{{'Merchant Total' | translate}}">
+                            <span>{{'Merchant Total' | translate}}</span> <span
+                                class="sort-indicator"></span>
+                        </div>
+                    </th>
+                    <th (click)="setPositionIconStatus('chargebackTotal')" class="align-middle"
+                        *ngIf="tableBusinessReportsListFilter['chargebackTotal']?.checkbox"
+                        [ngClass]="{'sorted': orderBy.chargebackTotal === 'DESC', 'sorted-desc': orderBy.chargebackTotal === 'ASC'}">
+                        <div class="text-left" title="{{'Chargeback Total' | translate}}">
+                            <span>{{'Chargeback Total' | translate}}</span> <span
+                                class="sort-indicator"></span>
+                        </div>
+                    </th>
+                    <th (click)="setPositionIconStatus('refundTotal')" class="align-middle"
+                        *ngIf="tableBusinessReportsListFilter['refundTotal']?.checkbox"
+                        [ngClass]="{'sorted': orderBy.refundTotal === 'DESC', 'sorted-desc': orderBy.refundTotal === 'ASC'}">
+                        <div class="text-left" title="{{'Refund Total' | translate}}">
+                            <span>{{'Refund Total' | translate}}</span> <span
+                                class="sort-indicator"></span>
+                        </div>
+                    </th>
+                    <th (click)="setPositionIconStatus('collateral')" class="align-middle"
+                        *ngIf="tableBusinessReportsListFilter['collateral']?.checkbox"
+                        [ngClass]="{'sorted': orderBy.collateral === 'DESC', 'sorted-desc': orderBy.collateral === 'ASC'}">
+                        <div class="text-left" title="{{'Collateral' | translate}}">
+                            <span>{{'Collateral' | translate}}</span> <span class="sort-indicator"></span>
+                        </div>
+                    </th>
+                    <th (click)="setPositionIconStatus('toBeDeliveredTotal')" class="align-middle"
+                        *ngIf="tableBusinessReportsListFilter['toBeDeliveredTotal']?.checkbox"
+                        [ngClass]="{'sorted': orderBy.toBeDeliveredTotal === 'DESC', 'sorted-desc': orderBy.toBeDeliveredTotal === 'ASC'}">
+                        <div class="text-left" title="{{'Delivered Total' | translate}}">
+                            <span>{{'Delivered Total' | translate}}</span> <span
+                                class="sort-indicator"></span>
+                        </div>
+                    </th>
+
+                    <th (click)="setPositionIconStatus('clearingCompanyCommission')" class="align-middle"
+                        *ngIf="tableBusinessReportsListFilter['clearingCompanyCommission']?.checkbox"
+                        [ngClass]="{'sorted': orderBy.clearingCompanyCommission === 'DESC', 'sorted-desc': orderBy.clearingCompanyCommission === 'ASC'}">
+                        <div class="text-left" title="{{'CC Commission' | translate}}">
+                            <span>{{'CC Commission' | translate}}</span> <span
+                                class="sort-indicator"></span>
+                        </div>
+                    </th>
+
+                    <th (click)="setPositionIconStatus('clearingHouseAmount')" class="align-middle"
+                        *ngIf="tableBusinessReportsListFilter['clearingHouseAmount']?.checkbox"
+                        [ngClass]="{'sorted': orderBy.clearingHouseAmount === 'DESC', 'sorted-desc': orderBy.clearingHouseAmount === 'ASC'}">
+                        <div class="text-left" title="{{'CH Amount' | translate}}">
+                            <span>{{'CH Amount' | translate}}</span> <span
+                                class="sort-indicator"></span>
+                        </div>
+                    </th>
+
+                    <th (click)="setPositionIconStatus('securityCycle')" class="align-middle"
+                        *ngIf="tableBusinessReportsListFilter['securityCycle']?.checkbox"
+                        [ngClass]="{'sorted': orderBy.securityCycle === 'DESC', 'sorted-desc': orderBy.securityCycle === 'ASC'}">
+                        <div class="text-left" title="{{'Security Cycle' | translate}}">
+                            <span>{{'Security Cycle' | translate}}</span> <span
+                                class="sort-indicator"></span>
+                        </div>
+                    </th>
+                    <th (click)="setPositionIconStatus('currency')" class="align-middle"
+                        *ngIf="tableBusinessReportsListFilter['currency']?.checkbox"
+                        [ngClass]="{'sorted': orderBy.currency === 'DESC', 'sorted-desc': orderBy.currency === 'ASC'}">
+                        <div class="text-left" title="{{'Currency' | translate}}">
+                            <span>{{'Currency' | translate}}</span> <span class="sort-indicator"></span>
+                        </div>
+                    </th>
+                    <th (click)="setPositionIconStatus('balanceBefore')" class="align-middle"
+                        *ngIf="tableBusinessReportsListFilter['balanceBefore']?.checkbox"
+                        [ngClass]="{'sorted': orderBy.balanceBefore === 'DESC', 'sorted-desc': orderBy.balanceBefore === 'ASC'}">
+                        <div class="text-left" title="{{'Balance Before' | translate}}">
+                            <span>{{'Balance Before' | translate}}</span> <span
+                                class="sort-indicator"></span>
+                        </div>
+                    </th>
+                    <th (click)="setPositionIconStatus('balanceAfter')" class="align-middle"
+                        *ngIf="tableBusinessReportsListFilter['balanceAfter']?.checkbox"
+                        [ngClass]="{'sorted': orderBy.balanceAfter === 'DESC', 'sorted-desc': orderBy.balanceAfter === 'ASC'}">
+                        <div class="text-left" title="{{'Balance After' | translate}}">
+                            <span>{{'Balance After' | translate}}</span> <span
+                                class="sort-indicator"></span>
+                        </div>
+                    </th>
+                    <th (click)="setPositionIconStatus('isPayed')" class="align-middle"
+                        *ngIf="tableBusinessReportsListFilter['isPayed']?.checkbox"
+                        [ngClass]="{'sorted': orderBy.isPayed === 'DESC', 'sorted-desc': orderBy.isPayed === 'ASC'}">
+                        <div class="text-left" title="{{'Payed' | translate}}">
+                            <span>{{'Payed' | translate}}</span> <span class="sort-indicator"></span>
+                        </div>
+                    </th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr (click)="transitionToBillingDetails(report)"
+                    *ngFor="let report of reportsList; index as i;">
+
+                    <td class="text-left" *ngIf="tableBusinessReportsListFilter['reportDate'].checkbox">
+                        {{report.reportDate | utcToLocalDate | date: 'dd/MM/yyyy'}}
+                    </td>
+
+                    <td class="text-left"
+                        *ngIf="tableBusinessReportsListFilter['merchantName'].checkbox">
+                        {{report.merchantName}}
+                    </td>
+
+                    <td class="text-right"
+                        *ngIf="tableBusinessReportsListFilter['billableTransactionsTotal'].checkbox">
+                        {{report.billableTransactionsTotal | number: '1.2-2'}}
+                    </td>
+                    <td class="text-right"
+                        *ngIf="tableBusinessReportsListFilter['comissionTotal'].checkbox">
+                        {{report.comissionTotal | number: '1.2-2'}}
+                    </td>
+
+                    <td class="text-right"
+                        *ngIf="tableBusinessReportsListFilter['merchantTotal'].checkbox">
+                        {{report.merchantTotal | number: '1.2-2'}}
+                    </td>
+                    <td class="text-right"
+                        *ngIf="tableBusinessReportsListFilter['chargebackTotal'].checkbox">
+                        {{report.chargebackTotal | number: '1.2-2'}}
+                    </td>
+                    <td class="text-right"
+                        *ngIf="tableBusinessReportsListFilter['refundTotal'].checkbox">
+                        {{report.refundTotal | number: '1.2-2'}}
+                    </td>
+                    <td class="text-right"
+                        *ngIf="tableBusinessReportsListFilter['collateral'].checkbox">
+                        {{report.collateral | number: '1.2-2'}}
+                    </td>
+                    <td class="text-right"
+                        *ngIf="tableBusinessReportsListFilter['toBeDeliveredTotal'].checkbox">
+                        {{report.toBeDeliveredTotal| number: '1.2-2'}}
+                    </td>
+
+                    <td class="text-right"
+                        *ngIf="tableBusinessReportsListFilter['clearingCompanyCommission'].checkbox">
+                        {{report.clearingCompanyCommission| number: '1.2-2'}}
+                    </td>
+                    <td class="text-right"
+                        *ngIf="tableBusinessReportsListFilter['clearingHouseAmount'].checkbox">
+                        {{report.clearingHouseAmount| number: '1.2-2'}}
+                    </td>
+
+                    <td class="text-left"
+                        *ngIf="tableBusinessReportsListFilter['securityCycle'].checkbox">
+                        {{report.securityCycle}}
+                    </td>
+                    <td class="text-left"
+                        *ngIf="tableBusinessReportsListFilter['currency'].checkbox">
+                        {{report.currency}}
+                    </td>
+                    <td class="text-right"
+                        *ngIf="tableBusinessReportsListFilter['balanceBefore'].checkbox">
+                        {{report.balanceBefore| number: '1.2-2'}}
+                    </td>
+                    <td class="text-right"
+                        *ngIf="tableBusinessReportsListFilter['balanceAfter'].checkbox">
+                        {{report.balanceAfter | number: '1.2-2'}}
+                    </td>
+                    <td class="text-right"
+                        *ngIf="tableBusinessReportsListFilter['isPayed'].checkbox">
+                        <span class="fa fa-check-circle-o" *ngIf="report.isPayed" ></span>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div *ngIf="collectionSize > maxSize" class="page-footter">
+        <div class="text-muted fs-12">{{'Pages' | translate}}</div>
+        <ngb-pagination [collectionSize]="collectionSize"
+                        [(page)]="page" [maxSize]="maxSize"
+                        [pageSize]="pageSize" (pageChange)="pageChange($event)"
+                        [rotate]="true" [ellipses]="false"
+                        [boundaryLinks]="true"></ngb-pagination>
+    </div>
+</div>

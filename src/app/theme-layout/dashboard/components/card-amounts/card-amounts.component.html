@@ -1,0 +1,25 @@
+<div class="card mb-3">
+    <div class="card-header">
+        <div>
+            <img src="{{cardAmountImg}}" alt="">
+        </div>
+        <div>
+            <span>{{cardAmountTitle | translate}}</span>
+        </div>
+    </div>
+    <div class="card-body">
+        <div class="card-inner">
+            <span title="{{cardAmount | currency:'USD':true:'1.0'}}">
+                {{cardAmount | currency:'USD':true:'1.0'}}
+            </span>
+        </div>
+        <div class="card-inner-footer">
+            <span class="footer-title">
+                {{cardAmountFooterTitle | translate}}
+            </span>
+            <span class="footer-value">
+                {{cardAmountFooter | currency:'USD':'symbol':'1.0'}}
+            </span>
+        </div>
+    </div>
+</div>

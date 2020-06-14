@@ -1,0 +1,1462 @@
+// Google Fonts
+@import url("//fonts.googleapis.com/css?family=Roboto");
+
+@font-face {
+  font-family: "footable";
+  src: url("../assets/fonts/footable.eot");
+  src: url("../assets/fonts/footable.eot?#iefix") format("embedded-opentype"),
+  url("../assets/fonts/footable.woff") format("woff"),
+  url("../assets/fonts/footable.ttf") format("truetype"),
+  url("../assets/fonts/footable.svg#footable") format("svg");
+  font-weight: normal;
+  font-style: normal;
+}
+
+@import "site-mixin";
+
+$bg-color-site: #f6f4f4;
+
+body {
+  background-color: $bg-color-site;
+  font-family: Roboto, sans-serif;
+  //font-family: Roboto, sans-serif;
+}
+
+*:focus,
+button:focus,
+input:focus {
+  outline: none;
+}
+
+input.form-control {
+  outline: 0 !important;
+  -webkit-box-shadow: none !important;
+}
+
+button {
+  border: 0;
+  cursor: pointer;
+}
+
+.btn.btn-main {
+  background-color: $btn-color-1;
+  color: $text-color-3;
+  cursor: pointer;
+  height: 40px;
+  &:hover {
+    background-color: #008caf;
+    border-color: #00789b;
+  }
+  &:active {
+    background-color: #00789b;
+    border-color: #006587;
+  }
+  &:focus {
+    box-shadow: 0 0 0 0.1rem rgba(0, 101, 135, 0.5);
+  }
+}
+
+.btn.dropdown-toggle {
+  &:hover {
+    background-color: #008caf;
+    border-color: #00789b;
+  }
+  &:active {
+    background-color: #00789b;
+    border-color: #006587;
+  }
+  &:focus {
+    box-shadow: 0 0 0 0.1rem rgba(0, 101, 135, 0.5);
+  }
+}
+
+.btn-print {
+  border-radius: 4px;
+  width: 46px;
+  height: 40px;
+  background-color: $btn-color-2;
+  border: none;
+  &:hover {
+    background-color: #bac2cd;
+    border-color: #a6aeb9;
+  }
+  &:active {
+    background-color: #a6aeb9;
+    border-color: #929aa5;
+  }
+  &:focus {
+    box-shadow: 0 0 0 0.1rem rgba(146, 154, 165, 0.5);
+  }
+}
+
+//.input-group-addon {
+//  &:hover {
+//    background-color: #bac2cd;
+//    border-color: #a6aeb9;
+//  }
+//  &:active {
+//    background-color: #a6aeb9;
+//    border-color: #929aa5;
+//  }
+//  &:focus {
+//    box-shadow: 0 0 0 0.1rem rgba(146, 154, 165, 0.5);
+//  }
+//}
+
+// -  table   - //
+.table {
+  tbody {
+    tr:hover {
+      /* Permalink - use to edit and share this gradient: http://colorzilla.com/gradient-editor/#a1dbff+0,cbebff+0,f0f9ff+100 */
+      //background: #a1dbff; /* Old browsers */
+      //background: -moz-linear-gradient(
+      //                -45deg,
+      //                #a1dbff 0%,
+      //                #cbebff 0%,
+      //                #f0f9ff 100%
+      //); /* FF3.6-15 */
+      //background: -webkit-linear-gradient(
+      //                -45deg,
+      //                #a1dbff 0%,
+      //                #cbebff 0%,
+      //                #f0f9ff 100%
+      //); /* Chrome10-25,Safari5.1-6 */
+      //background: linear-gradient(
+      //                135deg,
+      //                #a1dbff 0%,
+      //                #cbebff 0%,
+      //                #f0f9ff 100%
+      //);
+      /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+      filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#a1dbff', endColorstr='#f0f9ff', GradientType=1);
+      /* IE6-9 fallback on horizontal gradient */
+      cursor: pointer;
+
+      border-radius: 5px;
+      //border: solid 1px #bac8da9e;
+      box-shadow: 0 1px 3px 0 rgba(0, 0, 0, .2), 0 1px 1px 0 rgba(0, 0, 0, .14), 0 2px 1px -1px rgba(0, 0, 0, .12);
+    }
+  }
+  thead,
+  tbody {
+    td,
+    th {
+      font-style: normal;
+      font-stretch: normal;
+      line-height: normal;
+      letter-spacing: 0.4px;
+      text-align: right;
+      color: #4e4e4e;
+      font-size: 14px;
+    }
+    th {
+      font-weight: bold;
+    }
+    td {
+      font-weight: normal;
+    }
+  }
+}
+
+.table-responsive {
+  width: 99%;
+  //display: grid;
+
+  .table {
+    thead th {
+      border-bottom: 2px solid #585858;
+      border-top: none;
+    }
+    tr {
+      border-top: 1px solid #dee2e6;
+      &:hover {
+        //border-top: none;
+      }
+      td {
+        border-top: none;
+        &.text-left {
+          .pay-cell {
+            min-width: 210px;
+          }
+        }
+      }
+    }
+  }
+}
+
+// -  table sort-indicators  - //
+th {
+  padding: 20px 10px !important;
+  white-space: nowrap;
+  cursor: pointer;
+  .text-left {
+    display: flex;
+  }
+  span {
+    //max-width: 90px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .sort-indicator {
+    display: inline-block;
+    font-family: "footable";
+    speak: none;
+    font-style: normal;
+    font-weight: normal;
+    font-variant: normal;
+    text-transform: none;
+    -webkit-font-smoothing: antialiased;
+    padding-left: 5px;
+    color: $arrow;
+    cursor: pointer;
+    &:before {
+      content: "\e022";
+    }
+  }
+  &.sorted {
+    .sort-indicator:before {
+      content: "\e013";
+    }
+  }
+  &.sorted-desc {
+    .sort-indicator:before {
+      content: "\e012";
+    }
+  }
+}
+
+//  - datepicker  - ng-selected  //
+.input-group-addon,
+.ng-arrow-zone {
+  width: 41px;
+  height: 40px;
+  border-radius: 0px 4px 4px 0px;
+  background-image: linear-gradient(to left, #d0d8e3, #d0d8e3);
+  .ng-arrow {
+    top: 7px;
+    left: 2px;
+    width: 10px;
+    height: 7px;
+    border-radius: 1px;
+    border-color: #20374f transparent transparent;
+  }
+  .img-calendar {
+    color: #20374f;
+  }
+}
+
+// * ng-selected - plugin  *//
+.ng-selected.focused:not(.opened) > .ng-control {
+  box-shadow: none;
+  border-color: #80bdff;
+}
+
+.ng-select {
+  .ng-arrow-zone {
+    width: 41px;
+    height: 40px;
+    border-radius: 0px 4px 4px 0px;
+    background-image: linear-gradient(to left, #d0d8e3, #d0d8e3);
+  }
+  &.opened .ng-arrow-zone .ng-arrow,
+  .ng-arrow-zone .ng-arrow {
+    top: 7px;
+    left: 2px;
+  }
+  &:not(.opened) {
+    .ng-arrow,
+    .ng-arrow:hover {
+      border-color: #20374f transparent transparent;
+    }
+  }
+  &.opened .ng-arrow-zone {
+    .ng-arrow,
+    .ng-arrow:hover {
+      border-color: transparent transparent #20374f;
+    }
+  }
+  &.ng-single .ng-control {
+    height: 40px;
+  }
+}
+
+.ng-select-dropdown-outer {
+  .ng-select-dropdown {
+    .ng-option {
+      &.marked {
+        background-color: #e2e6ea;
+      }
+      &.selected {
+        // background-color: #00a8cc;
+      }
+    }
+  }
+}
+
+// * bootstrap - plugin  *//
+.bg-primary {
+  background-color: $btn-color-1 !important;
+}
+
+.btn:focus,
+.btn.focus {
+  box-shadow: none;
+}
+
+.btn-link {
+  color: #000;
+}
+
+.pagination {
+  & :first-child,
+  & :last-child {
+    a {
+      background-color: #d0d8e3;
+    }
+  }
+  li {
+    a {
+      font-size: 15px;
+      font-weight: 500;
+      font-style: normal;
+      font-stretch: normal;
+      line-height: normal;
+      letter-spacing: 0.4px;
+      text-align: center;
+      color: #434a59;
+    }
+    &.active {
+      a.page-link {
+        background-color: #00a8cc;
+        border: 1px solid #dee2e6;
+      }
+    }
+  }
+  li.page-item.disabled {
+    a.page-link {
+      background-color: #585858;
+    }
+  }
+}
+
+ngb-tabset .nav-tabs {
+  background-color: $bg-header-panel;
+  .nav-link {
+    font-size: 16px;
+    font-weight: normal;
+    font-style: normal;
+    font-stretch: normal;
+    line-height: normal;
+    letter-spacing: 0.5px;
+    text-align: center;
+    color: $text-color-2;
+    text-transform: uppercase;
+    display: inline-block;
+    max-width: 170px;
+    margin: 0 20px;
+    &:hover,
+    &:focus {
+      font-weight: bold;
+      color: $text-color-3;
+      border: none;
+    }
+    &.active {
+      background-color: $bg-header-panel;
+      border-bottom: 5px solid #00a8cc;
+      color: $text-color-3;
+      border-top: none;
+      border-left: none;
+      border-right: none;
+    }
+  }
+}
+
+.btn-primary-main {
+  background-color: $btn-color-3;
+  color: #fff;
+  &:hover {
+    background-color: #1e2b41;
+    border-color: #151a2d;
+  }
+  &:active {
+    background-color: #151a2d;
+    border-color: #0b0b19;
+  }
+  &:focus {
+    box-shadow: 0 0 0 0.1rem rgba(11, 11, 25, 0.5);
+  }
+  &.disabled {
+    background-color: #e5e5e5;
+  }
+}
+
+.btn-primary-accept {
+  background-color: $btn-color-4;
+  color: #fff;
+  &:hover {
+    background-color: #77c36b;
+    border-color: #65af59;
+  }
+  &:active {
+    background-color: #65af59;
+    border-color: #559b4f;
+  }
+  &:focus {
+    box-shadow: 0 0 0 0.1rem rgba(85, 155, 79, 0.5);
+  }
+}
+
+.btn-primary-danger {
+  background-color: $btn-color-5;
+  color: #fff;
+  &:hover {
+    background-color: #cd6d6d;
+    border-color: #b95d5d;
+  }
+  &:active {
+    background-color: #b95d5d;
+    border-color: #a55353;
+  }
+  &:focus {
+    box-shadow: 0 0 0 0.1rem rgba(165, 83, 83, 0.5);
+  }
+}
+
+.btn-primary-close {
+  background-color: $btn-color-2;
+  color: #ffffff;
+  &:hover {
+    background-color: #a6aeb9;
+    border-color: #929aa5;
+  }
+  &:active {
+    background-color: #929aa5;
+    border-color: #7e8691;
+  }
+  &:focus {
+    box-shadow: 0 0 0 0.1rem rgba(126, 134, 145, 0.5);
+  }
+}
+
+.btn-5 {
+  height: 40px;
+  font-size: 12px;
+  padding: 0 20px;
+  background-color: #00a8cc;
+  color: #fff;
+}
+
+.download-excel-btn {
+  z-index: 999;
+  bottom: 17px;
+  position: absolute;
+}
+
+//* angular material - plugin *//
+
+.merchants-details {
+  .mat-tab-labels {
+    :nth-child(2) {
+      .mat-tab-label-content {
+        line-height: 2.5em !important;
+      }
+    }
+  }
+
+}
+
+.mat-tab-labels {
+  background-color: #20374f;
+  .mat-tab-label {
+    opacity: 1;
+    height: 59px;
+    padding: 0 24px;
+    cursor: pointer;
+    white-space: inherit;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    font-size: 16px;
+    font-weight: normal;
+    font-style: normal;
+    font-stretch: normal;
+    line-height: normal;
+    letter-spacing: 0.5px;
+    text-align: center;
+    color: #b6cadf;
+    text-transform: uppercase;
+    display: inline-block;
+    max-width: 170px;
+    min-width: 170px;
+    margin: 0 20px;
+    padding-top: 10px;
+    &:hover {
+      color: #fff; // font-weight:bold;
+    }
+    &:focus {
+      background-color: #20374f; // font-weight:bold;
+    }
+    &.mat-tab-label-active {
+      color: #fff; // font-weight:bold;
+    }
+  }
+}
+
+.mat-tab-label:not(.mat-tab-disabled):focus {
+  background-color: #20374f !important;
+}
+
+.mat-tab-group.mat-primary .mat-ink-bar,
+.mat-tab-nav-bar.mat-primary .mat-ink-bar {
+  background-color: #00a8cc;
+  height: 5px;
+}
+
+.mat-tab-header-pagination-controls-enabled .mat-tab-header-pagination {
+  background-color: #20374f;
+}
+
+.mat-tab-header-pagination-chevron {
+  border-color: $white;
+}
+
+.mat-tab-header-pagination-disabled .mat-tab-header-pagination-chevron {
+  border-color: grey;
+}
+
+.mat-tab-label-container {
+  background-color: $bg-header-panel;
+}
+
+// Y. Marshall 18.03.2018
+
+.mat-tab-body-content {
+  min-height: 1000px !important;
+  overflow-x: hidden !important;
+}
+
+.page-responsive {
+  max-width: 90%;
+}
+
+.justify-vertical-middle {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.wrapper-dropdown {
+  bottom: 0;
+  right: 15px;
+  position: absolute;
+  & > div > button {
+    background-color: $btn-color-1;
+    .btn-text {
+      font-size: 15px;
+      font-weight: 500;
+      font-style: normal;
+      font-stretch: normal;
+      line-height: normal;
+      letter-spacing: 0.4px;
+      text-align: left;
+      color: $white;
+      display: inline-block;
+    }
+    &::after {
+      color: $white;
+    }
+  }
+
+  .dropdown-item {
+    background: $white;
+    color: #585858;
+    cursor: pointer;
+    input[type="checkbox"] {
+      clip: rect(1px, 1px, 1px, 1px);
+      left: -9999px;
+      position: absolute !important;
+    }
+    label:before,
+    input[type="checkbox"] + div:before {
+      content: '';
+      display: inline-block;
+      vertical-align: text-top;
+      line-height: 1.1em;
+      border: 1px solid #999;
+      border-radius: 0.2em;
+      width: 1.1em;
+      height: 1.1em;
+      margin-right: 0.3em;
+      text-align: center;
+    }
+    &.checked {
+      input[type="checkbox"] + div:before {
+        content: '✔';
+        color: #00a8cc;
+      }
+    }
+  }
+
+}
+
+.clean-house-modals {
+  //top: 50%;
+  //transform: translateY(-50%);
+  .modal-content {
+    border: 0;
+    box-shadow: 0 3px 1px -2px rgba(0, 0, 0, .2),
+    0 2px 2px 0 rgba(0, 0, 0, .14),
+    0 1px 5px 0 rgba(0, 0, 0, .12);
+  }
+}
+
+
+.rates-modal {
+  .modal-content{
+    width: 600px;
+  }
+}
+
+.alert-danger {
+  position: absolute;
+  width: 100%;
+  text-align: right;
+  color: #980000;
+  background-color: transparent;
+  font-size: 14px;
+  right: 15px;
+  &.datepicker {
+    right: 0;
+    bottom: -22px;
+  }
+}
+
+.form-control.ng-invalid {
+  background-color: #f4cccc;
+}
+
+.modal-open .modal {
+  overflow-y: hidden;
+}
+
+body.rtl {
+  .wrapper-dropdown {
+    left: 15px;
+    right: auto;
+
+    &.xls {
+      right: 0;
+      left: auto;
+    }
+  }
+  .check-group {
+    .btn-group > .btn:not(:first-child) {
+      border-radius: 5px 0 0 5px !important;
+    }
+    .btn-group > .btn:not(:last-child):not(.dropdown-toggle) {
+      border-radius: 0 5px 5px 0 !important;
+    }
+  }
+  .btn-filter-trigger {
+    margin-right: 15px;
+    float: right;
+  }
+  app-activity-report,
+  app-transactions-report,
+  app-billing-cycle-report,
+  app-chargeback-report {
+    .btn-filter-trigger {
+      margin-left: 10px;
+      float: none;
+    }
+    .filter-section {
+      margin-left: 10px;
+    }
+    .btn-filter-trigger {
+      @media screen and (min-width: 375px) and (max-width: 767px) {
+        margin-left: 0;
+        height: 38px !important;
+        margin-right: 0;
+      }
+    }
+    .filter-drop, .filter-drop-t {
+      @media screen and (min-width: 375px) and (max-width: 767px) {
+        width: inherit;
+      }
+    }
+    .download-excel-btn {
+      @media screen and (min-width: 375px) and (max-width: 767px) {
+        bottom: 16px;
+        position: relative !important;
+        left: 0 !important;
+        margin-top: 15px;
+      }
+    }
+    .wrapper-dropdown {
+      margin-left: 10px;
+      @media screen and (min-width: 375px) and (max-width: 767px) {
+        position: relative !important;
+        margin-right: 15px;
+        margin-left: -4px !important;
+      }
+    }
+    .download-excel {
+      @media screen and (min-width: 375px) and (max-width: 767px) {
+        width: inherit;
+      }
+    }
+  }
+  //app-chargeback-report {
+  //  .wrapper-dropdown {
+  //    margin-left: 10px !important;
+  //  }
+  //}
+  //app-billing-cycle-report {
+  //  .wrapper-dropdown {
+  //    margin-left: 10px;
+  //  }
+  //}
+  .ng-select-dropdown-outer.bottom {
+    text-align: right;
+  }
+
+  .page-merchants {
+    .btn-filter-trigger {
+      @media screen and (min-width: 375px) and (max-width: 767px) {
+        height: 40px !important;
+      }
+    }
+  }
+
+  .main-container {
+    &.rtl-mode {
+      .filter-section {
+        text-align: right;
+      }
+      .ng-select.ng-single .ng-control .ng-value-container {
+        padding: 0 10px 0 0 !important;
+      }
+      .ng-select .ng-clear-zone {
+        padding-left: 20px !important;
+      }
+      .form-group {
+        .ng-select.ng-single .ng-control .ng-value-container {
+          padding: 0 10px 0 0 !important;
+        }
+        .ng-select .ng-clear-zone {
+          padding-left: 20px !important;
+        }
+      }
+      .title {
+        text-align: right;
+      }
+      .card-body {
+        .filter-drop-t {
+          .status-filter {
+            right: auto !important;
+            left: 160px !important;
+          }
+          .columns-filter {
+            right: auto;
+            left: 20px;
+          }
+        }
+        .credit-card {
+          padding: 0 0 0 20px !important;
+        }
+      }
+
+      .table-responsive {
+        //direction: ltr !important;
+        table {
+          //direction: ltr !important;
+          //thead {
+          //  direction: ltr !important;
+          //}
+          //tbody {
+          //  direction: ltr !important;
+          //}
+          tr {
+            th {
+              .sort-indicator {
+                padding-right: 5px;
+                padding-left: 0;
+              }
+            }
+            td {
+              direction: ltr;
+              text-align: right !important;
+            }
+          }
+        }
+      }
+
+      .page-merchants-details, .page-system-settings {
+          .user-general-info {
+            text-align: right;
+          }
+        .KYC-card {
+          .KYC-card-body {
+            .general-controls {
+              .approval-labels-container {
+                padding: 5px 0 0 30px !important;
+              }
+            }
+            .header {
+              text-align: right;
+            }
+            .documents-basement {
+              .document-row {
+                .label, .value {
+                  text-align: right !important;
+                }
+                .status-btns {
+                  button {
+                    margin-right: 0 !important;
+                    margin-left: 20px !important;
+                  }
+                }
+                .d-icon {
+                  img {
+                    right: 25% !important;
+                  }
+                }
+                .d-type {
+                  .description {
+                    text-align: right;
+                  }
+                }
+              }
+            }
+          }
+        }
+        .general-details-card {
+          .general-form {
+            .phone-number-form {
+              direction: ltr;
+              text-align: right;
+            }
+          }
+        }
+        .financial-information-card {
+          .financial-form {
+            .card-number-form {
+              direction: ltr;
+              text-align: right;
+            }
+            .fieldset-label {
+              text-align: right;
+              padding-right: 15px;
+            }
+            .apply-limits-btn {
+              float: right;
+              width: 120px;
+            }
+            .j5-failed-label {
+              right: 150px;
+            }
+            .rate-table {
+              margin-right: 15px;
+            }
+          }
+        }
+      }
+      .page-transaction-information {
+        .card-header {
+          span {
+            text-align: right;
+          }
+        }
+        .card-body {
+          .card-body-title {
+            //.user-general-info {
+            //  .credit-card {
+            //    padding: 0 0 0 20px;
+            //  }
+            //}
+            .right-label {
+              left: 20px;
+            }
+          }
+          .form-control-plaintext.text, .card-body-title {
+            text-align: right;
+          }
+          .card-number {
+            direction: ltr;
+            text-align: right;
+          }
+        }
+      }
+      .page-billing-reports-details {
+        .card-body {
+          .download-excel-btn {
+            right: 15px;
+          }
+        }
+      }
+      .filter-section {
+        .set-filters-section {
+          .btn-set-filters {
+            float: left !important;
+            margin-left: 8px;
+            &.refresh {
+              float: right !important;
+            }
+          }
+        }
+      }
+      .wrapper-dropdown.billing-cycle-columns {
+        right: auto !important;
+        //left: 30px !important;
+        margin-left: 0;
+      }
+    }
+    &.rtl-mode.safari {
+      .table-responsive {
+        direction: ltr !important;
+      }
+    }
+  }
+  .refresh-details-container {
+    left: 15px;
+  }
+  .page-reports {
+    .header-section {
+      .upload-container {
+        margin-right: 54px;
+      }
+    }
+    .card {
+      .filter-drop {
+        .download-excel-btn {
+
+        }
+        .wrapper-dropdown {
+          //right: 150px;
+          //left: auto;
+          margin-left: 10px;
+        }
+      }
+    }
+    .btn-print.download-excel-btn.transactions {
+      bottom: 16px;
+      position: absolute;
+      left: 15px;
+      right: auto;
+    }
+  }
+  .page-chargebacks {
+    .card-header-inner {
+      span {
+        text-align: right;
+      }
+    }
+    .set-filters-section {
+
+    }
+    .btn-filter-trigger {
+      @media screen and (min-width: 375px) and (max-width: 767px) {
+        margin-left: 0;
+        height: 38px !important;
+        margin-right: 0;
+      }
+    }
+    .table-responsive {
+      .table {
+        margin-top: 20px;
+      }
+    }
+    .visa-files {
+      right: 10px !important;
+      left: auto;
+    }
+  }
+  .page-item:first-child .page-link {
+    border-radius: 0 0.25rem 0.25rem 0 !important;
+  }
+  .page-item:last-child .page-link {
+    border-radius: 0.25rem 0 0 0.25rem !important;
+  }
+
+  .ng-select.action-type .ng-value-container {
+    padding-right: 10px;
+  }
+
+  .modal-dialog {
+    .modal-header {
+      .modal-title {
+
+      }
+      .close {
+        margin-left: 0 !important;
+      }
+    }
+    .modal-body {
+      .form-group {
+        .ng-select .ng-control .ng-value-container .ng-placeholder,
+        .ng-select.ng-single .ng-control .ng-value-container .ng-value {
+          padding-right: 10px;
+        }
+      }
+    }
+    .modal-footer {
+      & > :not(:first-child) {
+        margin-left: 0;
+      }
+      button:last-child {
+        margin-right: 10px;
+      }
+      .btn-main {
+
+      }
+      .btn-primary-close {
+
+      }
+    }
+  }
+
+  .page-footter {
+    .text-muted {
+      text-align: right;
+      padding-right: 40px;
+    }
+  }
+
+  .page-transactions {
+    .wrapper-dropdown {
+      right: 0 !important;
+    }
+    .btn-filter-trigger {
+      margin-right: 15px;
+      @media screen and (min-width: 375px) and (max-width: 767px) {
+        margin-left: 0;
+        margin-right: 0;
+        height: 38px;
+      }
+    }
+    .filter-body {
+      //margin-top: 38px;
+    }
+    .filter-section {
+      //margin-bottom: 55px;
+    }
+    .filter-drop-t {
+      @media screen and (min-width: 375px) and (max-width: 767px) {
+        width: inherit;
+      }
+    }
+    .wrapper-dropdown {
+      @media screen and (min-width: 375px) and (max-width: 767px) {
+        position: relative !important;
+      }
+    }
+  }
+
+  .page-transaction-history-details {
+    .card-header {
+      span {
+        @media screen and (min-width: 375px) and (max-width: 767px) {
+          text-align: right;
+        }
+      }
+    }
+  }
+
+  .page-visa-files {
+    .card-body {
+      position: relative;
+      .header-section {
+        position: static;
+        margin-top: 29px;
+        .upload-container {
+          z-index: 9;
+        }
+      }
+      .visa-files {
+        @media screen and (min-width: 375px) and (max-width: 767px) {
+          position: absolute;
+        }
+      }
+      .wrapper-dropdown {
+        @media screen and (min-width: 375px) and (max-width: 767px) {
+          width: inherit;
+        }
+      }
+    }
+  }
+}
+
+.ng-select.ng-multiple .ng-control .ng-value-container {
+  justify-content: center;
+  .ng-placeholder {
+    padding: 5px;
+  }
+}
+
+.btn-print.download-excel-btn.transactions.activity {
+  right: 0;
+}
+
+//.mat-tab-header, .mat-tab-labels {
+//  direction: ltr !important;
+//}
+
+.card-body {
+  .filter-drop-s {
+    right: -10px;
+  }
+  .filter-drop-t {
+    .status-filter {
+      left: auto !important;
+      right: 160px !important;
+    }
+    .columns-filter {
+      left: auto;
+      right: 20px;
+    }
+  }
+}
+
+.rtl {
+  .form-group {
+    label {
+      width: 100%;
+      text-align: right !important;
+    }
+  }
+}
+
+.card-header {
+  background-color: $bg-header-panel;
+  font-size: 16px;
+  font-weight: bold;
+  font-style: normal;
+  font-stretch: normal;
+  line-height: normal;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  color: $white;
+  .card-header-inner {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    .buttons-section {
+      .btn-main {
+        margin-right: 20px;
+        .icon-plus {
+          font-size: 16px;
+        }
+      }
+      .btn-main:after {
+        //content: 'Add New Merchant';
+      }
+      .btn-icon-refresh {
+        border-radius: 4px;
+        width: 40px;
+        height: 40px;
+        background-color: #d0d8e3;
+        border: none;
+      }
+    }
+  }
+}
+
+.card-body {
+  position: relative;
+  label {
+    font-size: 13px;
+    font-weight: 500;
+    font-style: normal;
+    font-stretch: normal;
+    line-height: normal;
+    letter-spacing: 0.4px;
+    text-align: left;
+    color: $label;
+  }
+
+  th {
+    white-space: inherit;
+  }
+
+  hr {
+    position: absolute;
+    width: 100%;
+    left: 0;
+    border: 0;
+    height: 2px;
+    background-color: #D0D8E3;
+  }
+
+  .table-responsive {
+    margin-bottom: 100px;
+    margin-top: 30px;
+    border-bottom: 2px solid #979797;
+    position: relative;
+    box-sizing: border-box;
+    //overflow: hidden;
+    .pn-Advancer {
+      opacity: 0;
+    }
+    &:hover {
+      .pn-Advancer {
+        opacity: 0.5;
+        &:hover {
+          opacity: 1;
+        }
+      }
+    }
+    /* width */
+    &::-webkit-scrollbar {
+      height: 7px;
+      border-radius: 5px;
+    }
+    /* Track */
+    &::-webkit-scrollbar-track {
+      background: #f1f1f1;
+    }
+    /* Handle */
+    &::-webkit-scrollbar-thumb {
+      background: #888;
+      border-radius: 5px;
+    }
+    /* Handle on hover */
+    &::-webkit-scrollbar-thumb:hover {
+      background: #555;
+    }
+    table {
+      tr {
+        td {
+          .color-label {
+            color: #ffffff;
+            width: 22px;
+            height: 19px;
+            border-radius: 4px;
+            padding: 5px 10px;
+            &.r-0 {
+              background-color: #aaaaaa;
+            }
+            &.r-1 {
+              background-color: #88d97c;
+            }
+            &.r-2 {
+              background-color: #cadf5c;
+            }
+            &.r-3 {
+              background-color: #f4d555;
+            }
+            &.r-4 {
+              background-color: #ffaf7c;
+            }
+            &.r-5 {
+              background-color: #e48282;
+            }
+          }
+        }
+      }
+    }
+  }
+  .filter-drop {
+    //width: inherit;
+  }
+  .page-footter {
+    position: absolute;
+    bottom: 10px;
+  }
+}
+
+.height-cell-100 {
+  height: 100%;
+}
+
+.filter-section {
+  .filter-body {
+    padding: 5px 0 15px;
+    margin: 0;
+    border: 1px solid #88d97c;
+    border-radius: 5px;
+    box-shadow: 0 0 24px rgba(0, 0, 0, 0.15);
+    .form-group {
+      input.form-control, input.form-control::placeholder,
+      .ng-select .ng-control .ng-value-container .ng-placeholder,
+      .ng-select.ng-single .ng-control .ng-value-container,
+      .ng-select-dropdown-outer .ng-select-dropdown .ng-option {
+        font-size: 14px;
+      }
+    }
+  }
+  .set-filters-section {
+    .btn-set-filters {
+      margin-right: 8px;
+    }
+  }
+}
+
+.btn-filter-trigger {
+  img, .btn-text {
+    display: inline-block;
+  }
+  &.toggled {
+    -moz-box-shadow: inset 0 0 10px #000000;
+    -webkit-box-shadow: inset 0 0 10px #000000;
+    box-shadow: inset 0 0 10px #000000;
+    background-color: #426A3B;
+  }
+}
+
+.mar-l-10 {
+  margin-left: 10px !important;
+}
+
+.btn-primary-accept.all-payed-btn {
+  margin-left: 15px;
+}
+
+.ng-select .ng-control .ng-value-container .ng-input > input {
+  color: transparent;
+  text-shadow: 0 0 0 #000000;
+  &:focus {
+    outline: none;
+  }
+}
+
+.mat-tab-body-content {
+  min-height: 400px;
+}
+
+.link {
+  cursor: pointer;
+}
+
+.pn-ProductNav_Wrapper {
+  position: relative;
+  padding: 0 11px;
+  box-sizing: border-box;
+}
+
+.pn-ProductNav {
+  /* Make this scrollable when needed */
+  overflow-x: auto;
+  /* We don't want vertical scrolling */
+  overflow-y: hidden;
+  /* For WebKit implementations, provide inertia scrolling */
+  -webkit-overflow-scrolling: touch;
+  /* We don't want internal inline elements to wrap */
+  white-space: nowrap;
+  /* If JS present, let's hide the default scrollbar */
+  .js & {
+    /* Make an auto-hiding scroller for the 3 people using a IE */
+    -ms-overflow-style: -ms-autohiding-scrollbar;
+    /* Remove the default scrollbar for WebKit implementations */
+    &::-webkit-scrollbar {
+      display: none;
+    }
+  }
+  /* positioning context for advancers */
+  position: relative;
+  // Crush the whitespace here
+  font-size: 0;
+}
+
+.pn-ProductNav_Contents {
+  float: left;
+  transition: transform .2s ease-in-out;
+  position: relative;
+}
+
+.pn-ProductNav_Link {
+  text-decoration: none;
+  color: #888;
+  // Reset the font size
+  font-size: 1.2rem;
+  font-family: -apple-system, sans-serif;
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  border: 1px solid transparent;
+  padding: 0 11px;
+  & + & {
+    border-left-color: #eee;
+  }
+  &[aria-selected="true"] {
+    color: #111;
+  }
+}
+
+.pn-Advancer {
+  transition: opacity .3s;
+  top: 1px;
+  position: absolute;
+  height: 57px;
+  width: 40px;
+  font-size: 30px;
+  background-color: #88d97c;
+  color: #ffffff;
+  z-index: 9;
+  //opacity: 0.5;
+  display: none;
+  transition: opacity .3s;
+  &.isDemanded {
+    display: block;
+  }
+}
+
+.pn-Advancer_Left {
+  left: 0;
+}
+
+.pn-Advancer_Right {
+  right: 0;
+}
+
+.icon-eracer {
+  width: 22px;
+}
+
+.refresh {
+  border: 1px solid #ced4da;
+}
+
+app-activity-report,
+app-transactions-report,
+app-billing-cycle-report,
+app-chargeback-report {
+  .table-responsive {
+    margin: 30px 0;
+    border-bottom: 2px solid #979797;
+  }
+  .btn-filter-trigger {
+    margin-left: 15px;
+  }
+}
+
+@media screen and (max-width: 414px) {
+  .page-footter {
+    text-align: center;
+    right: 15px;
+    .pagination, .text-muted {
+      padding: 0 !important;
+    }
+  }
+}
+
+.btn-icon-refresh, .download-excel-btn, .input-group-addon {
+  padding: 0;
+}
+
+.datepicker-input {
+  input::placeholder {
+    font-size: 14px;
+  }
+}
+
+.ltr-in-rtl {
+  direction: ltr;
+  text-align: right;
+}
+
+.ng-select.ng-invalid {
+  .ng-control {
+    background-color: #f5c6cb
+  }
+}

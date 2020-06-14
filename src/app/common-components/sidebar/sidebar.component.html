@@ -1,0 +1,79 @@
+<nav class="sidebar" #sidebar id="sidebar"
+     [ngClass]="{sidebarPushRight: isActive, 'hided': !isMenuWideOpened, 'rtl-mode': isRTLToggle}">
+    <div class="list-group" *ngIf="!isUnauthorized">
+        <a routerLink="/merchants" [routerLinkActive]="['router-link-active']" class="list-group-item"
+           (click)="onRouterLinkClick()">
+            <span *ngIf="isMenuWideOpened">&nbsp;{{ 'Merchants' | translate }}</span>
+            <span *ngIf="!isMenuWideOpened" title="{{ 'Merchants' | translate }}"><i class="fa fa-users"></i></span>
+        </a>
+        <a routerLink="/reports" [routerLinkActive]="['router-link-active']" class="list-group-item"
+           (click)="onRouterLinkClick()">
+            <span *ngIf="isMenuWideOpened">&nbsp;{{ 'Reports' | translate }}</span>
+            <span *ngIf="!isMenuWideOpened" title="{{ 'Reports' | translate }}"><i class="fa fa-list-alt"></i></span>
+        </a>
+        <a routerLink="/transactions" [routerLinkActive]="['router-link-active']" class="list-group-item"
+           (click)="onRouterLinkClick()">
+            <span *ngIf="isMenuWideOpened">&nbsp;{{ 'Transactions' | translate }}</span>
+            <span *ngIf="!isMenuWideOpened" title="{{ 'Transactions' | translate }}">
+                <i class="fa fa-exchange"></i></span>
+        </a>
+        <a routerLink="/chargebacks" *ngIf="userService?.userData?.isBillingAdmin" (click)="onRouterLinkClick()"
+           [routerLinkActive]="['router-link-active']" class="list-group-item">
+            <span *ngIf="isMenuWideOpened">&nbsp;{{ 'Chargebacks' | translate }}</span>
+            <span *ngIf="!isMenuWideOpened" title="{{ 'Chargebacks' | translate }}">
+                <i class="fa fa-undo"></i>
+            </span>
+        </a>
+        <a routerLink="/visa-files" *ngIf="userService?.userData?.isBillingAdmin" (click)="onRouterLinkClick()"
+           [routerLinkActive]="['router-link-active']" class="list-group-item">
+            <span *ngIf="isMenuWideOpened">&nbsp;{{ 'Visa Files' | translate }}</span>
+            <span *ngIf="!isMenuWideOpened" title="{{ 'Visa Files' | translate }}">
+                <i class="fa fa fa-cc-visa"></i>
+            </span>
+        </a>
+        <a routerLink="/system-settings" *ngIf="userService?.userData?.isBillingAdmin" (click)="onRouterLinkClick()"
+           [routerLinkActive]="['router-link-active']" class="list-group-item">
+            <span *ngIf="isMenuWideOpened">&nbsp;{{ 'System Settings' | translate }}</span>
+            <span *ngIf="!isMenuWideOpened" title="{{ 'System Settings' | translate }}">
+                <i class="fa fa fa-cog"></i>
+            </span>
+        </a>
+    </div>
+    <div class="list-group-footer">
+        <!--<a routerLink="/privacy-policy"-->
+           <!--[routerLinkActive]="['router-link-active']" class="list-group-item-footer">-->
+            <!--<span *ngIf="isMenuWideOpened">&nbsp;{{ 'Privacy Policy' | translate }}</span>-->
+            <!--<span *ngIf="!isMenuWideOpened" title="{{ 'Privacy Policy' | translate }}">-->
+                <!--<i class="fa fa-user-secret"></i>-->
+            <!--</span>-->
+        <!--</a>-->
+        <!--<a routerLink="/terms-of-use"-->
+           <!--[routerLinkActive]="['router-link-active']" class="list-group-item-footer">-->
+            <!--<span *ngIf="isMenuWideOpened">&nbsp;{{ 'Terms of Use' | translate }}</span>-->
+            <!--<span *ngIf="!isMenuWideOpened" title="{{ 'Terms of Use' | translate }}">-->
+                <!--<i class="fa fa-file-text-o"></i>-->
+            <!--</span>-->
+        <!--</a>-->
+        <div>
+        <a (click)="logout()" class="list-group-item-footer">
+            <span *ngIf="isMenuWideOpened">&nbsp;{{ 'Logout' | translate }}</span>
+            <span *ngIf="!isMenuWideOpened" title="{{ 'Logout' | translate }}">
+                <i class="fa fa-sign-out"></i>
+            </span>
+        </a>
+        </div>
+        <div class="list-group-item-footer" style="padding:20px;"><span>{{chVersion}}</span></div>
+    </div>
+    <div class="toggle-navigation-close">
+        <button class="btn hide-menu-btn" (click)="toggleNavWidth()" *ngIf="isMenuWideOpened">
+            <i class="fa fa-angle-left" *ngIf="!isRTLToggle"></i>
+            <i class="fa fa-angle-right" *ngIf="isRTLToggle"></i>
+        </button>
+    </div>
+    <div class="toggle-navigation-open">
+        <button class="btn show-menu-btn" (click)="toggleNavWidth()" *ngIf="!isMenuWideOpened">
+            <i class="fa fa-angle-right" *ngIf="!isRTLToggle"></i>
+            <i class="fa fa-angle-left" *ngIf="isRTLToggle"></i>
+        </button>
+    </div>
+</nav>

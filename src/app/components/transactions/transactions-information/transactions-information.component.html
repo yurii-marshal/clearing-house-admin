@@ -1,0 +1,836 @@
+<!--[@routerTransition]-->
+<div class="page-transaction-information page-responsive">
+    <div class="row">
+        <div class="col col-xs-12">
+            <div class="title">
+                <span class="link" routerLink="/transactions">{{'Transactions' | translate}} ></span>
+                <span class="idItem"> {{'ID' | translate}}: {{params.id}}</span>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col">
+            <div class="card mb-3">
+                <div class="card-header">
+                    <div class="card-header-inner">
+                        <span>{{'Full Transaction Information' | translate}}</span>
+                        <button class="btn-print btn-icon-refresh" (click)="getData()">
+                            <img class="icon-refresh" src="./assets/images/transactions/Refresh_icon.svg" alt="">
+                        </button>
+                    </div>
+                </div>
+                <div class="card-body mb-sm-3">
+                    <div class="card-body-title d-flex justify-content-between align-items-center">
+                        <div class="d-flex">
+                            <img src="./assets/images/transactions-details/credit-card.svg" class="credit-card" alt="">
+                            <div>
+                                <div>
+                                    <span>{{'Transaction ID' | translate}}: {{transaction.transactionID}}</span>
+                                </div>
+                                <div>
+                                    <span>{{'Customer Name' | translate}}: {{transaction.merchant.merchantName}}</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="general-controls d-flex">
+                            <div class="approval-labels-container">
+                                <div class="approval-label">
+                                    {{'Charge Status' | translate}}
+                                </div>
+                                <div class="approval-status">
+                                    <div *ngIf="transaction.status !== 'committed'">
+                                        {{currentTransactionStatus}}
+                                    </div>
+                                    <div *ngIf="transaction.status === 'committed' && isAdminRoleBilling !== true">
+                                        {{'Committed' | translate}}
+                                    </div>
+                                </div>
+                                <button *ngIf="transaction.status === 'committed' && isAdminRoleBilling === true && transaction.billingReportDate != null"
+                                        (click)="openChargeBackModal(ChargeBackModalContent)"
+                                        class="btn btn-danger">
+                                    {{'Chargeback' | translate}}
+                                </button>
+
+                                <button *ngIf="(transaction.status === 'expectedDeal' || transaction.status === 'committed') && transaction.billingReportDate == null && isAdminRoleBilling === true"
+                                        (click)="openRejectModal(RejectModalContent)"
+                                        class="btn btn-danger">
+                                    {{'Reject' | translate}}
+                                </button>
+
+                                <button *ngIf="transaction.status === 'rejected' && isAdminRoleBilling === true && transaction.rejectionReason === 'manuallyRejected'"
+                                        (click)="openUndoRejectModal(UndoRejectModalContent)"
+                                        class="btn btn-primary">
+                                    {{'Undo Reject' | translate}}
+                                </button>
+
+
+
+                                <!--Ng-Bootstrap Modal Window: Chargeback Operation-->
+
+                                <ng-template #ChargeBackModalContent let-c="close" let-d="dismiss">
+                                    <div class="modal-header">
+                                        <h4 class="modal-title">{{'Chargeback Operation' | translate}}</h4>
+                                        <button type="button" class="close" aria-label="Close"
+                                                (click)="d('Cross click')">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <div class="row">
+                                            <div class=" col-xs-12 col-md-6">
+                                                <div class="form-group">
+                                                    <label>{{'Choose operation' | translate}}</label>
+                                                    <ng-select [items]="chargeBackOperationList"
+                                                               [(ngModel)]="newChargeback.selectedChargeBackOperation"
+                                                               bindValue="code"
+                                                               bindLabel="description"
+                                                               placeholder="{{'- Select One -' | translate}}"
+                                                               (window:resize)="reloadConfigSelect($event)">
+                                                    </ng-select>
+                                                </div>
+                                            </div>
+                                            <div class="col-xs-12 col-md-6">
+                                                <fieldset class="form-group">
+                                                    <label>{{'Chargeback Amount' | translate}}</label>
+                                                    <input class="form-control input-mandatory" autocomplete="redundant"
+                                                           (keypress)="filtersService.keyPressNumberRestricts($event)"
+                                                           name="chargebackamount" #chargebackamount="ngModel"
+                                                           [(ngModel)]="newChargeback.chargebackAmount"
+                                                           placeholder="{{'Chargeback Amount' | translate}}">
+                                                </fieldset>
+                                            </div>
+                                            <div class="col-xs-12 col-md-12">
+                                                <fieldset class="form-group">
+                                                    <label>{{'Chargeback Description' | translate}}</label>
+                                                    <textarea class="form-control input-mandatory"
+                                                              autocomplete="redundant"
+                                                              name="chargebackdescription"
+                                                              #chargebackdescription="ngModel"
+                                                              [(ngModel)]="newChargeback.chargebackDescription" rows="3"
+                                                              placeholder="{{'Chargeback Description' | translate}}">
+                                                    </textarea>
+                                                </fieldset>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-main"
+                                                [disabled]="!newChargeback.selectedChargeBackOperation || !newChargeback.chargebackAmount"
+                                                (click)="c(newChargeback)">
+                                            {{'Accept' | translate}}
+                                        </button>
+                                        <button type="button" class="btn btn-primary-close" (click)="c(null)">
+                                            {{'Close' | translate}}
+                                        </button>
+                                    </div>
+                                </ng-template>
+
+                                <!--Ng-Bootstrap Modal Window: Chargeback Operation-->
+
+                                <ng-template #RejectModalContent let-c="close" let-d="dismiss">
+                                    <div class="modal-header">
+                                        <h4 class="modal-title">{{'Reject Operation' | translate}}</h4>
+                                        <button type="button" class="close" aria-label="Close"
+                                                (click)="d('Cross click')">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <div class="row">
+                                            <div class="col-xs-12 col-md-12">
+                                                <fieldset class="form-group">
+                                                    <label>{{'Reason' | translate}}</label>
+                                                    <textarea class="form-control input-mandatory" maxlength="250"
+                                                              autocomplete="redundant"
+                                                              name="rejectionreason"
+                                                              #rejectionreason="ngModel"
+                                                              [(ngModel)]="newReject.rejectionReason" rows="3"
+                                                              placeholder="{{'Rejection Reason' | translate}}">
+                                                    </textarea>
+                                                </fieldset>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-main"
+                                                [disabled]="!newReject.rejectionReason"
+                                                (click)="c(newReject)">
+                                            {{'Accept' | translate}}
+                                        </button>
+                                        <button type="button" class="btn btn-primary-close" (click)="c(null)">
+                                            {{'Close' | translate}}
+                                        </button>
+                                    </div>
+                                </ng-template>
+
+                                <ng-template #UndoRejectModalContent let-c="close" let-d="dismiss">
+                                    <div class="modal-header">
+                                        <h4 class="modal-title">{{'Undo Reject Operation' | translate}}</h4>
+                                        <button type="button" class="close" aria-label="Close"
+                                                (click)="d('Cross click')">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <div class="row">
+                                            <div class="col-xs-12 col-md-12">
+                                                <fieldset class="form-group">
+                                                    <label>{{'Reason' | translate}}</label>
+                                                    <textarea class="form-control input-mandatory" maxlength="250"
+                                                              autocomplete="redundant"
+                                                              name="undorejectionreason"
+                                                              #undorejectionreason="ngModel"
+                                                              [(ngModel)]="newReject.undoRejectionReason" rows="3"
+                                                              placeholder="{{'Rejection Reason' | translate}}">
+                                                    </textarea>
+                                                </fieldset>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-main"
+                                                [disabled]="!newReject.undoRejectionReason"
+                                                (click)="c(newReject)">
+                                            {{'Accept' | translate}}
+                                        </button>
+                                        <button type="button" class="btn btn-primary-close" (click)="c(null)">
+                                            {{'Close' | translate}}
+                                        </button>
+                                    </div>
+                                </ng-template>
+
+                            </div>
+                            <!--<div class="btns-group-right">-->
+                            <!--<label class="right-label">{{'Export in' | translate}}</label>-->
+                            <!--<button class="btn-print mt-2 mr-sm-2">-->
+                            <!--<img src="./assets/images/transactions-details/pdf-icon.svg" alt="">-->
+                            <!--</button>-->
+                            <!--<button class="btn-print mt-2">-->
+                            <!--<img src="./assets/images/transactions-details/xls-icon.svg" alt="">-->
+                            <!--</button>-->
+                            <!--</div>-->
+                        </div>
+                    </div>
+                    <hr>
+                    <div class="mt-5 mb-2">
+                        <div class="row">
+                            <div class="col-sm-6 col-12">
+                                <fieldset class="form-group">
+                                    <label>{{'Transaction ID' | translate}}</label>
+                                    <p class="form-control-plaintext text">{{transaction.transactionID}}</p>
+                                </fieldset>
+                            </div>
+                            <div class="col-sm-6 col-12">
+                                <fieldset class="form-group">
+                                    <label>{{'Merchant' | translate}}</label>
+                                    <p class="form-control-plaintext text">{{transaction.merchant.merchantName}}</p>
+                                </fieldset>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-6 col-12">
+                                <fieldset class="form-group">
+                                    <label>{{'Initial Transaction ID' | translate}}</label>
+                                    <button *ngIf="transaction.initialTransactionID" (click)="transitionToTransaction(transaction.initialTransactionID)" class="btn btn-main btn-primary-danger">{{transaction.initialTransactionID}}</button>
+                                </fieldset>
+                            </div>
+                            <div class="col-sm-6 col-12">
+                                    <fieldset class="form-group">
+                                            <label>{{'Transaction Type' | translate}}</label>
+                                            <p class="form-control-plaintext text">
+                                                {{transaction.paymentGatewayTransactionDetails.transactionType | getValueFromDictionary: 'transactionTypes'}}
+                                            </p>
+                                        </fieldset>
+                            </div>
+                        </div>
+
+
+                        <div class="row">
+                            <div class="col-sm-6 col-12">
+                                <fieldset class="form-group">
+                                    <label>{{'Initial Transaction Date' | translate}}</label>
+                                    <p class="form-control-plaintext text">{{transaction.initialTransactionDate | date: 'dd/MM/yyyy'}}</p>
+                                </fieldset>
+                            </div>
+                            <div class="col-sm-6 col-12">
+                                <fieldset class="form-group">
+                                    <label>{{'Bank Date' | translate}}</label>
+                                    <p class="form-control-plaintext text">
+                                        {{transaction.bankDate | date: 'dd/MM/yyyy'}}
+                                    </p>
+                                </fieldset>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-sm-6 col-12">
+                                <fieldset class="form-group">
+                                    <label>{{'Payment Gateway' | translate}}</label>
+                                    <p class="form-control-plaintext text">{{transaction.paymentGateway}}</p>
+                                </fieldset>
+                            </div>
+                            <div class="col-sm-6 col-12">
+                                <fieldset class="form-group">
+                                    <label>{{'Transaction Date' | translate}}</label>
+                                    <p class="form-control-plaintext text">
+                                        {{transaction.transactionDate | date: 'dd/MM/yyyy'}}
+                                    </p>
+                                </fieldset>
+                            </div>
+                        </div>
+
+
+
+                        <div class="row">
+                            <div class="col-sm-6 col-12">
+
+                                <fieldset class="form-group">
+                                    <label>{{'Status' | translate}}</label>
+                                    <span class="form-control-plaintext text">{{currentTransactionStatus}}</span>
+
+                                    <button class="form-control-plaintext text" *ngIf="(transaction.status === 'expectedDeal' || transaction.status === 'committed' && transaction.billingReportDate == null) && isAdminRoleBilling === true && transaction.holdTransaction == false"
+                                            (click)="hold()"
+                                            class="btn btn-primary ">
+                                        {{'Hold' | translate}}
+                                    </button>
+
+                                    <button class="form-control-plaintext text" *ngIf="(transaction.status === 'expectedDeal' || transaction.status === 'committed' && transaction.billingReportDate == null)  && isAdminRoleBilling === true && transaction.holdTransaction == true"
+                                            (click)="unhold()"
+                                            class="btn btn-success">
+                                        {{'Unhold' | translate}}
+                                    </button>
+
+                                </fieldset>
+
+                                        
+                             
+                            </div>
+                            <div class="col-sm-6 col-12">
+                                <fieldset class="form-group">
+                                    <label>{{'Currency' | translate}}</label>
+                                    <p class="form-control-plaintext text">{{transaction.currency}}</p>
+                                </fieldset>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-6 col-12">
+                                <fieldset class="form-group" title="{{'Current transaction' | translate}}">
+                                    <label>{{'Current Transaction Amount' | translate}}</label>
+                                    <p class="form-control-plaintext text"><strong>{{transaction.transactionAmount | number: '1.2-2'}}</strong></p>
+                                </fieldset>
+                            </div>
+                            <div class="col-sm-6 col-12">
+                                <fieldset class="form-group" title="{{'Current transaction' | translate}}">
+                                    <label>{{'Transaction Commission' | translate}}</label>
+                                    <p class="form-control-plaintext text">{{transaction.transactionCommission | number: '1.2-2'}}</p>
+                                </fieldset>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-6 col-12">
+                                <fieldset class="form-group">
+                                    <label>{{'Current Installment' | translate}}</label>
+                                    <p class="form-control-plaintext text">{{transaction.currentInstallment}}</p>
+                                </fieldset>
+                            </div>
+                            <div class="col-sm-6 col-12">
+                                <fieldset class="form-group">
+                                    <label>{{'Remaining Installments Amount' | translate}}</label>
+                                    <p class="form-control-plaintext text">{{transaction.installmentsAmountRemaining | number: '1.2-2'}}</p>
+                                </fieldset>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-sm-6 col-12">
+                                <fieldset class="form-group">
+                                    <label>{{'Number of payments' | translate}}</label>
+                                    <p class="form-control-plaintext text">{{transaction.payments}}</p>
+                                </fieldset>
+                            </div>
+                            <div class="col-sm-6 col-12">
+                                <fieldset class="form-group">
+                                    <label>{{'Remaining Installments' | translate}}</label>
+                                    <p class="form-control-plaintext text">{{transaction.installmentsNumberRemaining}}</p>
+                                </fieldset>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-sm-6 col-12">
+                                <fieldset class="form-group">
+                                    <label>{{'Initial Payment Amount' | translate}}</label>
+                                    <p class="form-control-plaintext text">{{transaction.initialPaymentAmount | number: '1.2-2'}}</p>
+                                </fieldset>
+                            </div>
+                            <div class="col-sm-6 col-12">
+                                <fieldset class="form-group">
+                                    <label>{{'Installment Amount' | translate}}</label>
+                                    <p class="form-control-plaintext text">{{transaction.installmentPaymentAmount | number: '1.2-2'}}</p>
+                                </fieldset>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-6 col-12">
+                                <fieldset class="form-group">
+                                    <label>{{'Total Amount' | translate}}</label>
+                                    <p class="form-control-plaintext text">{{transaction.totalAmount | number: '1.2-2'}}</p>
+                                </fieldset>
+                            </div>
+                            <div class="col-sm-6 col-12">
+                                <fieldset class="form-group">
+                                    <label>{{'Total Commission' | translate}}</label>
+                                    <p class="form-control-plaintext text">{{transaction.totalCommission | number: '1.2-2'}}</p>
+                                </fieldset>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-6 col-12">
+                                <fieldset class="form-group">
+                                    <label>{{'Commission Percent' | translate}}</label>
+                                    <p class="form-control-plaintext text">{{transaction.commissionPercent | percent:'2.2-2'}}</p>
+                                </fieldset>
+                            </div>
+                            <div class="col-sm-6 col-12">
+                                <fieldset class="form-group" title="{{'Current transaction' | translate}}">
+                                    <label>{{'Merchant Amount' | translate}}</label>
+                                    <p class="form-control-plaintext text">{{transaction.merchantAmmount | number: '1.2-2'}}</p>
+                                </fieldset>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-sm-6 col-12">
+                                <fieldset class="form-group">
+                                    <label>{{'Clearing Company Commission' | translate}}</label>
+                                    <p class="form-control-plaintext text">{{transaction.clearingCompanyCommission | number: '1.2-2'}}</p>
+                                </fieldset>
+                            </div>
+                            <div class="col-sm-6 col-12">
+                                <fieldset class="form-group" title="{{'Current transaction' | translate}}">
+                                    <label>{{'Clearing House Amount' | translate}}</label>
+                                    <p class="form-control-plaintext text">{{transaction.clearingHouseAmount | number: '1.2-2'}}</p>
+                                </fieldset>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-sm-6 col-12">
+                                <fieldset class="form-group">
+                                    <label>{{'Clearing Company Commission Rate' | translate}}</label>
+                                    <p class="form-control-plaintext text">{{transaction.clearingCompanyCommissionRate | percent:'2.2-2'}}</p>
+                                </fieldset>
+                            </div>
+                            <div class="col-sm-6 col-12">
+                                
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-sm-6 col-12">
+                                <fieldset class="form-group">
+                                    <label>{{'Forced Deal' | translate}}</label>
+                                    <p class="form-control-plaintext text">{{transaction.isForced}}</p>
+                                </fieldset>
+                            </div>
+                            <div class="col-sm-6 col-12">
+                                <fieldset class="form-group">
+                                    <label>{{'Billing Report Date' | translate}}</label>
+                                    <p class="form-control-plaintext text">
+                                        {{transaction.billingReportDate | date: 'dd/MM/yyyy'}}
+                                    </p>
+                                </fieldset>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body-title">
+                        <span>
+                            {{'Payment Gateway Transaction Details' | translate}}
+                        </span>
+                    </div>
+                    <hr>
+                    <div class="mt-5 mb-2">
+                        <div class="row">
+                            <div class="col-sm-6 col-12">
+                                <fieldset class="form-group">
+                                    <label>{{'Transaction Date' | translate}}</label>
+                                    <p class="form-control-plaintext text ltr-in-rtl">
+                                        {{transaction.paymentGatewayTransactionDetails.transactionDate | date:
+                                        'dd/MM/yyyy HH:mm:ss'}}
+                                    </p>
+                                </fieldset>
+                            </div>
+                            <div class="col-sm-6 col-12">
+                                <fieldset class="form-group" title="{{ 'Original transaction' | translate}}">
+                                    <label>{{'Deal Reference' | translate}}</label>
+                                    <p class="form-control-plaintext text">
+                                        {{transaction.paymentGatewayTransactionDetails.dealReference}}
+                                    </p>
+                                </fieldset>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-6 col-12">
+                                <fieldset class="form-group">
+                                    <label>{{'Terminal Reference' | translate}}</label>
+                                    <p class="form-control-plaintext text">
+                                        {{transaction.paymentGatewayTransactionDetails.terminalReference}}
+                                    </p>
+                                </fieldset>
+                            </div>
+                            <div class="col-sm-6 col-12">
+                                <fieldset class="form-group">
+                                    <label>{{'Merchant Reference' | translate}}</label>
+                                    <p class="form-control-plaintext text">
+                                        {{transaction.paymentGatewayTransactionDetails.merchantReference}}
+                                    </p>
+                                </fieldset>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-6 col-12">
+                                <fieldset class="form-group">
+                                    <label>{{'Deal Description' | translate}}</label>
+                                    <p class="form-control-plaintext text">
+                                        {{transaction.paymentGatewayTransactionDetails.dealDescription}}
+                                    </p>
+                                </fieldset>
+                            </div>
+                            <div class="col-sm-6 col-12">
+                                <fieldset class="form-group">
+                                    <label>{{'Credit Card Vendor' | translate}}</label>
+                                    <p class="form-control-plaintext text">
+                                        {{transaction.paymentGatewayTransactionDetails.creditCardVendor}}
+                                    </p>
+                                </fieldset>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-6 col-12">
+                                <fieldset class="form-group">
+                                    <label>{{'Consumer Email' | translate}}</label>
+                                    <p class="form-control-plaintext text">
+                                        {{transaction.paymentGatewayTransactionDetails.consumerEmail}}
+                                    </p>
+                                </fieldset>
+                            </div>
+                            <div class="col-sm-6 col-12">
+                                <fieldset class="form-group">
+                                    <label>{{'Consumer Phone' | translate}}</label>
+                                    <p class="form-control-plaintext text">
+                                        {{transaction.paymentGatewayTransactionDetails.consumerPhone}}
+                                    </p>
+                                </fieldset>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-6 col-12">
+                                <fieldset class="form-group">
+                                    <label>{{'Card Owner Name' | translate}}</label>
+                                    <p class="form-control-plaintext text">
+                                        {{transaction.paymentGatewayTransactionDetails.cardOwnerName}}
+                                    </p>
+                                </fieldset>
+                            </div>
+                            <div class="col-sm-6 col-12">
+                                <fieldset class="form-group">
+                                    <label>{{'Card Digits' | translate}}</label>
+                                    <p class="form-control-plaintext text card-number">
+                                        {{transaction.paymentGatewayTransactionDetails.cardDigits}}
+                                    </p>
+                                </fieldset>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-6 col-12">
+                                <fieldset class="form-group">
+                                    <label>{{'Card Expiration' | translate}}</label>
+                                    <p class="form-control-plaintext text">
+                                        {{transaction.paymentGatewayTransactionDetails.cardExpiration}}
+                                    </p>
+                                </fieldset>
+                            </div>
+                            <div class="col-sm-6 col-12">
+                                <fieldset class="form-group">
+                                    <label>{{'Solek' | translate}}</label>
+                                    <p class="form-control-plaintext text">
+                                        {{transaction.paymentGatewayTransactionDetails.solek}}
+                                    </p>
+                                </fieldset>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-6 col-12">
+                                    <fieldset class="form-group">
+                                            <label>{{'Is Tourist' | translate}}</label>
+                                            <p class="form-control-plaintext text">{{transaction.isTourist ? 'Yes' : 'No'}}</p>
+                                        </fieldset>
+
+                            </div>
+                            <div class="col-sm-6 col-12">
+                                <fieldset class="form-group">
+                                    <label>{{'Rejection Reason' | translate}}</label>
+                                    <p class="form-control-plaintext text">
+                                        {{rejectionReason}}
+                                    </p>
+                                    <p class="form-control-plaintext text">
+                                        {{transaction.rejectionReasonDescription}}
+                                    </p>
+                                </fieldset>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-sm-6 col-12">
+                                    <fieldset class="form-group">
+                                            <label>{{'Original Card Vendor' | translate}}</label>
+                                            <p class="form-control-plaintext text">{{transaction.paymentGatewayTransactionDetails.originalCreditCardVendor}}</p>
+                                        </fieldset>
+
+                            </div>
+                            <div class="col-sm-6 col-12">
+                                
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="card-body-title">
+                        <span>
+                            {{'Payment Gateway Additional Details' | translate}}
+                        </span>
+                    </div>
+                    <hr>
+                    <div class="mt-5 mb-2">
+                        <div class="row">
+                            <div class="col-sm-6 col-12">
+                                <fieldset class="form-group">
+                                    <label>{{'Shva Shovar Number' | translate}}</label>
+                                    <p class="form-control-plaintext text">
+                                        {{transaction.paymentGatewayAdditionalDetails.shvaShovarNumber}}
+                                    </p>
+                                </fieldset>
+                            </div>
+                            <div class="col-sm-6 col-12">
+                                <fieldset class="form-group">
+                                    <label>{{'Shva Shovar Data' | translate}}</label>
+                                    <p class="form-control-plaintext text">
+                                        {{transaction.paymentGatewayAdditionalDetails.shvaShovarData}}
+                                    </p>
+                                </fieldset>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body-title">
+                        <span>
+                            {{'Transaction History' | translate}}
+                        </span>
+                    </div>
+                    <hr>
+                    <div>
+                        <div class="table-responsive">
+                            <!--<button id="pnAdvancerLeft" class="pn-Advancer pn-Advancer_Left"-->
+                                    <!--[ngClass]="{'isDemanded': advancedScrollService.SETTINGS.navBarTravelDirection === 'both' || advancedScrollService.SETTINGS.navBarTravelDirection === 'left'}"-->
+                                    <!--type="button">-->
+                                <!--<i class="fa fa-angle-left"></i>-->
+                            <!--</button>-->
+                            <!--<button id="pnAdvancerRight" class="pn-Advancer pn-Advancer_Right"-->
+                                    <!--[ngClass]="{'isDemanded': advancedScrollService.SETTINGS.navBarTravelDirection === 'both' || advancedScrollService.SETTINGS.navBarTravelDirection === 'right'}"-->
+                                    <!--type="button">-->
+                                <!--<i class="fa fa-angle-right"></i>-->
+                            <!--</button>-->
+                            <table class="table">
+                                <thead>
+                                <tr>
+                                    <th class="align-middle">
+                                        <div class="text-left" title="{{'History ID' | translate}}">
+                                            <span>{{'History ID' | translate}}</span>
+                                        </div>
+                                    </th>
+                                    <th class="align-middle">
+                                        <div class="text-left" title="{{'Operation Date' | translate}}">
+                                            <span>{{'Operation Date' | translate}}</span>
+                                        </div>
+                                    </th>
+                                    <th class="align-middle">
+                                        <div class="text-left" title="{{'Operation Code' | translate}}">
+                                            <span>{{'Operation Code' | translate}}</span>
+                                        </div>
+                                    </th>
+                                    <!--<th class="align-middle">-->
+                                    <!--<div class="text-left" title="Date">-->
+                                    <!--<span>{{'Operation Description' | translate}}</span>-->
+                                    <!--</div>-->
+                                    <!--</th>-->
+                                    <th class="align-middle">
+                                        <div class="text-left" title="{{'Operation Done By' | translate}}">
+                                            <span>{{'Operation Done By' | translate}}</span>
+                                        </div>
+                                    </th>
+                                    <th class="align-middle">
+                                        <div class="text-left" title="{{'Description' | translate}}">
+                                            <span>{{'Description' | translate}}</span>
+                                        </div>
+                                    </th>
+                                    <th class="align-middle">
+                                        <div class="text-left" title="{{'Correlation ID' | translate}}">
+                                            <span>{{'Correlation ID' | translate}}</span>
+                                        </div>
+                                    </th>
+                                    <!--<th class="align-middle">-->
+                                    <!--<div class="text-left" title="Date">-->
+                                    <!--<span>{{'Additional Details' | translate}}</span>-->
+                                    <!--</div>-->
+                                    <!--</th>-->
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr (click)="transitionToHistoryDetails(history)"
+                                    *ngFor="let history of transaction.history; index as i;">
+                                    <td class="text-left">
+                                        {{history.transactionHistoryID}}
+                                    </td>
+                                    <td class="text-left">
+                                        {{history.operationDate | date: 'dd/MM/yyyy HH:mm:ss'}}
+                                    </td>
+                                    <td class="text-left">
+                                        {{history.operationCode}}
+                                    </td>
+                                    <!--<td class="text-left">-->
+                                    <!--{{history.operationDescription}}-->
+                                    <!--</td>-->
+                                    <td class="text-left">
+                                        {{history.operationDoneBy}}
+                                    </td>
+                                    <td class="text-left">
+                                        {{history.operationDescription}}
+                                    </td>
+                                    <td class="text-left">
+                                        {{history.correlationId}}
+                                    </td>
+                                    <!--<td class="text-left">-->
+                                    <!--{{history.additionalDetails}}-->
+                                    <!--</td>-->
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+
+                    <div class="card-body-title">
+                            <span>
+                                {{'Next Installments' | translate}}
+                            </span>
+                        </div>
+                        <hr>
+                        <div>
+                            <div class="table-responsive">
+
+                                <table class="table">
+                                    <thead>
+                                    <tr>
+                                        <th class="align-middle">
+                                            <div class="text-left" title="{{'Date' | translate}}">
+                                                <span>{{'Date' | translate}}</span>
+                                            </div>
+                                        </th>
+                                        <th class="align-middle">
+                                            <div class="text-left" title="{{'Transaction ID' | translate}}">
+                                                <span>{{'Transaction ID' | translate}}</span>
+                                            </div>
+                                        </th>
+                                        <th class="align-middle">
+                                            <div class="text-left" title="{{'Transaction Type' | translate}}">
+                                                <span>{{'Transaction Type' | translate}}</span>
+                                            </div>
+                                        </th>
+
+                                        <th class="align-middle">
+                                            <div class="text-left" title="{{'Status' | translate}}">
+                                                <span>{{'Status' | translate}}</span>
+                                            </div>
+                                        </th>
+
+                                        <th class="align-middle">
+                                            <div class="text-left" title="{{'Current Installment' | translate}}">
+                                                <span>{{'Current Installment' | translate}}</span>
+                                            </div>
+                                        </th>
+   
+                                        <th class="align-middle">
+                                            <div class="text-left" title="{{'Transaction Amount' | translate}}">
+                                                <span>{{'Transaction Amount' | translate}}</span>
+                                            </div>
+                                        </th>
+
+                                        <th class="align-middle">
+                                            <div class="text-left" title="{{'Commission Percent' | translate}}">
+                                                <span>{{'Commission Percent' | translate}}</span>
+                                            </div>
+                                        </th>
+
+                                        <th class="align-middle">
+                                            <div class="text-left" title="{{'Transaction Commission' | translate}}">
+                                                <span>{{'Transaction Commission' | translate}}</span>
+                                            </div>
+                                        </th>
+
+                                        <th class="align-middle">
+                                            <div class="text-left" title="{{'Remaining Installments' | translate}}">
+                                                <span>{{'Remaining Installments' | translate}}</span>
+                                            </div>
+                                        </th>
+
+                                        <th class="align-middle">
+                                            <div class="text-left" title="{{'Forced Deal' | translate}}">
+                                                <span>{{'Forced Deal' | translate}}</span>
+                                            </div>
+                                        </th>
+
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <tr (click)="transitionToTransaction(installment.transactionID)"
+                                        *ngFor="let installment of transaction.installments; index as i;">
+                                        <td class="text-left">
+                                            {{installment.transactionDate | utcToLocalDate | date: 'dd/MM/yyyy HH:mm:ss'}}
+                                        </td>
+                                        <td class="text-left">
+                                            {{installment.transactionID}}
+                                        </td>
+                                        <td class="text-left">
+                                            {{installment.transactionType | getValueFromDictionary: 'transactionTypes'}}
+                                        </td>
+                                        <td class="text-left">
+                                            {{installment.status | getValueFromDictionary: 'transactionStatuses'}}
+                                        </td>
+                                        <td class="text-left">
+                                            {{installment.currentInstallment}}
+                                        </td>
+                                        <td class="text-right">
+                                            {{installment.transactionAmount | number: '1.2-2'}}
+                                        </td>
+                                        <td class="text-right">
+                                            {{installment.commissionPercent | percent: '1.2-2'}}
+                                        </td>
+                                        <td class="text-right">
+                                            {{installment.transactionCommission | number: '1.2-2'}}
+                                        </td>
+                                        <td class="text-right">
+                                            {{installment.installmentsAmountRemaining | number: '1.2-2'}}
+                                        </td>
+                                        <td class="text-left">
+                                            {{installment.isForced}}
+                                        </td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

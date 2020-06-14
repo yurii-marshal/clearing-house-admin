@@ -1,0 +1,24 @@
+<div class="card mb-3">
+    <div class="card-header">
+        <div>
+            <img src="./assets/images/dashboard/Numers Transactions_icon.svg" alt="">
+        </div>
+        <div>
+            <span>{{'Numbers Transactions' | translate}}</span>
+        </div>
+    </div>
+    <div class="card-body">
+        <div class="chart-name">
+            <span>Total 15</span>
+        </div>
+        <div style="height:120px;" (window:resize)="reloadChart($event)">
+            <canvas baseChart
+                    [datasets]="lineChartDataSet"
+                    [labels]="lineChartLabels"
+                    [options]="lineChartOptions"
+                    [chartType]="lineChartType"
+                    (chartClick)="chartClicked($event)">
+            </canvas>
+        </div>
+    </div>
+</div>

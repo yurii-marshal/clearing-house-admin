@@ -1,0 +1,44 @@
+@import '../../styles/site-mixin';
+
+.main-container {
+  &.rtl-mode.nav-menu-hide {
+    margin-right: $hided-menu-width;
+  }
+  &.rtl-mode.nav-menu-wide {
+    margin-right: $opened-menu-width;
+  }
+  &.nav-menu-hide {
+    margin-left: $hided-menu-width;
+  }
+  &.nav-menu-wide {
+    margin-left: $opened-menu-width;
+  }
+  min-height: 80vh;
+  margin-left: $opened-menu-width;
+  margin-top: 72px;
+  padding: 15px;
+  -ms-overflow-x: hidden;
+  position: relative;
+  overflow: hidden;
+}
+
+@media screen and (max-width: 992px) {
+  .main-container {
+    margin-left: 0 !important;
+  }
+}
+
+// landscape
+@media screen and (min-width: 1024px) and (max-width: 1365px) {
+
+}
+
+// iPad Portrait
+@media screen and (min-width: 768px) and (max-width: 1023px) {
+
+}
+
+// mobile screens
+@media screen and (min-width: 375px) and (max-width: 767px) {
+
+}

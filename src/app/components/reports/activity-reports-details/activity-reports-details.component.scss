@@ -1,0 +1,169 @@
+@import '../../../../styles/site-mixin';
+
+.page-activity-reports-details {
+  margin: 0 auto;
+  .general-controls {
+    .approval-labels-container {
+      padding-right: 30px;
+      position: relative;
+      min-width: 100px;
+      .approval-label {
+        position: absolute;
+        top: -15px;
+        left: 0;
+        font-size: 13px;
+        letter-spacing: 0.4px;
+        color: #a9b3be;
+      }
+      .approval-status {
+        margin-top: 8px;
+        font-size: 15px;
+        letter-spacing: 0.4px;
+        color: #434a59;
+      }
+      .btn-primary-danger {
+        margin-top: 8px;
+      }
+    }
+  }
+  .title {
+    font-size: 24px;
+    font-weight: bold;
+    font-style: normal;
+    font-stretch: normal;
+    line-height: normal;
+    letter-spacing: 0.7px;
+    color: $btn-color-1;
+    text-transform: uppercase;
+    margin-bottom: 15px;
+    .idItem {
+      font-weight: bold;
+      font-style: normal;
+      font-stretch: normal;
+      line-height: normal;
+      letter-spacing: 0.5px;
+      color: $btn-color-1;
+    }
+  }
+
+  .card-header {
+    background-color: $bg-header-panel;
+    font-size: 16px;
+    font-weight: bold;
+    font-style: normal;
+    font-stretch: normal;
+    line-height: normal;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    color: $white;
+    .card-header-inner {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 5px 0;
+      .btn-icon-refresh {
+        border-radius: 4px;
+        width: 40px;
+        height: 40px;
+        background-color: #d0d8e3;
+        border: none;
+      }
+    }
+
+  }
+
+  .card-body {
+    .card-body-title {
+      font-size: 16px;
+      font-weight: bold;
+      font-style: normal;
+      font-stretch: normal;
+      line-height: normal;
+      letter-spacing: 0.5px;
+      color: #434a59;
+    }
+
+    .credit-card {
+      padding: 0 20px 0 0;
+    }
+    hr {
+      position: absolute;
+      width: 100%;
+      left: 0px;
+      border: 0;
+      height: 2px;
+      background-color: #D0D8E3;
+    }
+
+    label {
+      font-size: 13px;
+      font-weight: 500;
+      font-style: normal;
+      font-stretch: normal;
+      line-height: normal;
+      letter-spacing: 0.4px;
+      text-align: left;
+      color: $label;
+    }
+
+    .right-label {
+      position: absolute;
+      top: 5px;
+    }
+
+    .form-control-plaintext {
+      white-space: pre;
+      font-family: monospace;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      &.date {
+        white-space: normal;
+      }
+    }
+
+    .data-json-body {
+      white-space: pre;
+      font-family: monospace;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      direction: ltr!important;
+    }
+
+    .text {
+      font-size: 15px;
+      font-weight: 500;
+      font-style: normal;
+      font-stretch: normal;
+      line-height: normal;
+      letter-spacing: 0.4px;
+      text-align: left;
+      color: $text-color-5;
+    }
+  }
+}
+
+@media screen and (max-width: 768px) {
+  .card-body {
+    .btns-group-right {
+      text-align: end;
+    }
+    label.right-label {
+      right: 20px;
+    }
+  }
+}
+
+// landscape
+@media screen and (min-width: 1024px) and (max-width: 1365px) {
+
+}
+
+// iPad Portrait
+@media screen and (min-width: 768px) and (max-width: 1023px) {
+
+}
+
+// mobile screens
+@media screen and (min-width: 375px) and (max-width: 767px) {
+
+}

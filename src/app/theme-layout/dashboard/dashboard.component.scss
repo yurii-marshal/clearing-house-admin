@@ -1,0 +1,27 @@
+@import '../../../styles/site-mixin';
+.dashboard {
+  max-width: 940px;
+  margin:0 auto;
+}
+
+.title{
+  font-size: 24px;
+  font-weight: bold;
+  font-style: normal;
+  font-stretch: normal;
+  line-height: normal;
+  letter-spacing: 0.7px;
+  color: $text-color-1;
+  text-transform: uppercase;
+  margin-bottom: 15px;
+}
+
+
+@media screen and (max-width: 414px) {
+  .col{
+    padding-right: 8px;
+    padding-left: 8px;
+  }
+
+}
+

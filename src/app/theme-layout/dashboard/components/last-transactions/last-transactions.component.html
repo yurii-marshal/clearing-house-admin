@@ -1,0 +1,37 @@
+<div class="card mb-3">
+    <div class="card-header">
+        {{'Last Transactions' | translate}}
+    </div>
+    <div class="card-body table-responsive">
+        <table class="table">
+            <thead>
+            <tr>
+                <th>{{'Date' | translate}}</th>
+                <th>{{'Transaction ID' | translate}}</th>
+                <th>{{'Transaction Description' | translate}}</th>
+                <th>{{'Customer Name' | translate}}</th>
+                <th>{{'Credit Card Vendor' | translate}}</th>
+                <th>{{'Payment Gateway' | translate}}</th>
+                <th>{{'Status' | translate}}</th>
+                <th>{{'Currency' | translate}}</th>
+                <th>{{'Initial Amount' | translate}}</th>
+                <th>{{'Total Amount' | translate}}</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr *ngFor="let transaction of dataTable; index as i;">
+                <td>{{transaction.transactionDate | date: 'dd/MM/yyyy HH:mm:ss'}}</td>
+                <td>{{transaction.transactionID}}</td>
+                <td>{{transaction.transactionDescription}}</td>
+                <td>{{transaction.customerName}}</td>
+                <td>{{transaction.creditCardVendor}}</td>
+                <td>{{transaction.paymentGateway}}</td>
+                <td>{{transaction.status}}</td>
+                <td>{{transaction.currency}}</td>
+                <td>{{transaction.initialAmount}}</td>
+                <td>{{transaction.totalAmount}}</td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>

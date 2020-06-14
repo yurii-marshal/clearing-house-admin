@@ -1,0 +1,491 @@
+@import '../../../styles/site-mixin';
+
+.page-system-settings {
+  margin: 0 auto;
+  .general-title {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 150px;
+    display: inline-block;
+    font-weight: bold;
+    vertical-align: bottom;
+  }
+  .check-group {
+    .check-box-container {
+      .check-icon {
+
+      }
+      .label {
+        font-size: 14px;
+        color: #20374f;
+        padding: 0 25px 0 5px;
+      }
+    }
+    label {
+      background-color: #00a8cc;
+      color: #ffffff !important;
+      &.active {
+        background-color: #20374f;
+      }
+    }
+  }
+
+  form {
+    .form-group {
+      flex-direction: column;
+      .label {
+        font-size: 13px;
+        font-weight: 500;
+        font-style: normal;
+        font-stretch: normal;
+        line-height: normal;
+        letter-spacing: 0.4px;
+        text-align: left;
+        color: #a9b3be;
+        width: 100%;
+        padding: 10px 0;
+      }
+    }
+  }
+
+  .card-body {
+    .card-body-title {
+      font-size: 16px;
+      font-style: normal;
+      font-stretch: normal;
+      line-height: normal;
+      letter-spacing: 0.5px;
+      color: #434a59;
+    }
+
+    .credit-card {
+      padding: 0 20px 0 0;
+    }
+
+    hr {
+      position: absolute;
+      width: 100%;
+      left: 0;
+      border: 0;
+      height: 2px;
+      background-color: #D0D8E3;
+    }
+
+    label {
+      font-size: 13px;
+      font-weight: 500;
+      font-style: normal;
+      font-stretch: normal;
+      line-height: normal;
+      letter-spacing: 0.4px;
+      text-align: left;
+      color: $label;
+    }
+
+    .right-label {
+      position: absolute;
+      top: 70px;
+    }
+
+    .text {
+      font-size: 15px;
+      font-weight: 500;
+      font-style: normal;
+      font-stretch: normal;
+      line-height: normal;
+      letter-spacing: 0.4px;
+      text-align: left;
+      color: $text-color-5;
+    }
+
+  }
+
+  .btn-reset-pass {
+    text-align: left;
+    margin-top: 26px;
+    margin-bottom: 0;
+  }
+
+  .btn-generate {
+    margin-top: 10px;
+    margin-bottom: 0;
+  }
+
+  .financial-information-card {
+    .user-general-info {
+
+    }
+    .general-controls {
+      .btn {
+        margin-right: 10px;
+      }
+    }
+    .financial-form {
+      padding-top: 30px;
+      .rate-table {
+        padding: 0;
+        margin-top: 25px;
+        margin-left: 15px;
+        margin-bottom: 20px;
+        border-radius: 4px;
+        background-color: #ffffff;
+        border: solid 1px #d0d8e3;
+        .rate-header {
+          border-top-left-radius: 4px;
+          border-top-right-radius: 4px;
+          padding: 10px 15px;
+          color: #ffffff;
+          background-color: #20374f;
+          .label {
+            line-height: 40px;
+          }
+          .controls {
+
+          }
+        }
+        table {
+
+        }
+      }
+      .fieldset-label {
+        width: 100%;
+        //padding-top: 15px;
+        font-size: 16px;
+        font-weight: bold;
+        letter-spacing: 0.5px;
+        color: #434a59;
+        &.pdd {
+          padding-left: 15px;
+          padding-top: 0;
+        }
+      }
+      .security-limits {
+        hr {
+          margin: 2px 0 0 0;
+          border: solid 1px #d0d8e3;
+          position: relative;
+          height: 0;
+        }
+      }
+      .cycle-container {
+        &.with-save-btn {
+          margin-bottom: 20px;
+        }
+      }
+      .no-margin {
+        margin: 0;
+      }
+      .double-margin {
+        margin-bottom: 30px;
+      }
+      .width-40 {
+        width: 40%;
+      }
+      .apply-limits-btn {
+        margin-top: 26px;
+      }
+      .pd-top-5 {
+        padding-top: 5px;
+      }
+    }
+    .weekly-container, .monthly-container {
+      text-align: center;
+      margin: 0 auto;
+      border-radius: 5px;
+      border: 1px solid #cdcdcd;
+      padding: 10px;
+      h5 {
+        width: 100%;
+      }
+      label.btn-primary.btn {
+        color: #ffffff;
+        margin: 0 3px 3px 0;
+        padding: 0.3rem 0.5rem;
+        width: 43px;
+        text-align: center;
+        &.active {
+          background-color: #043b71;
+          border: 1px solid #04325f;
+        }
+      }
+    }
+  }
+  .j5-failed-label {
+    color: #cd6d6d;
+    position: absolute;
+    bottom: 10px;
+    margin-left: 10px;
+    font-size: 12px;
+  }
+  //.business-activity-card {
+  //  .business-range-container {
+  //    .form-group {
+  //      margin: 5px 0 0 0;
+  //    }
+  //  }
+  //  .business-table {
+  //    padding-top: 30px;
+  //  }
+  //}
+  .refresh-details-container {
+    position: absolute;
+    top: -5px;
+    right: 15px;
+    z-index: 9;
+    .btn-icon-refresh {
+
+    }
+  }
+  .btn {
+    font-size: 14px;
+    .btn-icon {
+      width: 20px;
+      padding-right: 5px;
+      padding-bottom: 2px;
+    }
+  }
+  .title {
+    font-size: 24px;
+    font-weight: bold;
+    font-style: normal;
+    font-stretch: normal;
+    line-height: normal;
+    letter-spacing: 0.7px;
+    color: $text-color-1;
+    text-transform: uppercase;
+    margin-bottom: 15px;
+    .link {
+      cursor: pointer;
+      color: $bg-header-panel;
+    }
+  }
+  .card-body-title {
+    .title-container {
+      width: 100%;
+      .user-general-info {
+        text-transform: uppercase;
+        font-size: 16px;
+        //font-weight: bold;
+        letter-spacing: 0.5px;
+      }
+      .general-controls {
+        justify-content: end;
+        .control {
+          //margin-right: 10px;
+          height: 40px;
+        }
+        .export-container {
+          position: relative;
+          min-width: 65px;
+          .label {
+            position: absolute;
+            top: -17px;
+            left: 0;
+          }
+          .btns-group-right {
+            .mobile-icon-refresh {
+              display: none;
+            }
+          }
+          &.print {
+            margin-right: 30px;
+          }
+        }
+      }
+    }
+  }
+  .card-form {
+    padding-top: 30px;
+    .row-with-label {
+      position: relative;
+      .validation-label {
+        position: absolute;
+        text-transform: uppercase;
+        padding: 3px 10px;
+        font-size: 10px;
+        border-radius: 10px;
+        color: #ffffff;
+        letter-spacing: 1px;
+        right: 25px;
+        top: 36px;
+        &.danger {
+          background-color: $btn-color-5;
+        }
+        &.success {
+          background-color: $btn-color-4;
+        }
+      }
+      .risk-label {
+        z-index: 1;
+        position: absolute;
+        left: 25px;
+        top: 38px;
+        padding: 0 7px;
+        font-size: 14px;
+        color: #ffffff;
+        border-radius: 5px;
+        background-color: #e48282;
+      }
+      //&.select-risk {
+      //  .ng-input.ng-star-inserted {
+      //    padding-left: 40px !important;
+      //  }
+      //}
+    }
+    .bottom-controls {
+      padding-left: 15px;
+      padding-top: 20px;
+      &.financial {
+        padding-bottom: 30px;
+      }
+      .btn {
+        margin-right: 25px;
+        margin-bottom: 0;
+      }
+    }
+  }
+}
+
+// landscape
+@media screen and (min-width: 1024px) and (max-width: 1365px) {
+
+}
+
+// iPad Portrait
+@media screen and (min-width: 768px) and (max-width: 1023px) {
+
+}
+
+// mobile screens
+@media screen and (min-width: 375px) and (max-width: 767px) {
+
+}
+
+@media screen and (max-width: 768px) {
+
+  .merchants-details {
+    .title {
+      padding-left: 5px;
+    }
+    .refresh-details-container {
+      top: 27px;
+      right: 15px;
+    }
+  }
+  .card-body {
+    margin-bottom: 0;
+  }
+
+  .btn-reset {
+    margin-top: 0;
+  }
+
+}
+
+@media screen and (max-width: 768px) {
+  .card-body {
+    .btns-group-right {
+      text-align: end;
+    }
+    label.right-label {
+      right: 20px;
+    }
+  }
+}
+
+@media screen and (max-width: 414px) {
+  .page-system-settings {
+    .col {
+      padding-right: 8px;
+      padding-left: 8px;
+    }
+
+    .refresh-details-container {
+      display: none;
+    }
+
+    .mobile-refresh-container {
+      display: block;
+    }
+
+    .btn-reset-pass {
+      margin-bottom: 20px;
+    }
+
+    .btn-generate {
+      margin-bottom: 20px;
+    }
+
+    .card-body-title {
+      .title-container {
+        display: flex;
+        .general-controls {
+          display: block !important;
+          //margin-top: 20px !important;
+          .control {
+            margin-right: 0;
+            &:not(:last-child) {
+              margin-bottom: 5px;
+            }
+          }
+          .mb-divider {
+
+          }
+          .export-container {
+            //margin-top: 10px;
+            label {
+              display: none;
+            }
+            .btns-group-right {
+              .mobile-icon-refresh {
+                display: inline-block;
+              }
+            }
+          }
+        }
+      }
+    }
+
+    .card-form {
+      .bottom-controls {
+        .btn {
+          margin-bottom: 20px;
+        }
+      }
+    }
+
+
+    .financial-information-card {
+      .title-container {
+        display: block !important;
+        .user-general-info {
+          padding-bottom: 10px;
+        }
+        .general-controls {
+          .btn-primary-main {
+            float: right;
+          }
+          .export-container {
+            display: inline-block;
+          }
+        }
+      }
+      .financial-form {
+        .rate-table {
+          margin: 0 0 10px 0;
+        }
+        .apply-limits-btn {
+          margin-top: 0;
+          margin-bottom: 20px;
+        }
+        .bottom-controls {
+          padding-top: 0px;
+          .btn-primary-accept {
+            margin-right: 15px;
+          }
+        }
+      }
+    }
+  }
+}

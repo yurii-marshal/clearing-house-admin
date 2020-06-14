@@ -1,0 +1,832 @@
+<!--[@routerTransition]-->
+<div class="page-visa-files-information page-responsive">
+    <div class="row">
+        <div class="col col-xs-12">
+            <div class="title">
+                <span class="link-back" routerLink="/visa-files">
+                    {{'Visa Files' | translate}}
+                </span>
+                <span> / {{'Details' | translate}}</span>
+                <!--<span *ngIf="merchant?.businessDetails">-->
+                <!--{{'for' | translate}} {{merchant?.businessDetails?.businessName}}-->
+                <!--</span>-->
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col col-xs-12" style="min-height: 1800px;">
+            <div class="card mb-3">
+                <div class="card-header">
+                    <div class="card-header-inner">
+                        <span>{{'Visa File' | translate}} / ID: {{params['id']}} {{visafileName}}</span>
+                        <button class="btn-print btn-icon-refresh" (click)="refreshPage()">
+                            <img class="icon-refresh" src="./assets/images/transactions/Refresh_icon.svg" alt="">
+                        </button>
+                    </div>
+                </div>
+
+                <div class="card-body">
+                    <div class="row">
+                        <div class=" col-xs-6 col-md-3">
+                            <fieldset class="form-group">
+                                <label>{{'Processing Failed' | translate}}</label>
+                                <ng-select [items]="processingFailedFilter"
+                                           [(ngModel)]="filterGroup.processingFailed"
+                                           (change)="acceptFilters()"
+                                           bindLabel="description"
+                                           bindValue="code"
+                                           placeholder="{{'- Processing Failed -' | translate}}"
+                                           (window:resize)="reloadConfigSelect($event)">
+                                </ng-select>
+                            </fieldset>
+                        </div>
+                        <div class=" col-xs-6 col-md-5"></div>
+                        <div class=" col-xs-6 col-md-4 filter-drop-t">
+                            <div class="form-group wrapper-dropdown">
+                                <div ngbDropdown class="d-inline-block dropdown" placement="{{placementPosition}}">
+                                    <button class="btn" ngbDropdownToggle>
+                                        <img *ngIf="isColumnsFilterEmpty"
+                                             src="./assets/images/transactions/Filter-white.svg" alt="">
+                                        <img *ngIf="!isColumnsFilterEmpty"
+                                             src="./assets/images/transactions/Filter-red.svg" alt="">
+                                        <div class="btn-text">{{'Columns' | translate}}</div>
+                                    </button>
+                                    <div ngbDropdownMenu>
+                                        <div class="dropdown-item" [ngClass]="{'checked': filter.checkbox}"
+                                             (click)="filter.checkbox = !filter.checkbox; onColumnsChange();"
+                                             *ngFor="let filter of tableVisaDetailsColumns | getValues; index as i;">
+                                            <input type="checkbox"
+                                                   (change)="tableVisaDetailsColumns[filter.key].checkbox = filter.checkbox"
+                                                   [(ngModel)]="filter.checkbox">
+                                            <div style="display:inline-block">
+                                                {{filter.title}}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="table-responsive">
+                            <!--<button id="pnAdvancerLeft" class="pn-Advancer pn-Advancer_Left"-->
+                            <!--[ngClass]="{'isDemanded': advancedScrollService.SETTINGS.navBarTravelDirection === 'both' || advancedScrollService.SETTINGS.navBarTravelDirection === 'left'}"-->
+                            <!--type="button">-->
+                            <!--<i class="fa fa-angle-left"></i>-->
+                            <!--</button>-->
+                            <!--<button id="pnAdvancerRight" class="pn-Advancer pn-Advancer_Right"-->
+                            <!--[ngClass]="{'isDemanded': advancedScrollService.SETTINGS.navBarTravelDirection === 'both' || advancedScrollService.SETTINGS.navBarTravelDirection === 'right'}"-->
+                            <!--type="button">-->
+                            <!--<i class="fa fa-angle-right"></i>-->
+                            <!--</button>-->
+                            <!--id="pnProductNavContent"-->
+                            <table class="table">
+                                <thead>
+                                <tr>
+
+                                    <th (click)="setPositionIconStatus('visaConfirmationFileRowID')"
+                                        class="align-middle"
+                                        *ngIf="tableVisaDetailsColumns['visaConfirmationFileRowID'].checkbox"
+                                        [ngClass]="{'sorted': orderBy.visaConfirmationFileRowID === 'DESC', 'sorted-desc': orderBy.visaConfirmationFileRowID === 'ASC'}">
+                                        <div class="text-left"
+                                             title="{{'Visa Confirmation File Row ID' | translate}}">
+                                            <span>{{'ID' | translate}}</span>
+                                            <span class="sort-indicator"></span>
+                                        </div>
+                                    </th>
+                                    <th (click)="setPositionIconStatus('visaTransactionDate')"
+                                        class="align-middle"
+                                        *ngIf="tableVisaDetailsColumns['visaTransactionDate'].checkbox"
+                                        [ngClass]="{'sorted': orderBy.visaTransactionDate === 'DESC', 'sorted-desc': orderBy.visaTransactionDate === 'ASC'}">
+                                        <div class="text-left"
+                                             title="{{'Visa Transaction Date' | translate}}">
+                                            <span>{{'Date' | translate}}</span>
+                                            <span class="sort-indicator"></span>
+                                        </div>
+                                    </th>
+
+
+                                    <th (click)="setPositionIconStatus('parseError')"
+                                        class="align-middle"
+                                        *ngIf="tableVisaDetailsColumns['parseError'].checkbox"
+                                        [ngClass]="{'sorted': orderBy.parseError === 'DESC', 'sorted-desc': orderBy.parseError === 'ASC'}">
+                                        <div class="text-left"
+                                             title="{{'Parse Error' | translate}}">
+                                            <span>{{'Parse Error' | translate}}</span>
+                                            <span class="sort-indicator"></span>
+                                        </div>
+                                    </th>
+                                    <th (click)="setPositionIconStatus('processingFailed')"
+                                        class="align-middle"
+                                        *ngIf="tableVisaDetailsColumns['processingFailed'].checkbox"
+                                        [ngClass]="{'sorted': orderBy.processingFailed === 'DESC', 'sorted-desc': orderBy.processingFailed === 'ASC'}">
+                                        <div class="text-left"
+                                             title="{{'Processing Failed' | translate}}">
+                                            <span>{{'Processing Failed' | translate}}</span>
+                                            <span class="sort-indicator"></span>
+                                        </div>
+                                    </th>
+                                    <th (click)="setPositionIconStatus('processingResult')"
+                                        class="align-middle"
+                                        *ngIf="tableVisaDetailsColumns['processingResult'].checkbox"
+                                        [ngClass]="{'sorted': orderBy.processingResult === 'DESC', 'sorted-desc': orderBy.processingResult === 'ASC'}">
+                                        <div class="text-left"
+                                             title="{{'Processing Result' | translate}}">
+                                            <span>{{'Processing Result' | translate}}</span>
+                                            <span class="sort-indicator"></span>
+                                        </div>
+                                    </th>
+
+                                    <th (click)="setPositionIconStatus('dealReference')"
+                                        class="align-middle"
+                                        *ngIf="tableVisaDetailsColumns['dealReference'].checkbox"
+                                        [ngClass]="{'sorted': orderBy.dealReference === 'DESC', 'sorted-desc': orderBy.dealReference === 'ASC'}">
+                                        <div class="text-left"
+                                             title="{{'Deal Reference' | translate}}">
+                                            <span>{{'Deal Reference' | translate}}</span>
+                                            <span class="sort-indicator"></span>
+                                        </div>
+                                    </th>
+
+                                    <th (click)="setPositionIconStatus('accountNumber')" class="align-middle"
+                                        *ngIf="tableVisaDetailsColumns['accountNumber'].checkbox"
+                                        [ngClass]="{'sorted': orderBy.accountNumber === 'DESC', 'sorted-desc': orderBy.accountNumber === 'ASC'}">
+                                        <div class="text-left" title="{{'Account Number' | translate}}">
+                                            <span>{{'Account Number' | translate}}</span>
+                                            <span class="sort-indicator"></span>
+                                        </div>
+                                    </th>
+                                    <th (click)="setPositionIconStatus('accountNumber2')" class="align-middle"
+                                        *ngIf="tableVisaDetailsColumns['accountNumber2'].checkbox"
+                                        [ngClass]="{'sorted': orderBy.accountNumber2 === 'DESC', 'sorted-desc': orderBy.accountNumber2 === 'ASC'}">
+                                        <div class="text-left" title="{{'Account Number' | translate}} 2">
+                                            <span>{{'Account Number' | translate}} 2</span>
+                                            <span class="sort-indicator"></span>
+                                        </div>
+                                    </th>
+                                    <th (click)="setPositionIconStatus('actionType')" class="align-middle"
+                                        *ngIf="tableVisaDetailsColumns['actionType'].checkbox"
+                                        [ngClass]="{'sorted': orderBy.actionType === 'DESC', 'sorted-desc': orderBy.actionType === 'ASC'}">
+                                        <div class="text-left" title="{{'Action Type' | translate}}">
+                                            <span>{{'Action Type' | translate}}</span>
+                                            <span class="sort-indicator"></span>
+                                        </div>
+                                    </th>
+                                    <th (click)="setPositionIconStatus('additionalPaymentAmount')" class="align-middle"
+                                        *ngIf="tableVisaDetailsColumns['additionalPaymentAmount'].checkbox"
+                                        [ngClass]="{'sorted': orderBy.additionalPaymentAmount === 'DESC', 'sorted-desc': orderBy.additionalPaymentAmount === 'ASC'}">
+                                        <div class="text-left" title="{{'Additional Payment Amount' | translate}}">
+                                            <span>{{'Additional Payment Amount' | translate}}</span>
+                                            <span class="sort-indicator"></span>
+                                        </div>
+                                    </th>
+                                    <th (click)="setPositionIconStatus('bankDate')" class="align-middle"
+                                        *ngIf="tableVisaDetailsColumns['bankDate'].checkbox"
+                                        [ngClass]="{'sorted': orderBy.bankDate === 'DESC', 'sorted-desc': orderBy.bankDate === 'ASC'}">
+                                        <div class="text-left" title="{{'Bank Date' | translate}}">
+                                            <span>{{'Bank Date' | translate}}</span>
+                                            <span class="sort-indicator"></span>
+                                        </div>
+                                    </th>
+                                    <th (click)="setPositionIconStatus('cancelAmount')" class="align-middle"
+                                        *ngIf="tableVisaDetailsColumns['cancelAmount'].checkbox"
+                                        [ngClass]="{'sorted': orderBy.cancelAmount === 'DESC', 'sorted-desc': orderBy.cancelAmount === 'ASC'}">
+                                        <div class="text-left" title="{{'Cancel Amount' | translate}}">
+                                            <span>{{'Cancel Amount' | translate}}</span>
+                                            <span class="sort-indicator"></span>
+                                        </div>
+                                    </th>
+                                    <th (click)="setPositionIconStatus('cardDigits')" class="align-middle"
+                                        *ngIf="tableVisaDetailsColumns['cardDigits'].checkbox"
+                                        [ngClass]="{'sorted': orderBy.cardDigits === 'DESC', 'sorted-desc': orderBy.cardDigits === 'ASC'}">
+                                        <div class="text-left" title="{{'Card Digits' | translate}}">
+                                            <span>{{'Card Digits' | translate}}</span>
+                                            <span class="sort-indicator"></span>
+                                        </div>
+                                    </th>
+                                    <th (click)="setPositionIconStatus('cashbankAmount')" class="align-middle"
+                                        *ngIf="tableVisaDetailsColumns['cashbankAmount'].checkbox"
+                                        [ngClass]="{'sorted': orderBy.cashbankAmount === 'DESC', 'sorted-desc': orderBy.cashbankAmount === 'ASC'}">
+                                        <div class="text-left" title="{{'Cashbank Amount' | translate}}">
+                                            <span>{{'Cashbank Amount' | translate}}</span>
+                                            <span class="sort-indicator"></span>
+                                        </div>
+                                    </th>
+                                    <th (click)="setPositionIconStatus('clearingHouseTransactionType')"
+                                        class="align-middle"
+                                        *ngIf="tableVisaDetailsColumns['cashbankAmount'].checkbox"
+                                        [ngClass]="{'sorted': orderBy.clearingHouseTransactionType === 'DESC', 'sorted-desc': orderBy.clearingHouseTransactionType === 'ASC'}">
+                                        <div class="text-left"
+                                             title="{{'Clearing House Transaction Type' | translate}}">
+                                            <span>{{'Clearing House Transaction Type' | translate}}</span>
+                                            <span class="sort-indicator"></span>
+                                        </div>
+                                    </th>
+                                    <th (click)="setPositionIconStatus('commission')"
+                                        class="align-middle"
+                                        *ngIf="tableVisaDetailsColumns['commission'].checkbox"
+                                        [ngClass]="{'sorted': orderBy.commission === 'DESC', 'sorted-desc': orderBy.commission === 'ASC'}">
+                                        <div class="text-left"
+                                             title="{{'Commission' | translate}}">
+                                            <span>{{'Commission' | translate}}</span>
+                                            <span class="sort-indicator"></span>
+                                        </div>
+                                    </th>
+                                    <th (click)="setPositionIconStatus('currentInstallment')"
+                                        class="align-middle"
+                                        *ngIf="tableVisaDetailsColumns['currentInstallment'].checkbox"
+                                        [ngClass]="{'sorted': orderBy.currentInstallment === 'DESC', 'sorted-desc': orderBy.currentInstallment === 'ASC'}">
+                                        <div class="text-left"
+                                             title="{{'Current Installment' | translate}}">
+                                            <span>{{'Current Installment' | translate}}</span>
+                                            <span class="sort-indicator"></span>
+                                        </div>
+                                    </th>
+                                    <th (click)="setPositionIconStatus('dealNature')"
+                                        class="align-middle"
+                                        *ngIf="tableVisaDetailsColumns['dealNature'].checkbox"
+                                        [ngClass]="{'sorted': orderBy.dealNature === 'DESC', 'sorted-desc': orderBy.dealNature === 'ASC'}">
+                                        <div class="text-left"
+                                             title="{{'Deal Nature' | translate}}">
+                                            <span>{{'Deal Nature' | translate}}</span>
+                                            <span class="sort-indicator"></span>
+                                        </div>
+                                    </th>
+
+                                    <th (click)="setPositionIconStatus('dealType')"
+                                        class="align-middle"
+                                        *ngIf="tableVisaDetailsColumns['dealType'].checkbox"
+                                        [ngClass]="{'sorted': orderBy.dealType === 'DESC', 'sorted-desc': orderBy.dealType === 'ASC'}">
+                                        <div class="text-left"
+                                             title="{{'Deal Type' | translate}}">
+                                            <span>{{'Deal Type' | translate}}</span>
+                                            <span class="sort-indicator"></span>
+                                        </div>
+                                    </th>
+                                    <th (click)="setPositionIconStatus('discountAmount')"
+                                        class="align-middle"
+                                        *ngIf="tableVisaDetailsColumns['discountAmount'].checkbox"
+                                        [ngClass]="{'sorted': orderBy.discountAmount === 'DESC', 'sorted-desc': orderBy.discountAmount === 'ASC'}">
+                                        <div class="text-left"
+                                             title="{{'Discount Amount' | translate}}">
+                                            <span>{{'Discount Amount' | translate}}</span>
+                                            <span class="sort-indicator"></span>
+                                        </div>
+                                    </th>
+                                    <th (click)="setPositionIconStatus('initialPaymentAmount')"
+                                        class="align-middle"
+                                        *ngIf="tableVisaDetailsColumns['initialPaymentAmount'].checkbox"
+                                        [ngClass]="{'sorted': orderBy.initialPaymentAmount === 'DESC', 'sorted-desc': orderBy.initialPaymentAmount === 'ASC'}">
+                                        <div class="text-left"
+                                             title="{{'Initial Payment Amount' | translate}}">
+                                            <span>{{'Initial Payment Amount' | translate}}</span>
+                                            <span class="sort-indicator"></span>
+                                        </div>
+                                    </th>
+                                    <th (click)="setPositionIconStatus('installmentsAmount')"
+                                        class="align-middle"
+                                        *ngIf="tableVisaDetailsColumns['installmentsAmount'].checkbox"
+                                        [ngClass]="{'sorted': orderBy.installmentsAmount === 'DESC', 'sorted-desc': orderBy.installmentsAmount === 'ASC'}">
+                                        <div class="text-left"
+                                             title="{{'Installments Amount' | translate}}">
+                                            <span>{{'Installments Amount' | translate}}</span>
+                                            <span class="sort-indicator"></span>
+                                        </div>
+                                    </th>
+                                    <th (click)="setPositionIconStatus('installmentsAmountRemaining')"
+                                        class="align-middle"
+                                        *ngIf="tableVisaDetailsColumns['installmentsAmountRemaining'].checkbox"
+                                        [ngClass]="{'sorted': orderBy.installmentsAmountRemaining === 'DESC', 'sorted-desc': orderBy.installmentsAmountRemaining === 'ASC'}">
+                                        <div class="text-left"
+                                             title="{{'Installments Amount Remaining' | translate}}">
+                                            <span>{{'Installments Amount Remaining' | translate}}</span>
+                                            <span class="sort-indicator"></span>
+                                        </div>
+                                    </th>
+                                    <th (click)="setPositionIconStatus('installmentsCount')"
+                                        class="align-middle"
+                                        *ngIf="tableVisaDetailsColumns['installmentsCount'].checkbox"
+                                        [ngClass]="{'sorted': orderBy.installmentsCount === 'DESC', 'sorted-desc': orderBy.installmentsCount === 'ASC'}">
+                                        <div class="text-left"
+                                             title="{{'Installments Count' | translate}}">
+                                            <span>{{'Installments Count' | translate}}</span>
+                                            <span class="sort-indicator"></span>
+                                        </div>
+                                    </th>
+                                    <th (click)="setPositionIconStatus('installmentsIndicator')"
+                                        class="align-middle"
+                                        *ngIf="tableVisaDetailsColumns['installmentsIndicator'].checkbox"
+                                        [ngClass]="{'sorted': orderBy.installmentsIndicator === 'DESC', 'sorted-desc': orderBy.installmentsIndicator === 'ASC'}">
+                                        <div class="text-left"
+                                             title="{{'Installments Indicator' | translate}}">
+                                            <span>{{'Installments Indicator' | translate}}</span>
+                                            <span class="sort-indicator"></span>
+                                        </div>
+                                    </th>
+                                    <th (click)="setPositionIconStatus('interestAmount')"
+                                        class="align-middle"
+                                        *ngIf="tableVisaDetailsColumns['interestAmount'].checkbox"
+                                        [ngClass]="{'sorted': orderBy.interestAmount === 'DESC', 'sorted-desc': orderBy.interestAmount === 'ASC'}">
+                                        <div class="text-left"
+                                             title="{{'Interest Amount' | translate}}">
+                                            <span>{{'Interest Amount' | translate}}</span>
+                                            <span class="sort-indicator"></span>
+                                        </div>
+                                    </th>
+                                    <th (click)="setPositionIconStatus('isForced')"
+                                        class="align-middle"
+                                        *ngIf="tableVisaDetailsColumns['isForced'].checkbox"
+                                        [ngClass]="{'sorted': orderBy.isForced === 'DESC', 'sorted-desc': orderBy.isForced === 'ASC'}">
+                                        <div class="text-left"
+                                             title="{{'Is Forced' | translate}}">
+                                            <span>{{'Is Forced' | translate}}</span>
+                                            <span class="sort-indicator"></span>
+                                        </div>
+                                    </th>
+                                    <th (click)="setPositionIconStatus('isFundTransferred')"
+                                        class="align-middle"
+                                        *ngIf="tableVisaDetailsColumns['isFundTransferred'].checkbox"
+                                        [ngClass]="{'sorted': orderBy.isFundTransferred === 'DESC', 'sorted-desc': orderBy.isFundTransferred === 'ASC'}">
+                                        <div class="text-left"
+                                             title="{{'Is Fund Transferred' | translate}}">
+                                            <span>{{'Is Fund Transferred' | translate}}</span>
+                                            <span class="sort-indicator"></span>
+                                        </div>
+                                    </th>
+                                    <th (click)="setPositionIconStatus('isTourist')"
+                                        class="align-middle"
+                                        *ngIf="tableVisaDetailsColumns['isTourist'].checkbox"
+                                        [ngClass]="{'sorted': orderBy.isTourist === 'DESC', 'sorted-desc': orderBy.isTourist === 'ASC'}">
+                                        <div class="text-left"
+                                             title="{{'Is Tourist' | translate}}">
+                                            <span>{{'Is Tourist' | translate}}</span>
+                                            <span class="sort-indicator"></span>
+                                        </div>
+                                    </th>
+                                    <th (click)="setPositionIconStatus('merchantNumber')"
+                                        class="align-middle"
+                                        *ngIf="tableVisaDetailsColumns['merchantNumber'].checkbox"
+                                        [ngClass]="{'sorted': orderBy.merchantNumber === 'DESC', 'sorted-desc': orderBy.merchantNumber === 'ASC'}">
+                                        <div class="text-left"
+                                             title="{{'Merchant Number' | translate}}">
+                                            <span>{{'Merchant Number' | translate}}</span>
+                                            <span class="sort-indicator"></span>
+                                        </div>
+                                    </th>
+                                    <th (click)="setPositionIconStatus('netAmount')"
+                                        class="align-middle"
+                                        *ngIf="tableVisaDetailsColumns['netAmount'].checkbox"
+                                        [ngClass]="{'sorted': orderBy.netAmount === 'DESC', 'sorted-desc': orderBy.netAmount === 'ASC'}">
+                                        <div class="text-left"
+                                             title="{{'Net Amount' | translate}}">
+                                            <span>{{'Net Amount' | translate}}</span>
+                                            <span class="sort-indicator"></span>
+                                        </div>
+                                    </th>
+                                    
+                                    <th (click)="setPositionIconStatus('recordStatus')"
+                                        class="align-middle"
+                                        *ngIf="tableVisaDetailsColumns['recordStatus'].checkbox"
+                                        [ngClass]="{'sorted': orderBy.recordStatus === 'DESC', 'sorted-desc': orderBy.recordStatus === 'ASC'}">
+                                        <div class="text-left"
+                                             title="{{'Record Status' | translate}}">
+                                            <span>{{'Record Status' | translate}}</span>
+                                            <span class="sort-indicator"></span>
+                                        </div>
+                                    </th>
+                                    <th (click)="setPositionIconStatus('refundAmount')"
+                                        class="align-middle"
+                                        *ngIf="tableVisaDetailsColumns['refundAmount'].checkbox"
+                                        [ngClass]="{'sorted': orderBy.refundAmount === 'DESC', 'sorted-desc': orderBy.refundAmount === 'ASC'}">
+                                        <div class="text-left"
+                                             title="{{'Refund Amount' | translate}}">
+                                            <span>{{'Refund Amount' | translate}}</span>
+                                            <span class="sort-indicator"></span>
+                                        </div>
+                                    </th>
+                                    <th (click)="setPositionIconStatus('serviceCharge')"
+                                        class="align-middle"
+                                        *ngIf="tableVisaDetailsColumns['serviceCharge'].checkbox"
+                                        [ngClass]="{'sorted': orderBy.serviceCharge === 'DESC', 'sorted-desc': orderBy.serviceCharge === 'ASC'}">
+                                        <div class="text-left"
+                                             title="{{'Service Charge' | translate}}">
+                                            <span>{{'Service Charge' | translate}}</span>
+                                            <span class="sort-indicator"></span>
+                                        </div>
+                                    </th>
+                                    <th (click)="setPositionIconStatus('shvaDealID')"
+                                        class="align-middle"
+                                        *ngIf="tableVisaDetailsColumns['shvaDealID'].checkbox"
+                                        [ngClass]="{'sorted': orderBy.shvaDealID === 'DESC', 'sorted-desc': orderBy.shvaDealID === 'ASC'}">
+                                        <div class="text-left"
+                                             title="{{'Shva Deal ID' | translate}}">
+                                            <span>{{'Shva Deal ID' | translate}}</span>
+                                            <span class="sort-indicator"></span>
+                                        </div>
+                                    </th>
+                                    <th (click)="setPositionIconStatus('shvaShovarNumber')"
+                                        class="align-middle"
+                                        *ngIf="tableVisaDetailsColumns['shvaShovarNumber'].checkbox"
+                                        [ngClass]="{'sorted': orderBy.shvaShovarNumber === 'DESC', 'sorted-desc': orderBy.shvaShovarNumber === 'ASC'}">
+                                        <div class="text-left"
+                                             title="{{'Shva Shovar Number' | translate}}">
+                                            <span>{{'Shva Shovar Number' | translate}}</span>
+                                            <span class="sort-indicator"></span>
+                                        </div>
+                                    </th>
+                                    <th (click)="setPositionIconStatus('shvaTransactionType')"
+                                        class="align-middle"
+                                        *ngIf="tableVisaDetailsColumns['shvaTransactionType'].checkbox"
+                                        [ngClass]="{'sorted': orderBy.shvaTransactionType === 'DESC', 'sorted-desc': orderBy.shvaTransactionType === 'ASC'}">
+                                        <div class="text-left"
+                                             title="{{'Shva Transaction Type' | translate}}">
+                                            <span>{{'Shva Transaction Type' | translate}}</span>
+                                            <span class="sort-indicator"></span>
+                                        </div>
+                                    </th>
+                                    <th (click)="setPositionIconStatus('shvaTransmissionNumber')"
+                                        class="align-middle"
+                                        *ngIf="tableVisaDetailsColumns['shvaTransmissionNumber'].checkbox"
+                                        [ngClass]="{'sorted': orderBy.shvaTransmissionNumber === 'DESC', 'sorted-desc': orderBy.shvaTransmissionNumber === 'ASC'}">
+                                        <div class="text-left"
+                                             title="{{'Shva Transmission Number' | translate}}">
+                                            <span>{{'Shva Transmission Number' | translate}}</span>
+                                            <span class="sort-indicator"></span>
+                                        </div>
+                                    </th>
+                                    <th (click)="setPositionIconStatus('statusEnum')"
+                                        class="align-middle"
+                                        *ngIf="tableVisaDetailsColumns['statusEnum'].checkbox"
+                                        [ngClass]="{'sorted': orderBy.statusEnum === 'DESC', 'sorted-desc': orderBy.statusEnum === 'ASC'}">
+                                        <div class="text-left"
+                                             title="{{'Status Enum' | translate}}">
+                                            <span>{{'Status Enum' | translate}}</span>
+                                            <span class="sort-indicator"></span>
+                                        </div>
+                                    </th>
+                                    <th (click)="setPositionIconStatus('stopAmount')"
+                                        class="align-middle"
+                                        *ngIf="tableVisaDetailsColumns['stopAmount'].checkbox"
+                                        [ngClass]="{'sorted': orderBy.stopAmount === 'DESC', 'sorted-desc': orderBy.stopAmount === 'ASC'}">
+                                        <div class="text-left"
+                                             title="{{'Stop Amount' | translate}}">
+                                            <span>{{'Stop Amount' | translate}}</span>
+                                            <span class="sort-indicator"></span>
+                                        </div>
+                                    </th>
+                                    <th (click)="setPositionIconStatus('terminalNumber')"
+                                        class="align-middle"
+                                        *ngIf="tableVisaDetailsColumns['terminalNumber'].checkbox"
+                                        [ngClass]="{'sorted': orderBy.terminalNumber === 'DESC', 'sorted-desc': orderBy.terminalNumber === 'ASC'}">
+                                        <div class="text-left"
+                                             title="{{'Terminal Number' | translate}}">
+                                            <span>{{'Terminal Number' | translate}}</span>
+                                            <span class="sort-indicator"></span>
+                                        </div>
+                                    </th>
+                                    <th (click)="setPositionIconStatus('tourist')"
+                                        class="align-middle"
+                                        *ngIf="tableVisaDetailsColumns['tourist'].checkbox"
+                                        [ngClass]="{'sorted': orderBy.tourist === 'DESC', 'sorted-desc': orderBy.tourist === 'ASC'}">
+                                        <div class="text-left"
+                                             title="{{'Tourist' | translate}}">
+                                            <span>{{'Tourist' | translate}}</span>
+                                            <span class="sort-indicator"></span>
+                                        </div>
+                                    </th>
+                                    <th (click)="setPositionIconStatus('transactionID')"
+                                        class="align-middle"
+                                        *ngIf="tableVisaDetailsColumns['transactionID'].checkbox"
+                                        [ngClass]="{'sorted': orderBy.transactionID === 'DESC', 'sorted-desc': orderBy.transactionID === 'ASC'}">
+                                        <div class="text-left"
+                                             title="{{'Transaction ID' | translate}}">
+                                            <span>{{'Transaction ID' | translate}}</span>
+                                            <span class="sort-indicator"></span>
+                                        </div>
+                                    </th>
+                                    <th (click)="setPositionIconStatus('transactionSource')"
+                                        class="align-middle"
+                                        *ngIf="tableVisaDetailsColumns['transactionSource'].checkbox"
+                                        [ngClass]="{'sorted': orderBy.transactionSource === 'DESC', 'sorted-desc': orderBy.transactionSource === 'ASC'}">
+                                        <div class="text-left"
+                                             title="{{'Transaction Source' | translate}}">
+                                            <span>{{'Transaction Source' | translate}}</span>
+                                            <span class="sort-indicator"></span>
+                                        </div>
+                                    </th>
+                                    <th (click)="setPositionIconStatus('transactionType')"
+                                        class="align-middle"
+                                        *ngIf="tableVisaDetailsColumns['transactionType'].checkbox"
+                                        [ngClass]="{'sorted': orderBy.transactionType === 'DESC', 'sorted-desc': orderBy.transactionType === 'ASC'}">
+                                        <div class="text-left"
+                                             title="{{'Transaction Type' | translate}}">
+                                            <span>{{'Transaction Type' | translate}}</span>
+                                            <span class="sort-indicator"></span>
+                                        </div>
+                                    </th>
+                                    <th (click)="setPositionIconStatus('transmissionDate')"
+                                        class="align-middle"
+                                        *ngIf="tableVisaDetailsColumns['transmissionDate'].checkbox"
+                                        [ngClass]="{'sorted': orderBy.transmissionDate === 'DESC', 'sorted-desc': orderBy.transmissionDate === 'ASC'}">
+                                        <div class="text-left"
+                                             title="{{'Transmission Date' | translate}}">
+                                            <span>{{'Transmission Date' | translate}}</span>
+                                            <span class="sort-indicator"></span>
+                                        </div>
+                                    </th>
+                                    <th (click)="setPositionIconStatus('vat')"
+                                        class="align-middle"
+                                        *ngIf="tableVisaDetailsColumns['vat'].checkbox"
+                                        [ngClass]="{'sorted': orderBy.vat === 'DESC', 'sorted-desc': orderBy.vat === 'ASC'}">
+                                        <div class="text-left"
+                                             title="{{'VAT' | translate}}">
+                                            <span>{{'VAT' | translate}}</span>
+                                            <span class="sort-indicator"></span>
+                                        </div>
+                                    </th>
+                                    
+                                    <th (click)="setPositionIconStatus('visaTransactionID')"
+                                        class="align-middle"
+                                        *ngIf="tableVisaDetailsColumns['visaTransactionID'].checkbox"
+                                        [ngClass]="{'sorted': orderBy.visaTransactionID === 'DESC', 'sorted-desc': orderBy.visaTransactionID === 'ASC'}">
+                                        <div class="text-left"
+                                             title="{{'Visa Transaction ID' | translate}}">
+                                            <span>{{'Visa Transaction ID' | translate}}</span>
+                                            <span class="sort-indicator"></span>
+                                        </div>
+                                    </th>
+                                    <th (click)="setPositionIconStatus('visaTransactionID2')"
+                                        class="align-middle"
+                                        *ngIf="tableVisaDetailsColumns['visaTransactionID2'].checkbox"
+                                        [ngClass]="{'sorted': orderBy.visaTransactionID2 === 'DESC', 'sorted-desc': orderBy.visaTransactionID2 === 'ASC'}">
+                                        <div class="text-left"
+                                             title="{{'Visa Transaction ID' | translate}} 2">
+                                            <span>{{'Visa Transaction ID' | translate}} 2</span>
+                                            <span class="sort-indicator"></span>
+                                        </div>
+                                    </th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr *ngFor="let visa of visaDetailsList; index as i;" (click)="transitionToTransaction(visa.transactionID)"
+                                    [ngClass]="{'processing-failed': (visa.processingFailed === true), 'processing-warning': (visa.processingWarning === true)}">
+                                    <td class="text-left"
+                                        *ngIf="tableVisaDetailsColumns['visaConfirmationFileRowID'].checkbox">
+                                        {{visa.visaConfirmationFileRowID}}
+                                    </td>
+                                    <td class="text-left"
+                                        *ngIf="tableVisaDetailsColumns['visaTransactionDate'].checkbox">
+                                        {{visa.visaTransactionDate | utcToLocalDate | date: 'dd/MM/yyyy'}}
+                                    </td>
+                                    <td class="text-left"
+                                        *ngIf="tableVisaDetailsColumns['parseError'].checkbox">
+                                        {{visa.parseError}}
+                                    </td>
+
+                                    <td class="text-left"
+                                        *ngIf="tableVisaDetailsColumns['processingFailed'].checkbox">
+                                        <span *ngIf="visa.processingFailed === true && !(visa.processingResult == 'TransactionNotFound' && visa.isFundTransferred === true)">{{'Yes' | translate}}</span>
+                                        <span *ngIf="visa.processingFailed === false">{{'No' | translate}}</span>
+
+                                        <button *ngIf="visa.processingFailed === true && visa.processingResult == 'TransactionNotFound' && visa.isFundTransferred === true" (click)="openNewTransactionModal(createTransactionModalContent, visa.visaConfirmationFileID, visa.visaConfirmationFileRowID)" class="btn btn-sm btn-primary-danger">Create transaction</button>
+                                    </td>
+                                    <td class="text-left text-nowrap"
+                                        *ngIf="tableVisaDetailsColumns['processingResult'].checkbox">
+                                        {{visa.processingResult | getValueFromDictionary: 'visaFileProcessingResult'}}
+                                    </td>
+
+                                    <td class="text-left text-nowrap"
+                                        *ngIf="tableVisaDetailsColumns['dealReference'].checkbox">
+                                        {{visa.dealReference}}
+                                    </td>
+
+                                    <td class="text-left" *ngIf="tableVisaDetailsColumns['accountNumber'].checkbox">
+                                        {{visa.accountNumber}}
+                                    </td>
+                                    <td class="text-left" *ngIf="tableVisaDetailsColumns['accountNumber2'].checkbox">
+                                        {{visa.accountNumber2}}
+                                    </td>
+                                    <td class="text-left" *ngIf="tableVisaDetailsColumns['actionType'].checkbox">
+                                        {{visa.actionType}}
+                                    </td>
+                                    <td class="text-right"
+                                        *ngIf="tableVisaDetailsColumns['additionalPaymentAmount'].checkbox">
+                                        {{visa.additionalPaymentAmount}}
+                                    </td>
+                                    <td class="text-left"
+                                        *ngIf="tableVisaDetailsColumns['bankDate'].checkbox">
+                                        {{visa.bankDate | utcToLocalDate | date: 'dd/MM/yyyy'}}
+                                    </td>
+                                    <td class="text-right"
+                                        *ngIf="tableVisaDetailsColumns['cancelAmount'].checkbox">
+                                        {{visa.cancelAmount}}
+                                    </td>
+                                    <td class="text-left"
+                                        *ngIf="tableVisaDetailsColumns['cardDigits'].checkbox">
+                                        {{visa.cardDigits}}
+                                    </td>
+                                    <td class="text-right"
+                                        *ngIf="tableVisaDetailsColumns['cashbankAmount'].checkbox">
+                                        {{visa.cashbankAmount}}
+                                    </td>
+                                    <td class="text-left"
+                                        *ngIf="tableVisaDetailsColumns['clearingHouseTransactionType'].checkbox">
+                                        {{visa.clearingHouseTransactionType}}
+                                    </td>
+                                    <td class="text-left"
+                                        *ngIf="tableVisaDetailsColumns['commission'].checkbox">
+                                        {{visa.commission}}
+                                    </td>
+                                    <td class="text-left"
+                                        *ngIf="tableVisaDetailsColumns['currentInstallment'].checkbox">
+                                        {{visa.currentInstallment}}
+                                    </td>
+                                    <td class="text-left"
+                                        *ngIf="tableVisaDetailsColumns['dealNature'].checkbox">
+                                        {{visa.dealNature}}
+                                    </td>
+
+                                    <td class="text-left"
+                                        *ngIf="tableVisaDetailsColumns['dealType'].checkbox">
+                                        {{visa.dealType}}
+                                    </td>
+                                    <td class="text-right"
+                                        *ngIf="tableVisaDetailsColumns['discountAmount'].checkbox">
+                                        {{visa.discountAmount}}
+                                    </td>
+                                    <td class="text-right"
+                                        *ngIf="tableVisaDetailsColumns['initialPaymentAmount'].checkbox">
+                                        {{visa.initialPaymentAmount}}
+                                    </td>
+                                    <td class="text-right"
+                                        *ngIf="tableVisaDetailsColumns['installmentsAmount'].checkbox">
+                                        {{visa.installmentsAmount}}
+                                    </td>
+                                    <td class="text-left"
+                                        *ngIf="tableVisaDetailsColumns['installmentsAmountRemaining'].checkbox">
+                                        {{visa.installmentsAmountRemaining}}
+                                    </td>
+                                    <td class="text-left"
+                                        *ngIf="tableVisaDetailsColumns['installmentsCount'].checkbox">
+                                        {{visa.installmentsCount}}
+                                    </td>
+                                    <td class="text-left"
+                                        *ngIf="tableVisaDetailsColumns['installmentsIndicator'].checkbox">
+                                        {{visa.installmentsIndicator}}
+                                    </td>
+                                    <td class="text-right"
+                                        *ngIf="tableVisaDetailsColumns['interestAmount'].checkbox">
+                                        {{visa.interestAmount}}
+                                    </td>
+                                    <td class="text-left"
+                                        *ngIf="tableVisaDetailsColumns['isForced'].checkbox">
+                                        <span *ngIf="visa.isForced === true">{{'Yes' | translate}}</span>
+                                        <span *ngIf="visa.isForced === false">{{'No' | translate}}</span>
+                                    </td>
+                                    <td class="text-left"
+                                        *ngIf="tableVisaDetailsColumns['isFundTransferred'].checkbox">
+                                        <span *ngIf="visa.isFundTransferred === true">{{'Yes' | translate}}</span>
+                                        <span *ngIf="visa.isFundTransferred === false">{{'No' | translate}}</span>
+                                    </td>
+                                    <td class="text-left"
+                                        *ngIf="tableVisaDetailsColumns['isTourist'].checkbox">
+                                        <span *ngIf="visa.isTourist === true">{{'Yes' | translate}}</span>
+                                        <span *ngIf="visa.isTourist === false">{{'No' | translate}}</span>
+                                    </td>
+                                    <td class="text-left"
+                                        *ngIf="tableVisaDetailsColumns['merchantNumber'].checkbox">
+                                        {{visa.merchantNumber}}
+                                    </td>
+                                    <td class="text-right"
+                                        *ngIf="tableVisaDetailsColumns['netAmount'].checkbox">
+                                        {{visa.netAmount}}
+                                    </td>
+
+                                    <td class="text-left"
+                                        *ngIf="tableVisaDetailsColumns['recordStatus'].checkbox">
+                                        {{visa.recordStatus}}
+                                    </td>
+                                    <td class="text-right"
+                                        *ngIf="tableVisaDetailsColumns['refundAmount'].checkbox">
+                                        {{visa.refundAmount}}
+                                    </td>
+                                    <td class="text-left"
+                                        *ngIf="tableVisaDetailsColumns['serviceCharge'].checkbox">
+                                        {{visa.serviceCharge}}
+                                    </td>
+                                    <td class="text-left"
+                                        *ngIf="tableVisaDetailsColumns['shvaDealID'].checkbox">
+                                        {{visa.shvaDealID}}
+                                    </td>
+                                    <td class="text-left"
+                                        *ngIf="tableVisaDetailsColumns['shvaShovarNumber'].checkbox">
+                                        {{visa.shvaShovarNumber}}
+                                    </td>
+                                    <td class="text-left"
+                                        *ngIf="tableVisaDetailsColumns['shvaTransactionType'].checkbox">
+                                        {{visa.shvaTransactionType}}
+                                    </td>
+                                    <td class="text-left"
+                                        *ngIf="tableVisaDetailsColumns['shvaTransmissionNumber'].checkbox">
+                                        {{visa.shvaTransmissionNumber}}
+                                    </td>
+                                    <td class="text-left"
+                                        *ngIf="tableVisaDetailsColumns['statusEnum'].checkbox">
+                                        {{visa.statusEnum}}
+                                    </td>
+                                    <td class="text-right"
+                                        *ngIf="tableVisaDetailsColumns['stopAmount'].checkbox">
+                                        {{visa.stopAmount}}
+                                    </td>
+                                    <td class="text-left"
+                                        *ngIf="tableVisaDetailsColumns['terminalNumber'].checkbox">
+                                        {{visa.terminalNumber}}
+                                    </td>
+                                    <td class="text-left"
+                                        *ngIf="tableVisaDetailsColumns['tourist'].checkbox">
+                                        {{visa.tourist}}
+                                    </td>
+                                    <td class="text-left"
+                                        *ngIf="tableVisaDetailsColumns['transactionID'].checkbox">
+                                        {{visa.transactionID}}
+                                    </td>
+                                    <td class="text-left"
+                                        *ngIf="tableVisaDetailsColumns['transactionSource'].checkbox">
+                                        {{visa.transactionSource}}
+                                    </td>
+                                    <td class="text-left"
+                                        *ngIf="tableVisaDetailsColumns['transactionType'].checkbox">
+                                        {{visa.transactionType}}
+                                    </td>
+                                    <td class="text-left"
+                                        *ngIf="tableVisaDetailsColumns['transmissionDate'].checkbox">
+                                        {{visa.transmissionDate | utcToLocalDate | date: 'dd/MM/yyyy'}}
+                                    </td>
+                                    <td class="text-left"
+                                        *ngIf="tableVisaDetailsColumns['vat'].checkbox">
+                                        {{visa.vat}}
+                                    </td>
+
+                                    <td class="text-left"
+                                        *ngIf="tableVisaDetailsColumns['visaTransactionID'].checkbox">
+                                        {{visa.visaTransactionID}}
+                                    </td>
+                                    <td class="text-left"
+                                        *ngIf="tableVisaDetailsColumns['visaTransactionID2'].checkbox">
+                                        {{visa.visaTransactionID2}}
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="page-footter" *ngIf="collectionSize > maxSize">
+                        <div class="text-uppercase text-muted fs-12">{{'Pages' | translate}}</div>
+                        <ngb-pagination [collectionSize]="collectionSize" [(page)]="page" [maxSize]="maxSize"
+                                        [pageSize]="pageSize" (pageChange)="pageChange($event)"
+                                        [rotate]="true" [ellipses]="false"
+                                        [boundaryLinks]="true"></ngb-pagination>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <ng-template #createTransactionModalContent let-c="close" let-d="dismiss">
+        <div class="modal-header">
+            <h4 class="modal-title">{{'Create transaction' | translate}}</h4>
+            <button type="button" class="close" aria-label="Close"
+                    (click)="d('Cross click')">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        <div class="modal-body">
+            <div class="row">
+                <div class=" col-xs-12 col-md-6">
+                    <div class="form-group">
+                        <label>{{'Choose merchant' | translate}}</label>
+                        <ng-select [items]="merchantsList"
+                                   [(ngModel)]="newTransaction.merchantID"
+                                   bindValue="code"
+                                   bindLabel="description"
+                                   placeholder="{{'- Select One -' | translate}}"
+                                   >
+                        </ng-select>
+                    </div>
+                </div>
+                
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-main"
+                    [disabled]="!newTransaction.merchantID"
+                    (click)="c(newTransaction)">
+                {{'Create' | translate}}
+            </button>
+            <button type="button" class="btn btn-primary-close" (click)="c(null)">
+                {{'Close' | translate}}
+            </button>
+        </div>
+    </ng-template>
+
+</div>

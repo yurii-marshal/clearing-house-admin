@@ -1,0 +1,6 @@
+<app-header></app-header>
+<app-sidebar></app-sidebar>
+<section [ngClass]="{'rtl-mode': isRTLToggle, 'safari': isSafariBrowser}" class="main-container">
+    <app-loader-screen></app-loader-screen>
+    <router-outlet></router-outlet>
+</section>

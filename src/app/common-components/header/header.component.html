@@ -1,0 +1,45 @@
+<nav class="navbar navbar-expand-lg fixed-top" [ngClass]="{'rtl-mode': isRTLToggle}">
+    <a class="navbar-brand" routerLink="/merchants"><img class="logo" src="./assets/images/logo-new.jpg" alt=""></a>
+    <!--<div class="small-right-header">-->
+        <!--<img class="icon navbar-toggler" src="./assets/images/send_with_email_icon.svg" alt="">-->
+        <!--<a href="https://rapid-clearinghouse-identity.azurewebsites.net">-->
+            <!--<img class="icon nav-link" src="./assets/images/User_preferences_icon.svg" alt="">-->
+        <!--</a>-->
+        <!--<button class="navbar-toggler" type="button" (click)="toggleSidebar()">-->
+            <!-- <span class="navbar-toggler-icon"></span> -->
+            <!--<img class="icon" src="./assets/images/menu_icon.svg" aria-hidden="true" alt="">-->
+            <!--<i class="fa fa-bars text-muted" aria-hidden="true"></i>-->
+        <!--</button>-->
+    <!--</div>-->
+    <div class="collapse navbar-collapse">
+        <ul class="navbar-nav ml-auto">&nbsp;
+            <li *ngIf="userService.userData">
+                <h5 style="margin: 7px 10px 0 0;">{{'Hello' | translate}}, {{userService.userData.fullName}}</h5>
+            </li>
+            <!--<li class="nav-item mail-container">-->
+            <!--<img class="icon icon-mail nav-link" src="./assets/images/send_with_email_icon.svg" alt="">-->
+            <!--</li>-->
+            <li class="nav-item">
+                <img class="icon navbar-toggler" src="./assets/images/send_with_email_icon.svg" alt="">
+                <!--<a href="https://rapid-clearinghouse-identity.azurewebsites.net">-->
+                    <!--<img class="icon nav-link" src="./assets/images/User_preferences_icon.svg" alt="">-->
+                <!--</a>-->
+            </li>
+            <li class="nav-item">
+                <div class="language" [ngClass]="{'current': currentLang === 'en'}"
+                     (click)="setTranslationLanguage('en')">EN
+                </div>
+                <p class="divider"> | </p>
+                <div class="language" [ngClass]="{'current': currentLang === 'he'}"
+                     (click)="setTranslationLanguage('he')">עִברִית
+                </div>
+            </li>
+            <li class="nav-item">
+                <a href="javascript:void(0)" class="nav-link mt-1"
+                   style="padding: 0.375rem 1rem !important; border-color: #999;" (click)="rltAndLtr()">
+                    {{'RTL/LTRd' | translate}}
+                </a>
+            </li>
+        </ul>
+    </div>
+</nav>

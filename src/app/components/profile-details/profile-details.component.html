@@ -1,0 +1,228 @@
+<!--[@routerTransition]-->
+<div class="page-profile-details page-responsive">
+    <div class="row">
+        <div class="col col-xs-12">
+            <div class="title">
+                <span>{{'Profile Details' | translate}}</span>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col">
+            <div class="card mb-3">
+                <div class="card-header">
+                    <div class="card-header-inner">
+                        <span>{{'General Details' | translate}}</span>
+                    </div>
+                </div>
+                <div class="card-body mb-md-5">
+                    <form role="form" autocomplete="off">
+                        <div class="row">
+                            <div class="col-md-6 col-12">
+                                <fieldset class="form-group">
+                                    <label>{{'Business ID' | translate}}</label>
+                                    <input class="form-control input-mandatory" placeholder="{{'Business ID' | translate}}">
+                                </fieldset>
+                            </div>
+                            <div class="col-md-6 col-12">
+                                <fieldset class="form-group">
+                                    <label>{{'Business Name' | translate}}</label>
+                                    <input class="form-control input-mandatory" placeholder="{{'Bussiness Name' | translate}}">
+                                </fieldset>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 col-12">
+                                <fieldset class="form-group">
+                                    <label>{{'Card Owner Full Name' | translate}}</label>
+                                    <input class="form-control input-mandatory" placeholder="{{'First Name' | translate}}">
+                                </fieldset>
+                            </div>
+                            <div class="col-md-6 col-12 d-flex align-items-end">
+                                <div class="form-group w-100">
+                                    <input class="form-control input-mandatory" placeholder="{{'Last Name' | translate}}">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class=" col-md-6 col-12">
+                                <fieldset class="form-group">
+                                    <label>{{'National ID Number' | translate}}</label>
+                                    <input class="form-control input-mandatory" placeholder="{{'National ID Number' | translate}}">
+                                </fieldset>
+                            </div>
+                            <div class="col-md-6 col-12">
+                                <fieldset class="form-group">
+                                    <label>{{'Card Owner Name' | translate}}</label>
+                                    <input class="form-control input-mandatory" placeholder="{{'Card Owner Name' | translate}}">
+                                </fieldset>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 col-12">
+                                <div class="row">
+                                    <div class="col-md-6 col-12">
+                                        <div class="form-group">
+                                            <label>{{'National ID Issue Date' | translate}}</label>
+                                            <div class="input-group datepicker-input">
+                                                <input class="form-control" placeholder="{{'dd/mm/yyyy' | translate}}"
+                                                       name="dp" [(ngModel)]="model" ngbDatepicker #d="ngbDatepicker">
+                                                <button class="input-group-addon" (click)="d.toggle();d2.close();d3.close();$event.stopPropagation();"
+                                                        (document:click)="closeOutsideDatePicker($event, d)" type="button">
+                                                    <img class="img-calendar" src="./assets/images/transactions/Calendar.svg"
+                                                         alt="">
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 col-12">
+                                        <div class="form-group">
+                                            <label>{{'Owner Birthdate' | translate}}</label>
+                                            <div class="input-group datepicker-input">
+                                                <input class="form-control" placeholder="{{'dd/mm/yyyy' | translate}}"
+                                                       name="dp2" [(ngModel)]="model2" ngbDatepicker #d2="ngbDatepicker">
+                                                <button class="input-group-addon" (click)="d2.toggle();d.close();d3.close();$event.stopPropagation();"
+                                                        (document:click)="closeOutsideDatePicker($event, d2)" type="button">
+                                                    <img class="img-calendar" src="./assets/images/transactions/Calendar.svg"
+                                                         alt="">
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6 col-12">
+                                    <div class="form-group">
+                                        <label>{{'Owner Gender' | translate}}</label>
+                                        <ng-select [items]="items"
+                                                   [(ngModel)]="selectedSimpleItem"
+                                                   placeholder="{{'- Select One -' | translate}}"
+                                                   name="ownerGender">
+                                        </ng-select>
+                                    </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 col-12">
+                                <fieldset class="form-group">
+                                    <label>{{'Business Sector' | translate}}</label>
+                                    <input class="form-control input-mandatory" placeholder="{{'Business Sector' | translate}}">
+                                </fieldset>
+                            </div>
+                            <div class="col-md-3 col-12">
+                                <fieldset class="form-group">
+                                    <label>{{'Activity Start Date' | translate}}</label>
+                                    <input class="form-control" placeholder="{{'dd/mm/yyyy' | translate}}">
+                                </fieldset>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class=" col-md-6 col-12">
+                                <fieldset class="form-group">
+                                    <label>{{'Username' | translate}}</label>
+                                    <input class="form-control" placeholder="{{'Username' | translate}}">
+                                </fieldset>
+                            </div>
+                            <div class="col-md-6 col-12">
+                                <div class="row d-flex align-items-center justify-content-between">
+                                    <div class="col-md-6 col-xl-7">
+                                        <fieldset class="form-group">
+                                            <label>{{'Password' | translate}}</label>
+                                            <input class="form-control" placeholder="" type="password">
+                                        </fieldset>
+                                    </div>
+                                    <div class="col-md-6 col-xl-5 btn-reset">
+                                        <button class="btn btn-main">{{'Reset Password' | translate}}</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 col-12">
+                                <fieldset class="form-group">
+                                    <label>{{'E-Mail' | translate}}</label>
+                                    <input class="form-control input-mandatory" placeholder="email@gmail.com">
+                                </fieldset>
+                            </div>
+                            <div class="col-md-6 col-12">
+                                <fieldset class="form-group">
+                                    <label>{{'Business Phone Number' | translate}}</label>
+                                    <input class="form-control" placeholder="+972">
+                                </fieldset>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 col-12">
+                                <fieldset class="form-group">
+                                    <label>{{'Owner Cell Phone Number' | translate}}</label>
+                                    <input class="form-control" placeholder="+972">
+                                </fieldset>
+                            </div>
+                            <div class="col-md-6 col-12 d-flex align-items-center">
+                                <div class="btn-validate">
+                                    <button class="btn btn-main">{{'Validate' | translate}}</button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 col-12">
+                                <div class="form-group">
+                                    <label>{{'Business Type' | translate}}</label>
+                                    <ng-select [items]="items2"
+                                               [(ngModel)]="selectedSimpleItem2"
+                                               placeholder="{{'A Public Company' | translate}}"
+                                               name="ownerGender">
+                                    </ng-select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 col-12">
+                                <fieldset class="form-group">
+                                    <label>{{'Web site' | translate}}</label>
+                                    <input class="form-control" placeholder="www.ellacosmetics.com">
+                                </fieldset>
+                            </div>
+                            <div class="col-md-3 col-12">
+                                <div class="form-group">
+                                    <label>{{'Owner Birthdate' | translate}}</label>
+                                    <div class="input-group datepicker-input">
+                                        <input class="form-control" placeholder="{{'dd/mm/yyyy' | translate}}"
+                                               name="dp3" [(ngModel)]="model3" ngbDatepicker #d3="ngbDatepicker">
+                                        <button class="input-group-addon"
+                                                (click)="d3.toggle();d.close();d2.close();$event.stopPropagation();" (document:click)="closeOutsideDatePicker($event, d3)" type="button">
+                                            <img class="img-calendar" src="./assets/images/transactions/Calendar.svg"
+                                                 alt="">
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class=" col-md-6 col-12">
+                                <fieldset class="form-group">
+                                    <label>{{'Address' | translate}}</label>
+                                    <input class="form-control" placeholder="{{'Address' | translate}}">
+                                </fieldset>
+                            </div>
+                            <div class="col-md-3 col-12">
+                                <fieldset class="form-group">
+                                    <label>{{'City' | translate}}</label>
+                                    <input class="form-control" placeholder="{{'City' | translate}}">
+                                </fieldset>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 col-12">
+                                <fieldset class="form-group">
+                                    <label>{{'Zip Code' | translate}}</label>
+                                    <input class="form-control" placeholder="{{'Zip Code' | translate}}">
+                                </fieldset>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

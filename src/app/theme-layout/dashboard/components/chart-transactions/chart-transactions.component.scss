@@ -1,0 +1,37 @@
+@import '../../../../../styles/site-mixin';
+
+.card-header {
+  background-color: $bg-header-panel;
+  font-size: 24px;
+  font-weight: bold;
+  font-style: normal;
+  font-stretch: normal;
+  line-height: normal;
+  color: $color-header-panel;
+  min-height: 136px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
+  img {
+    height: 43px;
+    width: auto;
+  }
+}
+
+.card-body {
+  min-height: 168px;
+  padding: 20px 15px 15px 15px;
+
+  .chart-name {
+    float: left;
+    margin-bottom: 10px;
+    margin-top: -8px;
+    font-size: 13px;
+    font-weight: bold;
+    font-style: normal;
+    font-stretch: normal;
+    line-height: normal;
+    letter-spacing: 0.4px;
+    color: #c0c0c0;
+  }
+}

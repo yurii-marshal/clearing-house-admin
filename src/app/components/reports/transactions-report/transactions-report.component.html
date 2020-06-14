@@ -1,0 +1,561 @@
+<div>
+    <div class="row">
+        <div class=" col-xs-6 col-md-2">
+            <div class="form-group">
+                <label>{{'Custom Period' | translate}}</label>
+                <ng-select [items]="reportsTransactionPeriodFilter"
+                           [clearable]="false"
+                           [(ngModel)]="selectedReportsPeriod"
+                           (change)="onPeriodFilterChange()"
+                           bindLabel="description"
+                           bindValue="code"
+                           placeholder="{{'- Choose Period -' | translate}}"
+                           (window:resize)="reloadConfigSelect($event)">
+                </ng-select>
+            </div>
+        </div>
+        <div class=" col-xs-6 col-md-3">
+            <div class="form-group">
+                <label>{{'From' | translate}}</label>
+                <div class="input-group datepicker-input">
+                    <input class="form-control" placeholder="{{'dd/mm/yyyy' | translate}}"
+                           (ngModelChange)="tablePeriodFrom=$event;onDateRangeChange()"
+                           [maxDate]="tablePeriodTo || tablePeriodRestrict"
+                           name="dp0" [(ngModel)]="tablePeriodFrom" ngbDatepicker #d0="ngbDatepicker">
+                    <button class="input-group-addon"
+                            (click)="d0.toggle();d01.close();$event.stopPropagation();"
+                            (document:click)="closeOutsideDatePicker($event, d0)" type="button">
+                        <!--<span class="fa fa-calendar"></span>-->
+                        <img class="img-calendar" src="./assets/images/transactions/Calendar.svg"
+                             alt="">
+                    </button>
+                </div>
+            </div>
+        </div>
+        <div class=" col-xs-6 col-md-3">
+            <div class="form-group">
+                <label>{{'To' | translate}}</label>
+                <div class="input-group datepicker-input">
+                    <input class="form-control" placeholder="{{'dd/mm/yyyy' | translate}}"
+                           (ngModelChange)="tablePeriodTo=$event;onDateRangeChange()"
+                           [minDate]="tablePeriodFrom"
+                           [maxDate]="tablePeriodRestrict"
+                           name="dp01" [(ngModel)]="tablePeriodTo" ngbDatepicker #d01="ngbDatepicker">
+                    <button class="input-group-addon"
+                            (click)="d01.toggle();d0.close();$event.stopPropagation();"
+                            (document:click)="closeOutsideDatePicker($event, d01)" type="button">
+                        <img class="img-calendar" src="./assets/images/transactions/Calendar.svg"
+                             alt="">
+                    </button>
+                </div>
+            </div>
+        </div>
+        <div class=" col-xs-3 col-md-2">
+            <button (click)="downloadCurrentReportList()" title="{{'Download Report (xls)' | translate}}"
+                    class="btn-print download-excel-btn transactions">
+                <img src="./assets/images/transactions-details/xls-icon.svg" alt="">
+            </button>
+        </div>
+        <!--<div class="col-xs-3 col-md-6"></div>-->
+        <div class="col-xs-3 col-md-2 filter-drop">
+            <div class="form-group wrapper-dropdown">
+                <div ngbDropdown class="d-inline-block dropdown"
+                     placement="{{placementPosition}}">
+                    <button class="btn" ngbDropdownToggle>
+                        <img *ngIf="isColumnsFilterEmpty"
+                             src="./assets/images/transactions/Filter-white.svg" alt="">
+                        <img *ngIf="!isColumnsFilterEmpty"
+                             src="./assets/images/transactions/Filter-red.svg" alt="">
+                        <div class="btn-text">{{'Columns' | translate}}</div>
+                    </button>
+                    <div ngbDropdownMenu>
+                        <div class="dropdown-item" [ngClass]="{'checked': filter.checkbox}"
+                             (click)="filter.checkbox = !filter.checkbox; onColumnsChangeTransactions();"
+                             *ngFor="let filter of tableTransactionsReportsListFilter | getValues; index as i;">
+                            <input type="checkbox"
+                                   (change)="tableTransactionsReportsListFilter[filter.key].checkbox = filter.checkbox"
+                                   [(ngModel)]="filter.checkbox">
+                            <div style="display:inline-block">
+                                {{filter.title | translate}}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <button class="btn btn-primary-accept btn-filter-trigger"
+                [ngClass]="{'toggled': toggleFilterSectionTransactions}"
+                (click)="toggleFilterSectionTransactions=!toggleFilterSectionTransactions">
+            <img *ngIf="isDataFilterEmpty"
+                 src="./assets/images/transactions/Filter-white.svg" alt="">
+            <img *ngIf="!isDataFilterEmpty"
+                 src="./assets/images/transactions/Filter-red.svg" alt="">
+            <div class="btn-text">{{'Table Filters' | translate}}</div>
+        </button>
+    </div>
+
+    <div class="filter-section">
+        <div class="row filter-body" *ngIf="toggleFilterSectionTransactions">
+            <div class="col-xs-6 col-md-4">
+                <fieldset class="form-group">
+                    <label>{{'Clearing Company' | translate}}</label>
+                    <ng-select [items]="clearingCompanyFilter"
+                               [(ngModel)]="filterGroupTransactions.clearingCompany"
+                               (change)="acceptTransactionsFilters()"
+                               bindLabel="description"
+                               bindValue="code"
+                               placeholder="{{'- Search by Clearing Company -' | translate}}"
+                               (window:resize)="reloadConfigSelect($event)">
+                    </ng-select>
+                </fieldset>
+            </div>
+            <div class="col-xs-6 col-md-4">
+                <fieldset class="form-group">
+                    <label>{{'Total Amount From' | translate}}</label>
+                    <input class="form-control input-mandatory" autocomplete="redundant"
+                           (keypress)="filtersService.keyPressNumberRestricts($event)"
+                           (keyup.enter)="acceptTransactionsFilters()"
+                           name="totalamountfrom" #totalamountfrom="ngModel"
+                           [(ngModel)]="filterGroupTransactions.totalAmountFrom"
+                           placeholder="{{'Search by Total Amount From' | translate}}">
+                </fieldset>
+            </div>
+            <div class="col-xs-6 col-md-4">
+                <fieldset class="form-group">
+                    <label>{{'Total Amount To' | translate}}</label>
+                    <input class="form-control input-mandatory" autocomplete="redundant"
+                           (keypress)="filtersService.keyPressNumberRestricts($event)"
+                           (keyup.enter)="acceptTransactionsFilters()"
+                           name="totalamountto" #totalamountto="ngModel"
+                           [(ngModel)]="filterGroupTransactions.totalAmountTo"
+                           placeholder="{{'Search by Total Amount To' | translate}}">
+                </fieldset>
+            </div>
+
+            <div class="col-xs-6 col-md-4">
+                <fieldset class="form-group">
+                    <label>{{'Business Area' | translate}}</label>
+                    <input class="form-control input-mandatory" autocomplete="redundant"
+                           (keypress)="filtersService.keyPressStringRestricts($event)"
+                           (keyup.enter)="acceptTransactionsFilters()"
+                           name="businessarea" #businessarea="ngModel"
+                           [(ngModel)]="filterGroupTransactions.businessArea"
+                           placeholder="{{'Search by Business Area' | translate}}">
+                </fieldset>
+            </div>
+            <div class="col-xs-6 col-md-4">
+                <fieldset class="form-group">
+                    <label>{{'Transaction Count From' | translate}}</label>
+                    <input class="form-control input-mandatory" autocomplete="redundant"
+                           (keypress)="filtersService.keyPressNumberRestricts($event)"
+                           (keyup.enter)="acceptTransactionsFilters()"
+                           name="transactioncountfrom" #transactioncountfrom="ngModel"
+                           [(ngModel)]="filterGroupTransactions.transactionCountFrom"
+                           placeholder="{{'Search by Transaction Count From' | translate}}">
+                </fieldset>
+            </div>
+            <div class="col-xs-6 col-md-4">
+                <fieldset class="form-group">
+                    <label>{{'Transaction Count To' | translate}}</label>
+                    <input class="form-control input-mandatory" autocomplete="redundant"
+                           (keypress)="filtersService.keyPressNumberRestricts($event)"
+                           (keyup.enter)="acceptTransactionsFilters()"
+                           name="transactioncountto" #transactioncountto="ngModel"
+                           [(ngModel)]="filterGroupTransactions.transactionCountTo"
+                           placeholder="{{'Search by Transaction Count To' | translate}}">
+                </fieldset>
+            </div>
+
+            <div class="col-xs-12 col-md-12 set-filters-section" *ngIf="toggleFilterSectionTransactions">
+                <button type="button" class="btn btn-set-filters refresh"
+                        (click)="initTransactionsFilterGroup()">
+                    <img class="icon-eracer" src="./assets/images/transactions/eraser.svg" alt="">
+                </button>
+
+                <button type="button" class="btn btn-primary-accept btn-set-filters pull-right"
+                        (click)="acceptTransactionsFilters();toggleFilterSectionTransactions=false;">
+                    {{'OK' | translate}}
+                </button>
+            </div>
+        </div>
+    </div>
+    <!--<hr>-->
+    <div class="table-responsive">
+        <!--<button class="pn-Advancer pn-Advancer_Left pnAdvancerLeft-0"-->
+        <!--[ngClass]="{'isDemanded': advancedScrollService.SETTINGS.navBarTravelDirection === 'both' || advancedScrollService.SETTINGS.navBarTravelDirection === 'left'}"-->
+        <!--type="button">-->
+        <!--<i class="fa fa-angle-left"></i>-->
+        <!--</button>-->
+        <!--<button class="pn-Advancer pn-Advancer_Right pnAdvancerRight-0"-->
+        <!--[ngClass]="{'isDemanded': advancedScrollService.SETTINGS.navBarTravelDirection === 'both' || advancedScrollService.SETTINGS.navBarTravelDirection === 'right'}"-->
+        <!--type="button">-->
+        <!--<i class="fa fa-angle-right"></i>-->
+        <!--</button>-->
+        <table class="table pnProductNavContent-0">
+            <thead>
+            <tr>
+                <th (click)="setPositionIconStatus('date')" class="align-middle"
+                    *ngIf="tableTransactionsReportsListFilter['date']?.checkbox && selectedReportsPeriod === 'daily'"
+                    [ngClass]="{'sorted': orderBy.date === 'DESC', 'sorted-desc': orderBy.date === 'ASC'}">
+                    <div class="text-left" title="{{'Date' | translate}}">
+                        <span>{{'Date' | translate}}</span> <span class="sort-indicator"></span>
+                    </div>
+                </th>
+                <th (click)="setPositionIconStatus('year')" class="align-middle"
+                    *ngIf="tableTransactionsReportsListFilter['year']?.checkbox && selectedReportsPeriod === 'monthly'"
+                    [ngClass]="{'sorted': orderBy.year === 'DESC', 'sorted-desc': orderBy.year === 'ASC'}">
+                    <div class="text-left" title="{{'Year' | translate}}">
+                        <span>{{'Year' | translate}}</span> <span class="sort-indicator"></span>
+                    </div>
+                </th>
+                <th (click)="setPositionIconStatus('month')" class="align-middle"
+                    *ngIf="tableTransactionsReportsListFilter['month']?.checkbox && selectedReportsPeriod === 'monthly'"
+                    [ngClass]="{'sorted': orderBy.month === 'DESC', 'sorted-desc': orderBy.month === 'ASC'}">
+                    <div class="text-left" title="{{'Month' | translate}}">
+                        <span>{{'Month' | translate}}</span> <span class="sort-indicator"></span>
+                    </div>
+                </th>
+
+                <th (click)="setPositionIconStatus('businessArea')" class="align-middle"
+                    *ngIf="tableTransactionsReportsListFilter['businessArea']?.checkbox"
+                    [ngClass]="{'sorted': orderBy.businessArea === 'DESC', 'sorted-desc': orderBy.businessArea === 'ASC'}">
+                    <div class="text-left" title="{{'Business Area' | translate}}">
+                        <span>{{'Business Area' | translate}}</span> <span
+                            class="sort-indicator"></span>
+                    </div>
+                </th>
+
+                <th (click)="setPositionIconStatus('phone')" class="align-middle"
+                    *ngIf="tableTransactionsReportsListFilter['phone']?.checkbox"
+                    [ngClass]="{'sorted': orderBy.phone === 'DESC', 'sorted-desc': orderBy.phone === 'ASC'}">
+                    <div class="text-left" title="{{'Phone' | translate}}">
+                        <span>{{'Phone' | translate}}</span> <span class="sort-indicator"></span>
+                    </div>
+                </th>
+                <th (click)="setPositionIconStatus('activityStartDate')" class="align-middle"
+                    *ngIf="tableTransactionsReportsListFilter['activityStartDate']?.checkbox"
+                    [ngClass]="{'sorted': orderBy.activityStartDate === 'DESC', 'sorted-desc': orderBy.activityStartDate === 'ASC'}">
+                    <div class="text-left" title="{{'Activity Start Date' | translate}}">
+                        <span>{{'Activity Start Date' | translate}}</span>
+                        <span class="sort-indicator"></span>
+                    </div>
+                </th>
+
+                <th (click)="setPositionIconStatus('businessId')" class="align-middle"
+                    *ngIf="tableTransactionsReportsListFilter['businessId']?.checkbox"
+                    [ngClass]="{'sorted': orderBy.businessId === 'DESC', 'sorted-desc': orderBy.businessId === 'ASC'}">
+                    <div class="text-left" title="{{'Business ID' | translate}}">
+                        <span>{{'Business ID' | translate}}</span> <span class="sort-indicator"></span>
+                    </div>
+                </th>
+                <th (click)="setPositionIconStatus('merchantID')" class="align-middle"
+                    *ngIf="tableTransactionsReportsListFilter['merchantID']?.checkbox"
+                    [ngClass]="{'sorted': orderBy.merchantID === 'DESC', 'sorted-desc': orderBy.merchantID === 'ASC'}">
+                    <div class="text-left" title="{{'Merchant ID' | translate}}">
+                        <span>{{'Merchant ID' | translate}}</span> <span class="sort-indicator"></span>
+                    </div>
+                </th>
+                <th (click)="setPositionIconStatus('merchantName')" class="align-middle"
+                    *ngIf="tableTransactionsReportsListFilter['merchantName']?.checkbox"
+                    [ngClass]="{'sorted': orderBy.merchantName === 'DESC', 'sorted-desc': orderBy.merchantName === 'ASC'}">
+                    <div class="text-left" title="{{'Merchant Name' | translate}}">
+                        <span>{{'Merchant Name' | translate}}</span> <span
+                            class="sort-indicator"></span>
+                    </div>
+                </th>
+
+                <th (click)="setPositionIconStatus('kycApprovalStatus')" class="align-middle"
+                    *ngIf="tableTransactionsReportsListFilter['kycApprovalStatus']?.checkbox"
+                    [ngClass]="{'sorted': orderBy.kycApprovalStatus === 'DESC', 'sorted-desc': orderBy.kycApprovalStatus === 'ASC'}">
+                    <div class="text-left" title="{{'KYC Approval Status' | translate}}">
+                        <span>{{'KYC Approval Status' | translate}}</span> <span
+                            class="sort-indicator"></span>
+                    </div>
+                </th>
+                <th (click)="setPositionIconStatus('merchantAmmount')" class="align-middle"
+                    *ngIf="tableTransactionsReportsListFilter['merchantAmmount']?.checkbox"
+                    [ngClass]="{'sorted': orderBy.merchantAmmount === 'DESC', 'sorted-desc': orderBy.merchantAmmount === 'ASC'}">
+                    <div class="text-left" title="{{'Merchant Amount' | translate}}">
+                        <span>{{'Merchant Amount' | translate}}</span> <span
+                            class="sort-indicator"></span>
+                    </div>
+                </th>
+                <th (click)="setPositionIconStatus('riskRate')" class="align-middle"
+                    *ngIf="tableTransactionsReportsListFilter['riskRate']?.checkbox"
+                    [ngClass]="{'sorted': orderBy.riskRate === 'DESC', 'sorted-desc': orderBy.riskRate === 'ASC'}">
+                    <div class="text-left" title="{{'Risk Rate' | translate}}">
+                        <span>{{'Risk Rate' | translate}}</span> <span class="sort-indicator"></span>
+                    </div>
+                </th>
+                <th (click)="setPositionIconStatus('totalAmount')" class="align-middle"
+                    *ngIf="tableTransactionsReportsListFilter['totalAmount']?.checkbox"
+                    [ngClass]="{'sorted': orderBy.totalAmount === 'DESC', 'sorted-desc': orderBy.totalAmount === 'ASC'}">
+                    <div class="text-left" title="{{'Total Amount' | translate}}">
+                        <span>{{'Total Amount' | translate}}</span> <span class="sort-indicator"></span>
+                    </div>
+                </th>
+                <th (click)="setPositionIconStatus('totalCommission')" class="align-middle"
+                    *ngIf="tableTransactionsReportsListFilter['totalCommission']?.checkbox"
+                    [ngClass]="{'sorted': orderBy.totalCommission === 'DESC', 'sorted-desc': orderBy.totalCommission === 'ASC'}">
+                    <div class="text-left" title="{{'Total Commission' | translate}}">
+                        <span>{{'Total Commission' | translate}}</span> <span
+                            class="sort-indicator"></span>
+                    </div>
+                </th>
+                <th (click)="setPositionIconStatus('transactionsCount')" class="align-middle"
+                    *ngIf="tableTransactionsReportsListFilter['transactionsCount']?.checkbox"
+                    [ngClass]="{'sorted': orderBy.transactionsCount === 'DESC', 'sorted-desc': orderBy.transactionsCount === 'ASC'}">
+                    <div class="text-left" title="{{'Transactions Count' | translate}}">
+                        <span>{{'Transactions Count' | translate}}</span>
+                        <span class="sort-indicator"></span>
+                    </div>
+                </th>
+                <th (click)="setPositionIconStatus('clearingCompany')" class="align-middle"
+                    *ngIf="tableTransactionsReportsListFilter['clearingCompany']?.checkbox"
+                    [ngClass]="{'sorted': orderBy.clearingCompany === 'DESC', 'sorted-desc': orderBy.clearingCompany === 'ASC'}">
+                    <div class="text-left" title="{{'Clearing Company' | translate}}">
+                        <span>{{'Clearing Company' | translate}}</span>
+                        <span class="sort-indicator"></span>
+                    </div>
+                </th>
+                <th (click)="setPositionIconStatus('installmentAmount')" class="align-middle"
+                    *ngIf="tableTransactionsReportsListFilter['installmentAmount']?.checkbox"
+                    [ngClass]="{'sorted': orderBy.installmentAmount === 'DESC', 'sorted-desc': orderBy.installmentAmount === 'ASC'}">
+                    <div class="text-left" title="{{'Installment Amount' | translate}}">
+                        <span>{{'Installment Amount' | translate}}</span>
+                        <span class="sort-indicator"></span>
+                    </div>
+                </th>
+                <th (click)="setPositionIconStatus('installmentTransactionsAmount')"
+                    class="align-middle"
+                    *ngIf="tableTransactionsReportsListFilter['installmentTransactionsAmount']?.checkbox"
+                    [ngClass]="{'sorted': orderBy.installmentTransactionsAmount === 'DESC', 'sorted-desc': orderBy.installmentTransactionsAmount === 'ASC'}">
+                    <div class="text-left" title="{{'Installment Transactions Amount' | translate}}">
+                        <span>{{'Installment Transactions Amount' | translate}}</span>
+                        <span class="sort-indicator"></span>
+                    </div>
+                </th>
+                <th (click)="setPositionIconStatus('installmentTransactionsCount')" class="align-middle"
+                    *ngIf="tableTransactionsReportsListFilter['installmentTransactionsCount']?.checkbox"
+                    [ngClass]="{'sorted': orderBy.installmentTransactionsCount === 'DESC', 'sorted-desc': orderBy.installmentTransactionsCount === 'ASC'}">
+                    <div class="text-left" title="{{'Installment Transactions Count' | translate}}">
+                        <span>{{'Installment Transactions Count' | translate}}</span>
+                        <span class="sort-indicator"></span>
+                    </div>
+                </th>
+                <th (click)="setPositionIconStatus('refundTransactionsAmount')" class="align-middle"
+                    *ngIf="tableTransactionsReportsListFilter['refundTransactionsAmount']?.checkbox"
+                    [ngClass]="{'sorted': orderBy.refundTransactionsAmount === 'DESC', 'sorted-desc': orderBy.refundTransactionsAmount === 'ASC'}">
+                    <div class="text-left" title="{{'Refund Transactions Amount' | translate}}">
+                        <span>{{'Refund Transactions Amount' | translate}}</span>
+                        <span class="sort-indicator"></span>
+                    </div>
+                </th>
+                <th (click)="setPositionIconStatus('refundTransactionsCommission')" class="align-middle"
+                    *ngIf="tableTransactionsReportsListFilter['refundTransactionsCommission']?.checkbox"
+                    [ngClass]="{'sorted': orderBy.refundTransactionsCommission === 'DESC', 'sorted-desc': orderBy.refundTransactionsCommission === 'ASC'}">
+                    <div class="text-left" title="{{'Refund Transactions Commission' | translate}}">
+                        <span>{{'Refund Transactions Commission' | translate}}</span>
+                        <span class="sort-indicator"></span>
+                    </div>
+                </th>
+                <th (click)="setPositionIconStatus('refundTransactionsCount')" class="align-middle"
+                    *ngIf="tableTransactionsReportsListFilter['refundTransactionsCount']?.checkbox"
+                    [ngClass]="{'sorted': orderBy.refundTransactionsCount === 'DESC', 'sorted-desc': orderBy.refundTransactionsCount === 'ASC'}">
+                    <div class="text-left" title="{{'Refund Transactions Count' | translate}}">
+                        <span>{{'Refund Transactions Count' | translate}}</span>
+                        <span class="sort-indicator"></span>
+                    </div>
+                </th>
+                <th (click)="setPositionIconStatus('rejectedTransactionsCount')" class="align-middle"
+                    *ngIf="tableTransactionsReportsListFilter['rejectedTransactionsCount']?.checkbox"
+                    [ngClass]="{'sorted': orderBy.rejectedTransactionsCount === 'DESC', 'sorted-desc': orderBy.rejectedTransactionsCount === 'ASC'}">
+                    <div class="text-left" title="{{'Rejected Transactions Count' | translate}}">
+                        <span>{{'Rejected Transactions Count' | translate}}</span>
+                        <span class="sort-indicator"></span>
+                    </div>
+                </th>
+                <th (click)="setPositionIconStatus('touristCharges')" class="align-middle"
+                    *ngIf="tableTransactionsReportsListFilter['touristCharges']?.checkbox"
+                    [ngClass]="{'sorted': orderBy.touristCharges === 'DESC', 'sorted-desc': orderBy.touristCharges === 'ASC'}">
+                    <div class="text-left" title="{{'Tourist Charges' | translate}}">
+                        <span>{{'Tourist Charges' | translate}}</span>
+                        <span class="sort-indicator"></span>
+                    </div>
+                </th>
+
+                <!-- <th (click)="setPositionIconStatus('averageAmount')" class="align-middle"
+                    *ngIf="tableTransactionsReportsListFilter['averageAmount']?.checkbox && selectedReportsPeriod === 'last30Days'"
+                    [ngClass]="{'sorted': orderBy.averageAmount === 'DESC', 'sorted-desc': orderBy.averageAmount === 'ASC'}">
+                    <div class="text-left" title="{{'Average Amount' | translate}}">
+                        <span>{{'Average Amount' | translate}}</span> <span
+                            class="sort-indicator"></span>
+                    </div>
+                </th>
+                <th (click)="setPositionIconStatus('averageTouristCharges')" class="align-middle"
+                    *ngIf="tableTransactionsReportsListFilter['averageTouristCharges']?.checkbox && selectedReportsPeriod === 'last30Days'"
+                    [ngClass]="{'sorted': orderBy.averageTouristCharges === 'DESC', 'sorted-desc': orderBy.averageTouristCharges === 'ASC'}">
+                    <div class="text-left" title="{{'Average Tourist Charges' | translate}}">
+                        <span>{{'Average Tourist Charges' | translate}}</span> <span
+                            class="sort-indicator"></span>
+                    </div>
+                </th>
+                <th (click)="setPositionIconStatus('averageTransactionCount')" class="align-middle"
+                    *ngIf="tableTransactionsReportsListFilter['averageTransactionCount']?.checkbox && selectedReportsPeriod === 'last30Days'"
+                    [ngClass]="{'sorted': orderBy.averageTransactionCount === 'DESC', 'sorted-desc': orderBy.averageTransactionCount === 'ASC'}">
+                    <div class="text-left" title="{{'Average Transaction Count' | translate}}">
+                        <span>{{'Average Transaction Count' | translate}}</span> <span
+                            class="sort-indicator"></span>
+                    </div>
+                </th> -->
+                <th (click)="setPositionIconStatus('forcedTransactionsCount')" class="align-middle"
+                    *ngIf="tableTransactionsReportsListFilter['forcedTransactionsCount']?.checkbox"
+                    [ngClass]="{'sorted': orderBy.forcedTransactionsCount === 'DESC', 'sorted-desc': orderBy.forcedTransactionsCount === 'ASC'}">
+                    <div class="text-left" title="{{'Forced Transactions Count' | translate}}">
+                        <span>{{'Forced Transactions Count' | translate}}</span>
+                        <span class="sort-indicator"></span>
+                    </div>
+                </th>
+
+            </tr>
+            </thead>
+            <tbody>
+            <!--(click)="transitionToProfile(report)"-->
+            <tr *ngFor="let report of reportsList; index as i;">
+                <td class="text-left"
+                    *ngIf="tableTransactionsReportsListFilter['date'].checkbox && selectedReportsPeriod === 'daily'">
+                    {{report.date | utcToLocalDate | date: 'dd/MM/yyyy'}}
+                </td>
+                <td class="text-left"
+                    *ngIf="tableTransactionsReportsListFilter['year'].checkbox && selectedReportsPeriod === 'monthly'">
+                    {{report.year}}
+                </td>
+                <td class="text-left"
+                    *ngIf="tableTransactionsReportsListFilter['month'].checkbox && selectedReportsPeriod === 'monthly'">
+                    {{report.month}}
+                </td>
+                <td class="text-left"
+                    *ngIf="tableTransactionsReportsListFilter['businessArea'].checkbox">
+                    {{report.businessArea}}
+                </td>
+                <td class="text-left"
+                    *ngIf="tableTransactionsReportsListFilter['phone'].checkbox">
+                    {{report.phone}}
+                </td>
+                <td class="text-left"
+                    *ngIf="tableTransactionsReportsListFilter['activityStartDate'].checkbox">
+                    {{report.activityStartDate | date: 'dd/MM/yyyy'}}
+                </td>
+                <td class="text-left"
+                    *ngIf="tableTransactionsReportsListFilter['businessId'].checkbox">
+                    {{report.businessId}}
+                </td>
+                <td class="text-left"
+                    *ngIf="tableTransactionsReportsListFilter['merchantID'].checkbox">
+                    {{report.merchantID}}
+                </td>
+                <td class="text-left"
+                    *ngIf="tableTransactionsReportsListFilter['merchantName'].checkbox">
+                    {{report.merchantName}}
+                </td>
+                <td class="text-left"
+                    *ngIf="tableTransactionsReportsListFilter['kycApprovalStatus'].checkbox">
+                    {{report.kycApprovalStatus | translate}}
+                </td>
+                <td class="text-right"
+                    *ngIf="tableTransactionsReportsListFilter['merchantAmmount'].checkbox">
+                    {{report.merchantAmmount | number: '1.2-2'}}
+                </td>
+                <td class="text-left"
+                    *ngIf="tableTransactionsReportsListFilter['riskRate'].checkbox">
+                    {{report.riskRate}}
+                </td>
+                <!--<td class="text-left"-->
+                <!--*ngIf="tableTransactionsReportsListFilter['solic'].checkbox">-->
+                <!--{{report.solic}}-->
+                <!--</td>-->
+                <!--<td class="text-left"-->
+                <!--*ngIf="tableTransactionsReportsListFilter['status'].checkbox">-->
+                <!--{{report.status}}-->
+                <!--</td>-->
+                <td class="text-right"
+                    *ngIf="tableTransactionsReportsListFilter['totalAmount'].checkbox">
+                    {{report.totalAmount | number: '1.2-2'}}
+                </td>
+                <td class="text-right"
+                    *ngIf="tableTransactionsReportsListFilter['totalCommission'].checkbox">
+                    {{report.totalCommission | number: '1.2-2'}}
+                </td>
+                <!--<td class="text-left"-->
+                <!--*ngIf="tableTransactionsReportsListFilter['transactionType'].checkbox">-->
+                <!--{{report.transactionType}}-->
+                <!--</td>-->
+                <td class="text-right"
+                    *ngIf="tableTransactionsReportsListFilter['transactionsCount'].checkbox">
+                    {{report.transactionsCount}}
+                </td>
+                <td class="text-right"
+                    *ngIf="tableTransactionsReportsListFilter['clearingCompany'].checkbox">
+                    {{report.clearingCompany}}
+                </td>
+                <td class="text-right"
+                    *ngIf="tableTransactionsReportsListFilter['installmentAmount'].checkbox">
+                    {{report.installmentAmount | number: '1.2-2'}}
+                </td>
+                <td class="text-right"
+                    *ngIf="tableTransactionsReportsListFilter['installmentTransactionsAmount'].checkbox">
+                    {{report.installmentTransactionsAmount | number: '1.2-2'}}
+                </td>
+                <td class="text-right"
+                    *ngIf="tableTransactionsReportsListFilter['installmentTransactionsCount'].checkbox">
+                    {{report.installmentTransactionsCount}}
+                </td>
+                <td class="text-right"
+                    *ngIf="tableTransactionsReportsListFilter['refundTransactionsAmount'].checkbox">
+                    {{report.refundTransactionsAmount | number: '1.2-2'}}
+                </td>
+                <td class="text-right"
+                    *ngIf="tableTransactionsReportsListFilter['refundTransactionsCommission'].checkbox">
+                    {{report.refundTransactionsCommission | number: '1.2-2'}}
+                </td>
+                <td class="text-right"
+                    *ngIf="tableTransactionsReportsListFilter['refundTransactionsCount'].checkbox">
+                    {{report.refundTransactionsCount}}
+                </td>
+                <td class="text-right"
+                    *ngIf="tableTransactionsReportsListFilter['rejectedTransactionsCount'].checkbox">
+                    {{report.rejectedTransactionsCount}}
+                </td>
+                <td class="text-right"
+                    *ngIf="tableTransactionsReportsListFilter['touristCharges'].checkbox">
+                    {{report.touristCharges | number: '1.2-2'}}
+                </td>
+                <!-- <td class="text-right"
+                    *ngIf="tableTransactionsReportsListFilter['averageAmount'].checkbox">
+                    {{report.averageAmount | number: '1.2-2'}}
+                </td>
+                <td class="text-right"
+                    *ngIf="tableTransactionsReportsListFilter['averageTouristCharges'].checkbox">
+                    {{report.averageTouristCharges | number: '1.2-2'}}
+                </td>
+                <td class="text-right"
+                    *ngIf="tableTransactionsReportsListFilter['averageTransactionCount'].checkbox">
+                    {{report.averageTransactionCount | number: '1.2-2'}}
+                </td> -->
+                <td class="text-right"
+                    *ngIf="tableTransactionsReportsListFilter['forcedTransactionsCount'].checkbox">
+                    {{report.forcedTransactionsCount}}
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+    <div *ngIf="collectionSize > maxSize" class="page-footter">
+        <div class="text-muted fs-12">{{'Pages' | translate}}</div>
+        <ngb-pagination [collectionSize]="collectionSize"
+                        [(page)]="page" [maxSize]="maxSize"
+                        [pageSize]="pageSize" (pageChange)="pageChange($event)"
+                        [rotate]="true" [ellipses]="false"
+                        [boundaryLinks]="true"></ngb-pagination>
+    </div>
+</div>

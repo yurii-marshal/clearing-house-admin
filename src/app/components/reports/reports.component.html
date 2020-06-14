@@ -1,0 +1,44 @@
+<!--[@routerTransition]-->
+<div class="page-reports page-responsive">
+    <div class="row">
+        <div class="col col-xs-12">
+            <div class="title">
+                <span>
+                    {{'Reports' | translate}}
+                    <span *ngIf="merchant?.businessDetails">
+                         {{'for' | translate}} {{merchant?.businessDetails?.businessName}}
+                    </span>
+                    <!--<span *ngIf="merchant['businessDetails'] && !merchant?.businessDetails">-->
+                    <!--/ {{'not found' | translate}}-->
+                    <!--</span>-->
+                </span>
+            </div>
+        </div>
+    </div>
+
+    <mat-tab-group [@.disabled]="exp" *ngIf="!isRTLToggle"
+                   (selectedTabChange)="onTabChange($event)"
+                   [(selectedIndex)]="tabIndex">
+        <mat-tab label="{{'Transactions Report' | translate}}">
+            <div class="card" *ngIf="tabIndex === 0">
+                <app-transactions-report></app-transactions-report>
+            </div>
+        </mat-tab>
+        <mat-tab label="{{'Activity report' | translate}}">
+            <div class="card" *ngIf="tabIndex === 1">
+                <app-activity-report></app-activity-report>
+            </div>
+        </mat-tab>
+        <mat-tab label="{{'Billing Cycle report' | translate}}" *ngIf="isAdminRoleBilling">
+            <!--<div class="card" *ngIf="tabIndex === 1">Billing Cycle report: Only for Billing Admin</div>-->
+            <div class="card" *ngIf="tabIndex === 2">
+                <app-billing-cycle-report></app-billing-cycle-report>
+            </div>
+        </mat-tab>
+        <mat-tab label="{{'Chargeback report' | translate}}" *ngIf="isAdminRoleBilling">
+            <div class="card" *ngIf="tabIndex === 3">
+                <app-chargeback-report></app-chargeback-report>
+            </div>
+        </mat-tab>
+    </mat-tab-group>
+</div>

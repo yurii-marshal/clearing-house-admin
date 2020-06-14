@@ -1,0 +1,218 @@
+<!--[@routerTransition]-->
+<div class="page-visa-files page-responsive">
+    <div class="row">
+        <div class="col col-xs-12">
+            <div class="title">
+                <span>{{'Visa Files' | translate}}</span>
+                <!--<span *ngIf="merchant?.businessDetails">-->
+                <!--{{'for' | translate}} {{merchant?.businessDetails?.businessName}}-->
+                <!--</span>-->
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col col-xs-12">
+            <div class="card mb-3">
+                <div class="card-header">
+                    <div class="card-header-inner">
+                        <span>{{'Visa Files' | translate}}</span>
+                        <button class="btn-print btn-icon-refresh" (click)="refreshPage()">
+                            <img class="icon-refresh" src="./assets/images/transactions/Refresh_icon.svg" alt="">
+                        </button>
+                    </div>
+                </div>
+
+                <div class="card-body">
+                    <div class="row">
+                        <div class=" col-xs-6 col-md-5">
+                            <div class="row">
+                                <div class=" col-xs-6 col-md-6">
+                                    <div class="form-group">
+                                        <label>{{'From' | translate}}</label>
+                                        <div class="input-group datepicker-input">
+                                            <input class="form-control" placeholder="{{'dd/mm/yyyy' | translate}}"
+                                                   (ngModelChange)="tablePeriodFrom=$event;onDateRangeChange()"
+                                                   [maxDate]="tablePeriodTo || tablePeriodRestrict"
+                                                   name="dp" [(ngModel)]="tablePeriodFrom"
+                                                   ngbDatepicker #d="ngbDatepicker">
+                                            <button class="input-group-addon"
+                                                    (click)="d.toggle();d2.close();$event.stopPropagation();"
+                                                    (document:click)="closeOutsideDatePicker($event, d)" type="button">
+                                                <!--<span class="fa fa-calendar"></span>-->
+                                                <img class="img-calendar"
+                                                     src="./assets/images/transactions/Calendar.svg"
+                                                     alt="">
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class=" col-xs-6 col-md-6">
+                                    <div class="form-group">
+                                        <label>{{'To' | translate}}</label>
+                                        <div class="input-group datepicker-input">
+                                            <input class="form-control" placeholder="{{'dd/mm/yyyy' | translate}}"
+                                                   (ngModelChange)="tablePeriodTo=$event;onDateRangeChange()"
+                                                   [minDate]="tablePeriodFrom" [maxDate]="tablePeriodRestrict"
+                                                   name="dp2" [(ngModel)]="tablePeriodTo" ngbDatepicker
+                                                   #d2="ngbDatepicker">
+                                            <button class="input-group-addon"
+                                                    (click)="d2.toggle();d.close();$event.stopPropagation();"
+                                                    (document:click)="closeOutsideDatePicker($event, d2)" type="button">
+                                                <img class="img-calendar"
+                                                     src="./assets/images/transactions/Calendar.svg"
+                                                     alt="">
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class=" col-xs-6 col-md-3">
+                            <fieldset class="form-group">
+                                <label>{{'Processing Failed' | translate}}</label>
+                                <ng-select [items]="processingFailedFilter"
+                                           [(ngModel)]="filterGroup.processingFailed"
+                                           (change)="acceptFilters()"
+                                           bindLabel="description"
+                                           bindValue="code"
+                                           placeholder="{{'- Processing Failed -' | translate}}"
+                                           (window:resize)="reloadConfigSelect($event)">
+                                </ng-select>
+                            </fieldset>
+                        </div>
+                        <div class=" col-xs-6 col-md-4 filter-drop-t">
+                            <div class="header-section d-flex justify-content-start visa-files">
+                                <div class="upload-container d-flex justify-content-start">
+                                    <input type="file"
+                                           (change)="uploadVisaFile($event)"
+                                           style="display: none" #fileVisa
+                                           placeholder="Upload File" accept="*.txt"/>
+                                    <button class="btn btn-main" *ngIf="!isUploadingInProgress"
+                                            (click)="fileVisa.click()">
+                                        {{'Upload Visa File' | translate}}
+                                    </button>
+                                    <div class="spinner-upload" *ngIf="isUploadingInProgress">
+                                        {{'Uploading...' | translate}}
+                                        <i class="fa fa-gear fa-spin"></i>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group wrapper-dropdown">
+                                <div ngbDropdown class="d-inline-block dropdown" placement="{{placementPosition}}">
+                                    <button class="btn" ngbDropdownToggle>
+                                        <img *ngIf="isColumnsFilterEmpty"
+                                             src="./assets/images/transactions/Filter-white.svg" alt="">
+                                        <img *ngIf="!isColumnsFilterEmpty"
+                                             src="./assets/images/transactions/Filter-red.svg" alt="">
+                                        <div class="btn-text">{{'Columns' | translate}}</div>
+                                    </button>
+                                    <div ngbDropdownMenu>
+                                        <div class="dropdown-item" [ngClass]="{'checked': filter.checkbox}"
+                                             (click)="filter.checkbox = !filter.checkbox; onColumnsChange();"
+                                             *ngFor="let filter of tableVisaListFilter | getValues; index as i;">
+                                            <input type="checkbox"
+                                                   (change)="tableVisaListFilter[filter.key].checkbox = filter.checkbox"
+                                                   [(ngModel)]="filter.checkbox">
+                                            <div style="display:inline-block">
+                                                {{filter.title}}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="table-responsive">
+                            <!--<button id="pnAdvancerLeft" class="pn-Advancer pn-Advancer_Left"-->
+                            <!--[ngClass]="{'isDemanded': advancedScrollService.SETTINGS.navBarTravelDirection === 'both' || advancedScrollService.SETTINGS.navBarTravelDirection === 'left'}"-->
+                            <!--type="button">-->
+                            <!--<i class="fa fa-angle-left"></i>-->
+                            <!--</button>-->
+                            <!--<button id="pnAdvancerRight" class="pn-Advancer pn-Advancer_Right"-->
+                            <!--[ngClass]="{'isDemanded': advancedScrollService.SETTINGS.navBarTravelDirection === 'both' || advancedScrollService.SETTINGS.navBarTravelDirection === 'right'}"-->
+                            <!--type="button">-->
+                            <!--<i class="fa fa-angle-right"></i>-->
+                            <!--</button>-->
+                            <!--id="pnProductNavContent"-->
+                            <table class="table">
+                                <thead>
+                                <tr>
+                                    <th (click)="setPositionIconStatus('visaConfirmationFileID')" class="align-middle"
+                                        [ngClass]="{'sorted': orderBy.visaConfirmationFileID === 'DESC', 'sorted-desc': orderBy.visaConfirmationFileID === 'ASC'}">
+                                        <div class="text-left" title="{{'ID' | translate}}">
+                                            <span>{{'ID' | translate}}</span> <span
+                                                class="sort-indicator"></span>
+                                        </div>
+                                    </th>
+                                    <th (click)="setPositionIconStatus('receivedDate')" class="align-middle"
+                                        *ngIf="tableVisaListFilter['receivedDate'].checkbox"
+                                        [ngClass]="{'sorted': orderBy.receivedDate === 'DESC', 'sorted-desc': orderBy.receivedDate === 'ASC'}">
+                                        <div class="text-left" title="{{'Received Date' | translate}}">
+                                            <span>{{'Received Date' | translate}}</span> <span
+                                                class="sort-indicator"></span>
+                                        </div>
+                                    </th>
+                                    <th (click)="setPositionIconStatus('fileName')" class="align-middle"
+                                        *ngIf="tableVisaListFilter['fileName'].checkbox"
+                                        [ngClass]="{'sorted': orderBy.fileName === 'DESC', 'sorted-desc': orderBy.fileName === 'ASC'}">
+                                        <div class="text-left" title="{{'Confirmed Date' | translate}}">
+                                            <span>{{'File Name' | translate}}</span> <span
+                                                class="sort-indicator"></span>
+                                        </div>
+                                    </th>
+                                    <th (click)="setPositionIconStatus('uploadedBy')" class="align-middle"
+                                        *ngIf="tableVisaListFilter['uploadedBy'].checkbox"
+                                        [ngClass]="{'sorted': orderBy.uploadedBy === 'DESC', 'sorted-desc': orderBy.uploadedBy === 'ASC'}">
+                                        <div class="text-left" title="{{'Uploaded By' | translate}}">
+                                            <span>{{'Uploaded By' | translate}}</span> <span
+                                                class="sort-indicator"></span>
+                                        </div>
+                                    </th>
+                                    <th (click)="setPositionIconStatus('processingFailed')" class="align-middle"
+                                        *ngIf="tableVisaListFilter['processingFailed'].checkbox"
+                                        [ngClass]="{'sorted': orderBy.processingFailed === 'DESC', 'sorted-desc': orderBy.processingFailed === 'ASC'}">
+                                        <div class="text-left" title="{{'Processing Failed' | translate}}">
+                                            <span>{{'Processing Failed' | translate}}</span>
+                                            <span class="sort-indicator"></span>
+                                        </div>
+                                    </th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr (click)="transitionToVisaFile(visa)"
+                                    [ngClass]="{'processing-failed': (visa.processingFailed === true), 'processing-warning': (visa.processingWarning === true)}"
+                                    *ngFor="let visa of visaList; index as i;">
+                                    <td class="text-left">
+                                        {{visa.visaConfirmationFileID}}
+                                    </td>
+                                    <td class="text-left"
+                                        *ngIf="tableVisaListFilter['receivedDate'].checkbox">
+                                        {{visa.receivedDate | utcToLocalDate | date: 'dd/MM/yyyy'}}
+                                    </td>
+                                    <td class="text-left" *ngIf="tableVisaListFilter['fileName'].checkbox">
+                                        {{visa.fileName}}
+                                    </td>
+                                    <td class="text-left" *ngIf="tableVisaListFilter['uploadedBy'].checkbox">
+                                        {{visa.uploadedBy}}
+                                    </td>
+                                    <td class="text-right" *ngIf="tableVisaListFilter['processingFailed'].checkbox">
+                                        <span class="fa fa-exclamation-circle" *ngIf="visa.processingFailed === true" ></span>
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="page-footter" *ngIf="collectionSize > maxSize">
+                        <div class="text-uppercase text-muted fs-12">{{'Pages' | translate}}</div>
+                        <ngb-pagination [collectionSize]="collectionSize" [(page)]="page" [maxSize]="maxSize"
+                                        [pageSize]="pageSize" (pageChange)="pageChange($event)"
+                                        [rotate]="true" [ellipses]="false"
+                                        [boundaryLinks]="true"></ngb-pagination>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

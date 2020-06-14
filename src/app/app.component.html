@@ -1,0 +1,6 @@
+<router-outlet></router-outlet>
+
+<div class="scroll-to-top"
+     [ngClass]="{'show-scroll': navIsFixed, 'ltr': modeIsLTR, 'rtl': !modeIsLTR}" (click)="scrollToTop()">
+    <i class="fa fa-angle-up"></i>
+</div>

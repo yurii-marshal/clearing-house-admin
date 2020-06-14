@@ -1,0 +1,87 @@
+@import '../../../styles/site-mixin';
+
+.page-profile-details {
+  margin: 0 auto;
+  .title {
+    font-size: 24px;
+    font-weight: bold;
+    font-style: normal;
+    font-stretch: normal;
+    line-height: normal;
+    letter-spacing: 0.7px;
+    color: $text-color-1;
+    text-transform: uppercase;
+    margin-bottom: 15px;
+  }
+
+  .card-header {
+    background-color: $bg-header-panel;
+    font-size: 16px;
+    font-weight: bold;
+    font-style: normal;
+    font-stretch: normal;
+    line-height: normal;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    color: $white;
+  }
+
+
+  label{
+    font-size: 13px;
+    font-weight: 500;
+    font-style: normal;
+    font-stretch: normal;
+    line-height: normal;
+    letter-spacing: 0.4px;
+    text-align: left;
+    color: $label;
+  }
+
+  input{
+    height: 40px;
+    border-radius: 4px;
+  }
+  .input-mandatory{
+    background-color: $input-mandatory;
+    font-size: 15px;
+    letter-spacing: 0.4px;
+    color: #434a59;
+  }
+
+  .btn-reset{
+    text-align: right;
+    margin-top: 10px;
+  }
+
+  .btn-validate{
+    margin-top: 10px;
+  }
+}
+
+// landscape
+@media screen and (min-width: 1024px) and (max-width: 1365px) {
+
+}
+
+// iPad Portrait
+@media screen and (min-width: 768px) and (max-width: 1023px) {
+
+}
+
+// mobile screens
+@media screen and (min-width: 375px) and (max-width: 767px) {
+  .card-body{
+    margin-bottom: 0;
+  }
+
+  .btn-reset{
+    margin-top: 0;
+  }
+
+  .btn-validate{
+    margin-top: 0;
+    text-align: right;
+    width: 100%;
+  }
+}
